@@ -1,16 +1,11 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { createRef, useRef } from "react";
 import { authStyles } from "../../styles/auth/authStyles";
 import { StatusBar } from "expo-status-bar";
-import { windowHeight } from "../../assets/Dimensions";
-import { COLORS } from "../../assets/COLORS";
-import { useForm } from "react-hook-form";
 import { Image } from "expo-image";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { loginFormStruct } from "../../models/loginFormStruct";
+import LoginForm from "../../components/auth/LoginForm";
 
-const LoginScreen = ({ navigation }) => {
-
+const LoginScreen = () => {
   return (
     <View style={authStyles.container}>
       <StatusBar style="light" />
@@ -22,9 +17,8 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <View style={authStyles.formWrapper}>
-        
+        <LoginForm />
       </View>
-      <View style={authStyles.buttonWrapper}></View>
     </View>
   );
 };

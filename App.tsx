@@ -1,8 +1,12 @@
-import { NavigationContainer } from '@react-navigation/native';
-import LoginScreen from './screens/auth/LoginScreen';
+import { NavigationContainer } from "@react-navigation/native";
+import LoginScreen from "./screens/auth/LoginScreen";
+import RegisterScreen from "./screens/auth/RegisterScreen";
 
 export default function App() {
   return (
-    <LoginScreen />
+    <>
+      {/* <LoginScreen /> */}
+      <RegisterScreen />
+    </>
   );
 }

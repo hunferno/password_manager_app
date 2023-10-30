@@ -9,11 +9,12 @@ import {
 export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.dark,
+    backgroundColor: COLORS.light,
   },
   logoWrapper: {
-    marginTop: statusBarHeight,
+    paddingTop: statusBarHeight,
     justifyContent: "center",
+    backgroundColor: COLORS.dark,
   },
   logo: {
     width: windowWidth,
@@ -21,9 +22,39 @@ export const authStyles = StyleSheet.create({
   },
   formWrapper: {
     flex: 1,
-    justifyContent:"flex-end",
+    justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: COLORS.light,
+    marginBottom: 20,
   },
-  buttonWrapper: {},
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: windowWidth * 0.8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gold,
+  },
+  input: {
+    fontSize: 16,
+    width: "90%",
+    marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  buttonWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 35,
+    marginBottom: 10,
+  },
+  button: {
+    width: windowWidth * 0.35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    paddingVertical: 15,
+  },
+  errorMsgText: {
+    color: COLORS.failure,
+    fontStyle: "italic",
+  },
 });

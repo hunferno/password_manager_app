@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const loginFormStruct = Yup.object().shape({
+export const registerFormStruct = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string()
     .matches(
@@ -8,4 +8,8 @@ export const loginFormStruct = Yup.object().shape({
       "Au minimum 8 charactères | 1 lettre | 1 chiffre"
     )
     .required(),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("password")],
+    "Les mots de passe doivent être identiques"
+  ),
 });
