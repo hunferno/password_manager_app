@@ -1,75 +1,188 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Switch } from "react-native";
 import React, { useState } from "react";
-import { ErrorMessage, Formik } from "formik";
+import { Formik, FormikErrors } from "formik";
 import { authStyles } from "../../styles/auth/authStyles";
 import { Entypo } from "@expo/vector-icons";
 import ButtonForm from "./ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { registerFormStruct } from "../../models/registerFormStruct";
 
-const RegisterForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
+const RegisterForm = ({
+  registerStep,
+  setRegisterStep,
+  navigation,
+}: {
+  registerStep: number;
+  setRegisterStep: React.Dispatch<React.SetStateAction<number>>;
+  navigation: any;
+}) => {
+  const [showPasswordOne, setShowPasswordOne] = useState(false);
+  const [showPasswordTwo, setShowPasswordTwo] = useState(false);
+  const [activeBio, setActiveBio] = useState(true);
+  const [disableButton, setDisableButton] = useState(false);
+
+  const handleChangeStep = (
+    errors: FormikErrors<{
+      email: string;
+      password: string;
+      confirmPassword: string;
+    }>
+  ) => {
+    if (registerStep == 1 && !errors.email) {
+      setRegisterStep(2);
+    } else if (registerStep == 2 && !errors.password) {
+      setRegisterStep(3);
+    } else if (registerStep == 3 && !errors.confirmPassword) {
+      setRegisterStep(4);
+    }
+  };
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
+      initialValues={{ email: "", password: "", confirmPassword: "" }}
       validationSchema={registerFormStruct}
       enableReinitialize
       onSubmit={(values) => {
         console.log(values);
       }}
     >
-      {({ handleChange, handleSubmit, values, errors }) => (
+      {({
+        handleChange,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+        handleBlur,
+      }) => (
         <>
-          <View style={authStyles.inputContainer}>
-            <TextInput
-              autoCapitalize="none"
-              style={authStyles.input}
-              placeholder="Email"
-              placeholderTextColor={COLORS.grey}
-              keyboardType="email-address"
-              value={values.email}
-              onChangeText={handleChange("email")}
-            />
-          </View>
-          <ErrorMessage name="email">
-            {(msg) => <Text style={authStyles.errorMsgText}>{msg}</Text>}
-          </ErrorMessage>
-          <View style={authStyles.inputContainer}>
-            <TextInput
-              style={authStyles.input}
-              placeholder="Mot de passe Maitre"
-              placeholderTextColor={COLORS.grey}
-              keyboardType="default"
-              secureTextEntry={!showPassword}
-              value={values.password}
-              onChangeText={handleChange("password")}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Entypo
-                name={showPassword ? "eye" : "eye-with-line"}
-                size={30}
-                color="black"
+          {/* STEP 1 */}
+          {registerStep == 1 && (
+            <>
+              <View style={authStyles.inputContainer}>
+                <TextInput
+                  autoCapitalize="none"
+                  onBlur={() => handleBlur("email")}
+                  style={authStyles.input}
+                  placeholder="Email"
+                  placeholderTextColor={COLORS.grey}
+                  keyboardType="email-address"
+                  value={values.email}
+                  onChangeText={handleChange("email")}
+                />
+              </View>
+              {touched.email && errors.email && (
+                <View style={authStyles.errorMsgContainer}>
+                  <Text style={authStyles.errorMsgText}>{errors.email}</Text>
+                </View>
+              )}
+            </>
+          )}
+
+          {/* STEP 2 */}
+          {registerStep > 1 && registerStep < 4 && (
+            <>
+              <View style={authStyles.inputContainer}>
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Mot de passe Maitre"
+                  placeholderTextColor={COLORS.grey}
+                  keyboardType="default"
+                  secureTextEntry={!showPasswordOne}
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPasswordOne(!showPasswordOne)}
+                >
+                  <Entypo
+                    name={showPasswordOne ? "eye" : "eye-with-line"}
+                    size={30}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+              {touched.password && errors.password && (
+                <View style={authStyles.errorMsgContainer}>
+                  <Text style={authStyles.errorMsgText}>{errors.password}</Text>
+                </View>
+              )}
+            </>
+          )}
+
+          {/* STEP 3 */}
+          {registerStep == 3 && (
+            <>
+              <View style={authStyles.inputContainer}>
+                <TextInput
+                  style={authStyles.input}
+                  placeholder="Confirmer le mot de passe"
+                  placeholderTextColor={COLORS.grey}
+                  keyboardType="default"
+                  secureTextEntry={!showPasswordTwo}
+                  value={values.confirmPassword}
+                  onChangeText={handleChange("confirmPassword")}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPasswordTwo(!showPasswordTwo)}
+                >
+                  <Entypo
+                    name={showPasswordTwo ? "eye" : "eye-with-line"}
+                    size={30}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+              {touched.confirmPassword && errors.confirmPassword && (
+                <View style={authStyles.errorMsgContainer}>
+                  <Text style={authStyles.errorMsgText}>
+                    {errors.confirmPassword}
+                  </Text>
+                </View>
+              )}
+            </>
+          )}
+
+          {/* STEP 4 */}
+          {registerStep == 4 && (
+            <View style={authStyles.inputBioContainer}>
+              <View style={authStyles.inputBioLabel}>
+                <Text style={authStyles.registerStepDescriptionText}>
+                  Déverrouillage Biométrique
+                </Text>
+                <Text style={{ marginTop: 10, fontStyle: "italic" }}>
+                  Dévérrouillez l'application par emprunte biométrique
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: COLORS.blue, true: COLORS.blue }}
+                thumbColor={activeBio ? COLORS.success : COLORS.failure}
+                onValueChange={() => setActiveBio(!activeBio)}
+                value={activeBio}
               />
-            </TouchableOpacity>
-          </View>
-          <ErrorMessage name="password">
-            {(msg) => <Text style={authStyles.errorMsgText}>{msg}</Text>}
-          </ErrorMessage>
+            </View>
+          )}
+
+          {/* BTN SESSION */}
           <View style={authStyles.buttonWrapper}>
             <ButtonForm
-              title="CREER UN COMPTE"
+              title={registerStep > 1 ? "RETOUR" : "CONNEXION"}
               action={() => {
-                "test";
+                registerStep > 1
+                  ? navigation.navigate("Login")
+                  : setRegisterStep(registerStep - 1);
               }}
               color={COLORS.blue}
               bgColor={COLORS.light}
             />
+
             <ButtonForm
-              title="CONNEXION"
-              action={handleSubmit}
+              title="CONTINUER"
+              action={() =>
+                registerStep === 4 ? handleSubmit() : handleChangeStep(errors)
+              }
               color={COLORS.light}
               bgColor={COLORS.blue}
+              disableButton={disableButton}
             />
           </View>
         </>

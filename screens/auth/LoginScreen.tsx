@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
-import React, { createRef, useRef } from "react";
+import { View } from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import LoginForm from "../../components/auth/LoginForm";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: any) => {
   return (
     <View style={authStyles.container}>
       <StatusBar style="light" />
@@ -17,7 +16,7 @@ const LoginScreen = () => {
         />
       </View>
       <View style={authStyles.formWrapper}>
-        <LoginForm />
+        <LoginForm navigation={navigation} />
       </View>
     </View>
   );
