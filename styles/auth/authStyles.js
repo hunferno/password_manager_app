@@ -16,11 +16,16 @@ export const authStyles = StyleSheet.create({
     backgroundColor: COLORS.light,
     justifyContent: "center",
     alignItems: "center",
+    paddingBottom: 20,
   },
   logoWrapper: {
     paddingTop: statusBarHeight,
     justifyContent: "center",
     backgroundColor: COLORS.dark,
+  },
+  launchImg: {
+    width: windowWidth,
+    height: windowHeight * 0.4,
   },
   logo: {
     width: windowWidth,
@@ -28,6 +33,7 @@ export const authStyles = StyleSheet.create({
   },
   launchTextWrapper: {
     flex: 1,
+    paddingHorizontal: 15,
     alignItems: "center",
   },
   registerHomeTextWrapper: {
@@ -87,6 +93,11 @@ export const authStyles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
   },
+  successMsgText: {
+    color: COLORS.success,
+    fontStyle: "italic",
+    textAlign: "center",
+  },
   inputBioContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -104,5 +115,28 @@ export const authStyles = StyleSheet.create({
   checkbox: {
     width: "25%",
     alignItems: "center",
+  },
+  verificationBodyContainer: {
+    flex: 1,
+    marginVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  verificationTextInputContainer: {
+    marginVertical: 30,
+    width: windowWidth * 0.8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  verificationTextInput: {
+    marginHorizontal: 5,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "500",
+    width: windowWidth * 0.1,
+    height: windowWidth * 0.1,
+    borderRadius: 10,
+    borderColor: COLORS.blue,
+    borderWidth: 2,
   },
 });

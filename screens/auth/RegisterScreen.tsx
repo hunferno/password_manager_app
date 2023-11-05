@@ -21,7 +21,7 @@ const RegisterScreen = ({ navigation }: any) => {
       
       <View style={{ paddingHorizontal: 25, marginVertical: 10 }}>
         <Text style={authStyles.registerStepDescriptionText}>
-          {registerStep == 1 && "Commençons par votre adresse e-mail..."}
+          {registerStep == 1 && "Créons votre compte en commençant par votre adresse e-mail..."}
           {registerStep == 2 &&
             "... et un mot de passe maître. C'est votre allier le plus précieux."}
           {registerStep == 3 && "Bien reçu ! Pouvez-vous le saisir à nouveau ?"}

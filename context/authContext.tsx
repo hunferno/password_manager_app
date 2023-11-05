@@ -7,6 +7,11 @@ interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
   onRegister?: (email: string, password: string) => Promise<any>;
   onLogin?: (email: string, password: string) => Promise<any>;
+  onVerificationCode?: (email: string, otpCode: string) => Promise<any>;
+  onResendVerificationCode?: (email: string) => Promise<any>;
+  isEmailExistsInDB?: (email: string) => Promise<any>;
+  activeBioConnexion?: (email: string) => Promise<any>;
+  desactiveBioConnexion?: (email: string) => Promise<any>;
   onLogout?: () => Promise<any>;
 }
 
@@ -43,7 +48,7 @@ export const AuthProvider = ({ children }: any) => {
     try {
       return await axiosPostAPI("/user/register", { email, password });
     } catch (e) {
-      return { error: true, message: (e as any).response.message };
+      return { error: true, message: (e as any).response.data.message };
     }
   };
 
@@ -51,7 +56,7 @@ export const AuthProvider = ({ children }: any) => {
     try {
       return await axiosPostAPI("/user/isEmailExistsInDB", { email });
     } catch (e) {
-      return { error: true, message: (e as any).response.message };
+      return { error: true, message: (e as any).response.data.message };
     }
   };
 
@@ -75,7 +80,70 @@ export const AuthProvider = ({ children }: any) => {
       //   Stocker le token dans le secure store
       await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
     } catch (e: any) {
-      return { error: true, message: (e as any).response.message };
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const verificationCode = async (email: string, otpCode: string) => {
+    try {
+      return await axiosPostAPI("/user/register/verification", {
+        email,
+        receivedCode: otpCode,
+      });
+    } catch (e) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const resendVerificationCode = async (email: string) => {
+    try {
+      return await axiosPostAPI("/user/resendVerificationCode", { email });
+    } catch (e) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const activeBioConnexion = async (email: string) => {
+    try {
+      // récupérer le storage
+      const emailInStorage = await SecureStore.getItemAsync("email");
+
+      if (emailInStorage) {
+        return {
+          error: true,
+          message: "Vous avez déjà activé la connexion biométrique!",
+        };
+      }
+
+      // stocker l'email dans le storage
+      await SecureStore.setItemAsync("email", email);
+    } catch (e) {
+      return {
+        error: true,
+        message: "Une erreur est survenue lors de la sauvegarde des données! ",
+      };
+    }
+  };
+
+  const desactiveBioConnexion = async (email: string) => {
+    try {
+      // récupérer le storage
+      const emailInStorage = await SecureStore.getItemAsync("email");
+
+      if (!emailInStorage) {
+        return {
+          error: true,
+          message: "Votre connexion biométrique n'existe pas!",
+        };
+      }
+
+      // stocker l'email dans le storage
+      await SecureStore.deleteItemAsync("email");
+    } catch (e) {
+      return {
+        error: true,
+        message: "Une erreur est survenue lors de la sauvegarde des données! ",
+      };
     }
   };
 
@@ -97,6 +165,8 @@ export const AuthProvider = ({ children }: any) => {
     onRegister: register,
     onLogin: login,
     onLogout: logout,
+    onResendVerificationCode: resendVerificationCode,
+    onVerificationCode: verificationCode,
     isEmailExistsInDB,
     authState,
   };

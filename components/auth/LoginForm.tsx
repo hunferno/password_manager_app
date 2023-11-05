@@ -8,13 +8,22 @@ import { useContext, useState } from "react";
 import ButtonForm from "./ButtonForm";
 import { AuthContext } from "../../context/authContext";
 
-const LoginForm = ({ navigation }: { navigation: any }) => {
-  const { onLogin } = useContext(AuthContext);
+const LoginForm = ({
+  navigation,
+  loginStep,
+  setLoginStep,
+}: {
+  navigation: any;
+  loginStep: number;
+  setLoginStep: any;
+}) => {
+  const { onLogin, isEmailExistsInDB } = useContext(AuthContext);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [loginStep, setLoginStep] = useState(1);
+  const [email, setEmail] = useState("");
+  const [loginMsgErr, setLoginMsgErr] = useState("");
 
-  const handleChangeStep = (
+  const handleChangeStep = async (
     errors: FormikErrors<{
       email: string;
       password: string;
@@ -22,7 +31,14 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
     }>
   ) => {
     if (loginStep == 1 && !errors.email) {
-      setLoginStep(2);
+      const isValidEmail = await isEmailExistsInDB!(email);
+
+      if (isValidEmail.data.isExist) {
+        setLoginMsgErr("");
+        setLoginStep(2);
+      } else {
+        setLoginMsgErr("Email non reconnu");
+      }
     }
   };
 
@@ -33,13 +49,22 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
       enableReinitialize
       onSubmit={async (values) => {
         const result = await onLogin!(values.email, values.password);
+
         if (result && result.error) {
-          console.log(result.message);
+          setLoginMsgErr(result.message);
         }
       }}
     >
       {({ handleChange, handleSubmit, values, errors, touched }) => (
         <>
+          {loginMsgErr !== "" && (
+            <View style={authStyles.errorMsgContainer}>
+              <Text style={[authStyles.errorMsgText, { fontWeight: "bold" }]}>
+                {loginMsgErr}
+              </Text>
+            </View>
+          )}
+
           {loginStep === 1 && (
             <>
               <View style={[authStyles.inputContainer, { marginBottom: 30 }]}>
@@ -51,6 +76,10 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
                   keyboardType="email-address"
                   value={values.email}
                   onChangeText={handleChange("email")}
+                  onChange={(e) => {
+                    setEmail(e.nativeEvent.text);
+                    setLoginMsgErr("");
+                  }}
                 />
               </View>
               {touched.email && errors.email && (
@@ -72,6 +101,7 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
                   secureTextEntry={!showPassword}
                   value={values.password}
                   onChangeText={handleChange("password")}
+                  onChange={() => setLoginMsgErr("")}
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword(!showPassword)}
@@ -101,7 +131,7 @@ const LoginForm = ({ navigation }: { navigation: any }) => {
             <ButtonForm
               title={loginStep < 2 ? "CONTINUER" : "CONNEXION"}
               action={() =>
-                loginStep < 2 ? handleChangeStep(errors) : handleSubmit
+                loginStep < 2 ? handleChangeStep(errors) : handleSubmit()
               }
               color={COLORS.light}
               bgColor={COLORS.blue}

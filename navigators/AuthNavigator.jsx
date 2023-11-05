@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import LaunchScreen from "../screens/auth/LaunchScreen";
+import VerificationCodeScreen from "../screens/auth/VerificationCodeScreen";
 
 const Auth = createNativeStackNavigator();
 
@@ -24,12 +25,12 @@ const AuthNavigator = () => {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      {/* <Auth.Screen
+      <Auth.Screen
         name="VerificationCode"
         component={VerificationCodeScreen}
         options={{ headerShown: false }}
       />
-      <Auth.Screen
+      {/* <Auth.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
         options={{

@@ -1,23 +1,38 @@
 import { View, Text } from "react-native";
-import React from "react";
 import { authStyles } from "../../styles/auth/authStyles";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
+import { Image } from "expo-image";
 
 const LaunchScreen = ({ navigation }: { navigation: any }) => {
   return (
     <View style={authStyles.launchContainer}>
       <View style={authStyles.launchTextWrapper}>
-        <Text style={[authStyles.registerHomeText, { fontSize: 40 }]}>
-          L'application qui sécurise vos mots de passe
+        <Image
+          source={require("../../assets/images/launchImg.png")}
+          contentFit="contain"
+          style={authStyles.launchImg}
+        />
+        <Text
+          style={[
+            authStyles.registerHomeText,
+            { fontSize: 40, textAlign: "center" },
+          ]}
+        >
+          PASSWORD MANAGER
         </Text>
         <Text
           style={[
             authStyles.registerHomeText,
-            { fontSize: 20, marginTop: 10, color: COLORS.grey },
+            {
+              fontSize: 20,
+              marginTop: 10,
+              color: COLORS.gold,
+              textAlign: "center",
+            },
           ]}
         >
-          Découvrez la magie par vous même
+          L'application qui sécurise vos mots de passe. Dormez tranquille...
         </Text>
       </View>
 
