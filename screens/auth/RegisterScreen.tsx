@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import { authStyles } from "../../styles/auth/authStyles";
@@ -18,10 +18,11 @@ const RegisterScreen = ({ navigation }: any) => {
           style={authStyles.logo}
         />
       </View>
-      
+
       <View style={{ paddingHorizontal: 25, marginVertical: 10 }}>
         <Text style={authStyles.registerStepDescriptionText}>
-          {registerStep == 1 && "Créons votre compte en commençant par votre adresse e-mail..."}
+          {registerStep == 1 &&
+            "Créons votre compte en commençant par votre adresse e-mail..."}
           {registerStep == 2 &&
             "... et un mot de passe maître. C'est votre allier le plus précieux."}
           {registerStep == 3 && "Bien reçu ! Pouvez-vous le saisir à nouveau ?"}

@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from "../screens/auth/RegisterScreen";
 import LoginScreen from "../screens/auth/LoginScreen";
 import LaunchScreen from "../screens/auth/LaunchScreen";
 import VerificationCodeScreen from "../screens/auth/VerificationCodeScreen";
+import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 
 const Auth = createNativeStackNavigator();
 
@@ -30,13 +30,13 @@ const AuthNavigator = () => {
         component={VerificationCodeScreen}
         options={{ headerShown: false }}
       />
-      {/* <Auth.Screen
+      <Auth.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
         options={{
           headerShown: false,
         }}
-      /> */}
+      />
     </Auth.Navigator>
   );
 };

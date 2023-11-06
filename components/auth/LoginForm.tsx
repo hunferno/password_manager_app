@@ -55,7 +55,7 @@ const LoginForm = ({
         }
       }}
     >
-      {({ handleChange, handleSubmit, values, errors, touched }) => (
+      {({ handleChange, handleSubmit, values, errors }) => (
         <>
           {loginMsgErr !== "" && (
             <View style={authStyles.errorMsgContainer}>
@@ -67,7 +67,7 @@ const LoginForm = ({
 
           {loginStep === 1 && (
             <>
-              <View style={[authStyles.inputContainer, { marginBottom: 30 }]}>
+              <View style={[authStyles.inputContainer, { marginBottom: 15 }]}>
                 <TextInput
                   autoCapitalize="none"
                   style={authStyles.input}
@@ -82,7 +82,7 @@ const LoginForm = ({
                   }}
                 />
               </View>
-              {touched.email && errors.email && (
+              {errors.email && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.email}</Text>
                 </View>
@@ -92,7 +92,7 @@ const LoginForm = ({
 
           {loginStep === 2 && (
             <>
-              <View style={[authStyles.inputContainer, { marginBottom: 30 }]}>
+              <View style={[authStyles.inputContainer, { marginBottom: 15 }]}>
                 <TextInput
                   style={authStyles.input}
                   placeholder="Mot de passe Maitre"
@@ -113,13 +113,27 @@ const LoginForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {touched.password && errors.password && (
+              {errors.password && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.password}</Text>
                 </View>
               )}
+
+              {/* RESET PASSWORD */}
             </>
           )}
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
+            <Text
+              style={[
+                authStyles.registerHomeText,
+                { fontStyle: "italic", color: COLORS.grey, marginTop: 10 },
+              ]}
+            >
+              Mot de passe oublié ?
+            </Text>
+          </TouchableOpacity>
 
           <View style={authStyles.buttonWrapper}>
             <ButtonForm

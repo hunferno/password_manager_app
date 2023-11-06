@@ -1,9 +1,8 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 import { COLORS } from "../assets/COLORS";
 import HomeScreen from "../screens/app/HomeScreen";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 function TabNavigator() {
   return (
@@ -15,9 +14,8 @@ function TabNavigator() {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Accueil",
-          tabBarActiveTintColor: COLORS.gold,
-          tabBarInactiveTintColor: COLORS.grey,
+          tabBarLabel: "Tous les éléments",
+          tabBarActiveTintColor: COLORS.blue,
           // tabBarIcon: ({ focused }) => (
           //   <Image
           //     source={require("../assets/img/house.png")}

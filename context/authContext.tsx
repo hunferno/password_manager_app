@@ -9,6 +9,7 @@ interface AuthProps {
   onLogin?: (email: string, password: string) => Promise<any>;
   onVerificationCode?: (email: string, otpCode: string) => Promise<any>;
   onResendVerificationCode?: (email: string) => Promise<any>;
+  onResetPassword?: (email: string, password: string) => Promise<any>;
   isEmailExistsInDB?: (email: string) => Promise<any>;
   activeBioConnexion?: (email: string) => Promise<any>;
   desactiveBioConnexion?: (email: string) => Promise<any>;
@@ -80,6 +81,14 @@ export const AuthProvider = ({ children }: any) => {
       //   Stocker le token dans le secure store
       await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
     } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const resetPassword = async (email: string, password: string) => {
+    try {
+      return await axiosPostAPI("/user/reset_password", { email, password });
+    } catch (e) {
       return { error: true, message: (e as any).response.data.message };
     }
   };
@@ -167,7 +176,10 @@ export const AuthProvider = ({ children }: any) => {
     onLogout: logout,
     onResendVerificationCode: resendVerificationCode,
     onVerificationCode: verificationCode,
+    onResetPassword: resetPassword,
     isEmailExistsInDB,
+    activeBioConnexion,
+    desactiveBioConnexion,
     authState,
   };
 

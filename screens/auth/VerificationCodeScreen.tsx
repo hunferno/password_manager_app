@@ -14,7 +14,7 @@ const VerificationCodeScreen = ({
   route: any;
   navigation: any;
 }) => {
-  const { email } = route.params;
+  const { email, destination } = route.params;
   const { onResendVerificationCode, onVerificationCode } =
     useContext(AuthContext);
 
@@ -63,7 +63,14 @@ const VerificationCodeScreen = ({
       setOtpErrMessage(verificationResponse.message);
     }
 
-    navigation.navigate("Login");
+    if (destination === "login") {
+      navigation.navigate("Login");
+    } else if (destination === "forgotPassword") {
+      navigation.navigate("ForgotPassword", {
+        from: "verificationCode",
+        email,
+      });
+    }
   };
 
   const resendVerificationCode = async () => {
@@ -88,9 +95,11 @@ const VerificationCodeScreen = ({
       </View>
 
       <View style={{ paddingHorizontal: 25, marginVertical: 10 }}>
-        <Text style={authStyles.registerStepDescriptionText}>
-          Voici la dernière étape...
-        </Text>
+        {destination === "login" && (
+          <Text style={authStyles.registerStepDescriptionText}>
+            Voici la dernière étape...
+          </Text>
+        )}
         <Text style={authStyles.registerStepDescriptionText}>
           Entrez le code reçu par E-mail
         </Text>

@@ -17,12 +17,14 @@ const RegisterForm = ({
   setRegisterStep: React.Dispatch<React.SetStateAction<number>>;
   navigation: any;
 }) => {
-  const { isEmailExistsInDB, onRegister } = useContext(AuthContext);
+  const { isEmailExistsInDB, onRegister, activeBioConnexion } =
+    useContext(AuthContext);
 
   const [showPasswordOne, setShowPasswordOne] = useState(false);
   const [showPasswordTwo, setShowPasswordTwo] = useState(false);
   const [activeBio, setActiveBio] = useState(true);
   const [registerMsgErr, setRegisterMsgErr] = useState("");
+  const [activeBioErrMsg, setActiveBioErrMsg] = useState("");
   const [registerInfo, setRegisterInfo] = useState<{
     email: string | null;
     password: string | null;
@@ -68,18 +70,34 @@ const RegisterForm = ({
       enableReinitialize
       onSubmit={async (values) => {
         const { email, password } = values;
-        const registration = await onRegister!(email, password);
 
+        const registration = await onRegister!(email, password);
         if (registration && registration.error) {
           setRegisterMsgErr(registration.message);
+          return;
         }
 
-        navigation.navigate("VerificationCode", { email });
+        const biometric = await activeBioConnexion!(email);
+        if (biometric && biometric.error === true) {
+          setActiveBioErrMsg(biometric.message);
+        }
+
+        navigation.navigate("VerificationCode", {
+          email,
+          destination: "login",
+        });
       }}
     >
       {({ handleChange, handleSubmit, values, errors }) => (
         <>
           {/* ERROR MESSAGE */}
+          {activeBioErrMsg !== "" && (
+            <View style={authStyles.errorMsgContainer}>
+              <Text style={[authStyles.errorMsgText, { fontWeight: "bold" }]}>
+                {activeBioErrMsg}
+              </Text>
+            </View>
+          )}
           {registerMsgErr !== "" && (
             <View style={authStyles.errorMsgContainer}>
               <Text style={[authStyles.errorMsgText, { fontWeight: "bold" }]}>
