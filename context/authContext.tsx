@@ -33,13 +33,37 @@ export const AuthProvider = ({ children }: any) => {
       const token = await SecureStore.getItemAsync("jwt_token");
 
       if (token) {
-        setAuthState({
-          token,
-          authenticated: true,
-        });
+        try {
+          // check if token is still valid
+          const result = await axiosPostAPI("/user/verify_token_validity", {
+            token,
+          });
 
-        //   Attacher le token à toutes les requêtes
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          if (["4", "5"].includes((result as any).status)) {
+            await SecureStore.deleteItemAsync("jwt_token");
+            setAuthState({
+              token: null,
+              authenticated: false,
+            });
+            return;
+          }
+
+          setAuthState({
+            token,
+            authenticated: true,
+          });
+
+          //   Attacher le token à toutes les requêtes
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        } catch (e) {
+          await SecureStore.deleteItemAsync("jwt_token");
+          setAuthState({
+            token: null,
+            authenticated: false,
+          });
+          //   Déttacher le token à toutes les requêtes
+          axios.defaults.headers.common["Authorization"] = ``;
+        }
       }
     };
     checkToken();

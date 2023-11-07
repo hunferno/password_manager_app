@@ -1,5 +1,4 @@
-import { View, Text } from "react-native";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from "./context/authContext";
 import AppNavigator from "./navigators/AppNavigator";
@@ -10,7 +9,8 @@ const Navigation = () => {
 
   return (
     <NavigationContainer>
-      {authState?.authenticated ? <AppNavigator /> : <AuthNavigator />}
+      {/* {authState?.authenticated ? <AppNavigator /> : <AuthNavigator />} */}
+      <AppNavigator />
     </NavigationContainer>
   );
 };

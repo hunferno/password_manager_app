@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from "./TabNavigator";
+import { DrawerNavigation } from "../drawers/DrawerNavigation";
 
 const App = createNativeStackNavigator();
 
