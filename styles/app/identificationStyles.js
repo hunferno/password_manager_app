@@ -71,4 +71,27 @@ export const identificationStyles = StyleSheet.create({
     width: windowWidth * 0.2,
     height: 50,
   },
+
+  actionHeaderContainer: {
+    marginBottom: 10,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderColor: COLORS.grey,
+  },
+  actionBodyContainer: {
+    paddingHorizontal: 10,
+    justifyContent: "flex-start",
+  },
+  actionBodyTextContainer: {
+    marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  actionBodyText: {
+    marginLeft: 15,
+    fontSize: 15,
+    fontWeight: "bold",
+    color: COLORS.blue,
+  },
 });

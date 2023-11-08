@@ -1,12 +1,21 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
+import { IdentificationType } from "../../../types/identificationType";
 
-const IdentificationActions = ({ password }: { password: string }) => {
+const IdentificationActions = ({
+  data,
+  handleActionModal,
+  setSelectedItem,
+}: {
+  data: IdentificationType;
+  handleActionModal: any;
+  setSelectedItem: any;
+}) => {
   const handleCopyPassword = async () => {
-    await Clipboard.setStringAsync(password);
+    await Clipboard.setStringAsync(data.password);
   };
 
   return (
@@ -14,7 +23,12 @@ const IdentificationActions = ({ password }: { password: string }) => {
       <TouchableOpacity onPress={handleCopyPassword}>
         <MaterialIcons name="content-copy" size={30} color={COLORS.blue} />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          handleActionModal();
+          setSelectedItem(data);
+        }}
+      >
         <Entypo name="dots-three-vertical" size={30} color={COLORS.blue} />
       </TouchableOpacity>
     </View>

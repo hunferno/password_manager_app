@@ -19,7 +19,7 @@ const HeaderTitle = ({ title }) => {
         <View style={appStyles.headerTitleContainer}>
           <TouchableOpacity
             style={appStyles.headerTitleIconMenuContainer}
-            onPress={onOpenMenu}
+            onPress={() => onOpenMenu}
           >
             <MaterialIcons name="menu" size={30} color={COLORS.light} />
           </TouchableOpacity>

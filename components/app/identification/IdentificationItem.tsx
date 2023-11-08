@@ -1,27 +1,32 @@
-import { View, Text } from "react-native";
-import { appStyles } from "../../../styles/app/appStyles";
+import { TouchableOpacity, View } from "react-native";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 import IdentificationImage from "./IdentificationImage";
 import IdentificationInfo from "./IdentificationInfo";
 import IdentificationActions from "./IdentificationActions";
 
+import { useCallback, useRef, useState } from "react";
+import { IdentificationType } from "../../../types/identificationType";
+
 const IdentificationItem = ({
   data,
+  handleActionModal,
+  setSelectedItem,
 }: {
-  data: {
-    id: number;
-    name: string;
-    category: string;
-    url: string;
-    username: string;
-    password: string;
-  };
+  data: IdentificationType;
+  handleActionModal: any;
+  setSelectedItem: any;
 }) => {
   return (
     <View style={identificationStyles.identificationContainer}>
-      <IdentificationImage name={data.name} />
-      <IdentificationInfo url={data.url} username={data.username} />
-      <IdentificationActions password={data.password} />
+      <TouchableOpacity style={{ flexDirection: "row" }}>
+        <IdentificationImage name={data.name} />
+        <IdentificationInfo url={data.url} username={data.username} />
+      </TouchableOpacity>
+      <IdentificationActions
+        data={data}
+        handleActionModal={handleActionModal}
+        setSelectedItem={setSelectedItem}
+      />
     </View>
   );
 };
