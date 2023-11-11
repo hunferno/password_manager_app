@@ -94,4 +94,48 @@ export const identificationStyles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.blue,
   },
+
+  addScreenHeaderConatiner: {
+    backgroundColor: COLORS.gold,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  addScreenHeaderText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: COLORS.blue,
+  },
+  formContainer: {
+    height: windowHeight * 0.7,
+    padding: 15,
+    justifyContent: "space-evenly",
+  },
+  formInputContainer: {
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderColor: COLORS.gold,
+  },
+  formInputText: {
+    paddingHorizontal: 10,
+    fontSize: 20,
+    color: COLORS.blue,
+  },
+  formPasswordContainer: {
+    backgroundColor: COLORS.blue,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  formPasswordGenerateContainer: {
+    paddingHorizontal: 10,
+    marginLeft: 10,
+  },
+  formPasswordGenerateText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: COLORS.blue,
+  },
 });

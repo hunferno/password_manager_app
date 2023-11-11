@@ -13,6 +13,40 @@ export const appStyles = StyleSheet.create({
     alignItems: "center",
   },
 
+  modalContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.blue,
+  },
+
+  modalText: {
+    fontSize: 20,
+    color: COLORS.light,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+
+  modalBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: windowWidth * 0.6,
+  },
+
+  modalBtn: {
+    padding: 10,
+    borderRadius: 10,
+    width: windowWidth * 0.2,
+    alignItems: "center",
+    backgroundColor: COLORS.light,
+  },
+
+  modalBtnText: {
+    fontSize: 20,
+    color: COLORS.blue,
+  },
+
   topBarBg: {
     backgroundColor: COLORS.blue,
   },

@@ -13,7 +13,7 @@ import BottomSheet, {
 import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: { navigation: any }) => {
   const [datas, setDatas] = useState<any>([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
@@ -87,7 +87,10 @@ const HomeScreen = () => {
         <EmptyItems />
       )}
       {!bottomSheetVisible && (
-        <TouchableOpacity style={appStyles.addBtnContainer}>
+        <TouchableOpacity
+          style={appStyles.addBtnContainer}
+          onPress={() => navigation.navigate("Add")}
+        >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>
         </TouchableOpacity>

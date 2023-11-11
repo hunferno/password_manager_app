@@ -5,5 +5,9 @@ export const COLORS = {
     gold: "#D4B071",
     blue: "#24385B",
     success: "#4ce453",
-    failure:"#e44c4c"
+    warning:"#e4c04c",
+    failure:"#e44c4c",
+    lightSuccess: "rgba(76, 228, 83, 0.4)",
+    lightBlue: "rgba(36, 56, 91, 0.8)",
+    lightFailure: "rgba(228, 76, 76, 0.4)",
 }

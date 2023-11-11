@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const loginFormStruct = Yup.object().shape({
-  email: Yup.string().email().required(),
+  email: Yup.string().email().required('Veuillez renseigner votre email!'),
   password: Yup.string()
     .matches(
       /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[*!$#-_@]).{8,}$/,
