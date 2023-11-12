@@ -88,7 +88,14 @@ const RegisterForm = ({
         });
       }}
     >
-      {({ handleChange, handleSubmit, values, errors }) => (
+      {({
+        handleChange,
+        handleSubmit,
+        setFieldTouched,
+        touched,
+        values,
+        errors,
+      }) => (
         <>
           {/* ERROR MESSAGE */}
           {activeBioErrMsg !== "" && (
@@ -117,6 +124,7 @@ const RegisterForm = ({
                   placeholderTextColor={COLORS.grey}
                   keyboardType="email-address"
                   value={values.email}
+                  onBlur={() => setFieldTouched("email")}
                   onChangeText={handleChange("email")}
                   onChange={(e) =>
                     setRegisterInfo({
@@ -126,7 +134,7 @@ const RegisterForm = ({
                   }
                 />
               </View>
-              {errors.email && (
+              {touched.email && errors.email && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.email}</Text>
                 </View>
@@ -145,6 +153,7 @@ const RegisterForm = ({
                   keyboardType="default"
                   secureTextEntry={!showPasswordOne}
                   value={values.password}
+                  onBlur={() => setFieldTouched("password")}
                   onChangeText={handleChange("password")}
                   onChange={(e) =>
                     setRegisterInfo({
@@ -163,7 +172,7 @@ const RegisterForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {errors.password && (
+              {touched.password && errors.password && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.password}</Text>
                 </View>
@@ -182,6 +191,7 @@ const RegisterForm = ({
                   keyboardType="default"
                   secureTextEntry={!showPasswordTwo}
                   value={values.confirmPassword}
+                  onBlur={() => setFieldTouched("confirmPassword")}
                   onChangeText={handleChange("confirmPassword")}
                   onChange={(e) =>
                     setRegisterInfo({
@@ -200,7 +210,7 @@ const RegisterForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {errors.confirmPassword && (
+              {touched.confirmPassword && errors.confirmPassword && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>
                     {errors.confirmPassword}

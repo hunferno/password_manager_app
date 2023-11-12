@@ -79,7 +79,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onClose={() => setBottomSheetVisible(false)}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
-              <Actions data={selectedItem} />
+              <Actions data={selectedItem} navigation={navigation}/>
             </BottomSheetView>
           </BottomSheet>
         </>

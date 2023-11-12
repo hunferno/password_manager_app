@@ -9,8 +9,7 @@ const Navigation = () => {
 
   return (
     <NavigationContainer>
-      {/* {authState?.authenticated ? <AppNavigator /> : <AuthNavigator />} */}
-      <AppNavigator />
+      {authState?.authenticated ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 };

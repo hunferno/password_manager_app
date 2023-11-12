@@ -16,10 +16,12 @@ import { identificationStyles } from "../../styles/app/identificationStyles";
 import HeaderRightButton from "../../components/app/identification/HeaderRightButton";
 import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGeneratorModal";
 
-const AddScreen = ({ navigation }: { navigation: any }) => {
+const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const data = route.params?.data;
 
   useEffect(() => {
     navigation.setOptions({
@@ -31,18 +33,18 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
     <>
       <Formik
         initialValues={{
-          name: "",
-          url: "",
-          username: "",
-          password: "",
-          twoFactorCode: "",
+          name: data ? data.name : "",
+          url: data ? data.url : "",
+          username: data ? data.username : "",
+          password: data ? data.password : "",
+          twoFactorCode: data ? data.twoFactorCode : "",
         }}
         validationSchema={identificationFormStruct}
         enableReinitialize={true}
         innerRef={formRef}
         onSubmit={(values) => console.log(values)}
       >
-        {({ handleChange, values, errors }) => (
+        {({ handleChange, setFieldTouched, touched, values, errors }) => (
           <ScrollView
             contentContainerStyle={identificationStyles.formContainer}
           >
@@ -50,11 +52,12 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
               <TextInput
                 style={identificationStyles.formInputText}
                 placeholder="Nom du site web *"
+                onBlur={() => setFieldTouched("name")}
                 onChangeText={handleChange("name")}
                 value={values.name}
               />
             </View>
-            {errors.name && (
+            {touched.name && errors.name && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>{errors.name}</Text>
               </View>
@@ -64,13 +67,14 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
               <TextInput
                 style={identificationStyles.formInputText}
                 autoCapitalize="none"
-                placeholder="URL (www.example.com) *"
+                placeholder="URL (https://www.example.com) *"
                 keyboardType="url"
+                onBlur={() => setFieldTouched("url")}
                 onChangeText={handleChange("url")}
                 value={values.url}
               />
             </View>
-            {errors.url && (
+            {touched.url && errors.url && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>{errors.url}</Text>
               </View>
@@ -82,11 +86,12 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
                 autoCapitalize="none"
                 placeholder="Nom d'utilisateur *"
                 keyboardType="email-address"
+                onBlur={() => setFieldTouched("username")}
                 onChangeText={handleChange("username")}
                 value={values.username}
               />
             </View>
-            {errors.username && (
+            {touched.username && errors.username && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>{errors.username}</Text>
               </View>
@@ -113,6 +118,7 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
                   autoCapitalize="none"
                   placeholder="Mot de passe *"
                   secureTextEntry={!showPassword}
+                  onBlur={() => setFieldTouched("password")}
                   onChangeText={handleChange("password")}
                   value={values.password}
                 />
@@ -135,7 +141,7 @@ const AddScreen = ({ navigation }: { navigation: any }) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {errors.password && (
+            {touched.password && errors.password && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>{errors.password}</Text>
               </View>

@@ -83,7 +83,12 @@ const AddPasswordGeneratorModal = ({
   }, [passwordLength, isLetters, isNumbers, isSymbols]);
 
   return (
-    <Modal visible={modalVisible}>
+    <Modal
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(false);
+      }}
+    >
       <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
         <View style={modalStyles.generatePasswordbackDrop} />
       </TouchableWithoutFeedback>

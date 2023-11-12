@@ -55,7 +55,14 @@ const LoginForm = ({
         }
       }}
     >
-      {({ handleChange, handleSubmit, values, errors }) => (
+      {({
+        handleChange,
+        handleSubmit,
+        setFieldTouched,
+        touched,
+        values,
+        errors,
+      }) => (
         <>
           {loginMsgErr !== "" && (
             <View style={authStyles.errorMsgContainer}>
@@ -75,6 +82,7 @@ const LoginForm = ({
                   placeholderTextColor={COLORS.grey}
                   keyboardType="email-address"
                   value={values.email}
+                  onBlur={() => setFieldTouched("email")}
                   onChangeText={handleChange("email")}
                   onChange={(e) => {
                     setEmail(e.nativeEvent.text);
@@ -82,7 +90,7 @@ const LoginForm = ({
                   }}
                 />
               </View>
-              {errors.email && (
+              {touched.email && errors.email && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.email}</Text>
                 </View>
@@ -100,6 +108,7 @@ const LoginForm = ({
                   keyboardType="default"
                   secureTextEntry={!showPassword}
                   value={values.password}
+                  onBlur={() => setFieldTouched("password")}
                   onChangeText={handleChange("password")}
                   onChange={() => setLoginMsgErr("")}
                 />
@@ -113,7 +122,7 @@ const LoginForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {errors.password && (
+              {touched.password && errors.password && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.password}</Text>
                 </View>

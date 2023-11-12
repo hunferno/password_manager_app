@@ -6,12 +6,21 @@ import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
 import { IdentificationType } from "../../../types/identificationType";
 
-const Actions = ({ data }: { data: IdentificationType }) => {
+const Actions = ({
+  data,
+  navigation,
+}: {
+  data: IdentificationType;
+  navigation: any;
+}) => {
   const handleCopyPassword = async () => {
     await Clipboard.setStringAsync(data.password);
   };
   const handleCopyEmail = async () => {
     await Clipboard.setStringAsync(data.username);
+  };
+  const handleCopyTwoFactorCode = async () => {
+    await Clipboard.setStringAsync(data.twoFactorCode);
   };
 
   return (
@@ -38,7 +47,21 @@ const Actions = ({ data }: { data: IdentificationType }) => {
             Copier le mot de passe
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={identificationStyles.actionBodyTextContainer}>
+        {data.twoFactorCode && (
+          <TouchableOpacity
+            style={identificationStyles.actionBodyTextContainer}
+            onPress={handleCopyTwoFactorCode}
+          >
+            <MaterialIcons name="content-copy" size={30} color={COLORS.blue} />
+            <Text style={identificationStyles.actionBodyText}>
+              Copier le 2FA code
+            </Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={identificationStyles.actionBodyTextContainer}
+          onPress={() => navigation.navigate("Add", { data: data })}
+        >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />
           <Text style={identificationStyles.actionBodyText}>Modifier</Text>
         </TouchableOpacity>

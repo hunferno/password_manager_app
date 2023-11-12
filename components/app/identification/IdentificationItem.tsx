@@ -18,10 +18,10 @@ const IdentificationItem = ({
 }) => {
   return (
     <View style={identificationStyles.identificationContainer}>
-      <TouchableOpacity style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row" }}>
         <IdentificationImage name={data.name} />
         <IdentificationInfo url={data.url} username={data.username} />
-      </TouchableOpacity>
+      </View>
       <IdentificationActions
         data={data}
         handleActionModal={handleActionModal}
