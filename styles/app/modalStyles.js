@@ -71,12 +71,26 @@ export const modalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-
   generateFooterContainer: {
     width: "100%",
     height: "10%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
+  },
+
+  // LOGOUT MODAL
+  logoutModalContainer: {
+    position: "absolute",
+    top: windowHeight * 0.35,
+    left: windowWidth * 0.2,
+    backgroundColor: COLORS.light,
+    width: windowWidth * 0.6,
+    height: windowHeight * 0.3,
+    borderRadius: windowWidth * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    backgroundColor: COLORS.blue,
   },
 });

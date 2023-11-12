@@ -1,10 +1,17 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../assets/COLORS";
 import SearchBox from "./SearchBox";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
+import { modalStyles } from "../../styles/app/modalStyles";
 
 const HeaderTitle = ({ title }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,10 +51,14 @@ const HeaderTitle = ({ title }) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setModalVisible(false);
           }}
         >
-          <View style={appStyles.modalContent}>
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View style={modalStyles.generatePasswordbackDrop} />
+          </TouchableWithoutFeedback>
+
+          <View style={modalStyles.logoutModalContainer}>
             <Text style={appStyles.modalText}>
               Êtes-vous sûr de vouloir vous déconnecter ?
             </Text>
@@ -56,7 +67,7 @@ const HeaderTitle = ({ title }) => {
               <TouchableOpacity
                 style={appStyles.modalBtn}
                 onPress={() => {
-                  setModalVisible(!modalVisible);
+                  setModalVisible(false);
                   onLogout();
                 }}
               >
@@ -65,7 +76,7 @@ const HeaderTitle = ({ title }) => {
 
               <TouchableOpacity
                 style={appStyles.modalBtn}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => setModalVisible(false)}
               >
                 <Text style={appStyles.modalBtnText}>Non</Text>
               </TouchableOpacity>
