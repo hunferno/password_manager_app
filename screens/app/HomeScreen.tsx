@@ -1,8 +1,7 @@
 import { View, Text, Button, TouchableOpacity, FlatList } from "react-native";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { appStyles } from "../../styles/app/appStyles";
-import { mockDatas } from "../../assets/mockDatas";
 import EmptyItems from "../../components/app/identification/EmptyItems";
 import IdentificationItem from "../../components/app/identification/IdentificationItem";
 
@@ -12,8 +11,12 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
+import { AppContext } from "../../context/appContext";
 
 const HomeScreen = ({ navigation }: { navigation: any }) => {
+  const { onGetAllIdentifications } = useContext(AppContext);
+
+  const [reload, setReload] = useState(false); // [1
   const [datas, setDatas] = useState<any>([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
@@ -46,8 +49,12 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   );
 
   useEffect(() => {
-    setDatas(mockDatas);
-  }, []);
+    const fetchIdentifications = async () => {
+      const result = await onGetAllIdentifications!();
+      setDatas(result);
+    };
+    fetchIdentifications();
+  }, [reload]);
 
   return (
     <View style={appStyles.container}>
@@ -64,7 +71,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
                 />
               </>
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             style={{ paddingTop: 10, marginBottom: 10 }}
           />
@@ -79,7 +86,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onClose={() => setBottomSheetVisible(false)}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
-              <Actions data={selectedItem} navigation={navigation}/>
+              <Actions data={selectedItem} navigation={navigation} />
             </BottomSheetView>
           </BottomSheet>
         </>

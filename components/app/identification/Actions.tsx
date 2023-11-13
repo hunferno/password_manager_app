@@ -1,10 +1,14 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import IdentificationImage from "./IdentificationImage";
 import * as Clipboard from "expo-clipboard";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
 import { IdentificationType } from "../../../types/identificationType";
+import { useContext, useState } from "react";
+import ModalLittleBox from "../../modals/ModalLittleBox";
+import { AppContext } from "../../../context/appContext";
+import toaster from "../../toaster";
 
 const Actions = ({
   data,
@@ -12,7 +16,10 @@ const Actions = ({
 }: {
   data: IdentificationType;
   navigation: any;
-}) => {
+}) => {  
+  const { onDeleteIdentification } = useContext(AppContext);
+  const [deleteModal, setDeleteModal] = useState(false);
+
   const handleCopyPassword = async () => {
     await Clipboard.setStringAsync(data.password);
   };
@@ -21,6 +28,17 @@ const Actions = ({
   };
   const handleCopyTwoFactorCode = async () => {
     await Clipboard.setStringAsync(data.twoFactorCode);
+  };
+
+  const handleDelete = async () => {
+    const result = await onDeleteIdentification!(data._id as string);
+
+    if (result && result.error) {
+      console.log(result);
+    } else {
+      toaster("success", "Suppression", "Identification supprimée");
+      navigation.navigate("Home");
+    }
   };
 
   return (
@@ -58,6 +76,7 @@ const Actions = ({
             </Text>
           </TouchableOpacity>
         )}
+
         <TouchableOpacity
           style={identificationStyles.actionBodyTextContainer}
           onPress={() => navigation.navigate("Add", { data: data })}
@@ -65,7 +84,11 @@ const Actions = ({
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />
           <Text style={identificationStyles.actionBodyText}>Modifier</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={identificationStyles.actionBodyTextContainer}>
+
+        <TouchableOpacity
+          style={identificationStyles.actionBodyTextContainer}
+          onPress={() => setDeleteModal(true)}
+        >
           <FontAwesome5 name="trash" size={24} color={COLORS.failure} />
           <Text
             style={[
@@ -77,6 +100,11 @@ const Actions = ({
           </Text>
         </TouchableOpacity>
       </View>
+      <ModalLittleBox
+        modalVisible={deleteModal}
+        setModalVisible={setDeleteModal}
+        action={handleDelete}
+      />
     </>
   );
 };

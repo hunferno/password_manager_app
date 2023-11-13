@@ -7,7 +7,10 @@ export const identificationFormStruct = Yup.object().shape({
     .min(4, "Au minimum 4 caractères.")
     .required("Veuillez renseigner le nom du site web."),
   url: Yup.string()
-    .url("ex: https://www.url.com")
+    .matches(
+      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/,
+      "Veuillez renseigner un url valide."
+    )
     .required("Veuillez renseigner le site web."),
   username: Yup.string()
     .email("Veuillez renseigner un email valide.")

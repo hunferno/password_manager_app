@@ -9,14 +9,19 @@ import {
 import { Formik } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
 import { Entypo } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { authStyles } from "../../styles/auth/authStyles";
 import { COLORS } from "../../assets/COLORS";
 import { identificationStyles } from "../../styles/app/identificationStyles";
 import HeaderRightButton from "../../components/app/identification/HeaderRightButton";
 import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGeneratorModal";
+import { AppContext } from "../../context/appContext";
+import Toast from "react-native-toast-message";
+import toaster from "../../components/toaster";
 
 const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+  const { onCreateIdentification } = useContext(AppContext);
+
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,6 +33,10 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
       headerRight: () => <HeaderRightButton formRef={formRef} />,
     });
   }, []);
+
+  const showToast = () => {
+    toaster("success", "Création", "Identification ajoutée");
+  };
 
   return (
     <>
@@ -42,7 +51,31 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
         validationSchema={identificationFormStruct}
         enableReinitialize={true}
         innerRef={formRef}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values) => {
+          const { name, url, username, password, twoFactorCode } = values;
+
+          const data = {
+            name,
+            url,
+            username,
+            password,
+            twoFactorCode,
+            category: "Identification",
+          };
+
+          if (data.twoFactorCode == "") {
+            delete data.twoFactorCode;
+          }
+
+          const result = await onCreateIdentification!(data);
+
+          if (result && result.error) {
+            console.log(result.message);
+          } else {
+            showToast();
+            navigation.navigate("Home");
+          }
+        }}
       >
         {({ handleChange, setFieldTouched, touched, values, errors }) => (
           <ScrollView
@@ -109,7 +142,7 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
                   {
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    width: "75%",
+                    width: "65%",
                   },
                 ]}
               >

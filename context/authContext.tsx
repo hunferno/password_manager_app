@@ -1,6 +1,5 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { axiosPostAPI } from "../config/ApiRequestLayout";
+import { axiosAPI, axiosPostAPI } from "../config/ApiRequestLayout";
 import * as SecureStore from "expo-secure-store";
 
 interface AuthProps {
@@ -45,6 +44,7 @@ export const AuthProvider = ({ children }: any) => {
               token: null,
               authenticated: false,
             });
+            console.log("token supprimé suite a invalidité");
             return;
           }
 
@@ -52,17 +52,12 @@ export const AuthProvider = ({ children }: any) => {
             token,
             authenticated: true,
           });
-
-          //   Attacher le token à toutes les requêtes
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         } catch (e) {
           await SecureStore.deleteItemAsync("jwt_token");
           setAuthState({
             token: null,
             authenticated: false,
           });
-          //   Déttacher le token à toutes les requêtes
-          axios.defaults.headers.common["Authorization"] = ``;
         }
       }
     };
@@ -96,11 +91,6 @@ export const AuthProvider = ({ children }: any) => {
         token: result.data.userInfo.jwt,
         authenticated: true,
       });
-
-      //   Attacher le token à toutes les requêtes
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${result.data.userInfo.jwt}`;
 
       //   Stocker le token dans le secure store
       await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
@@ -183,9 +173,6 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     // Delete token from storage
     await SecureStore.deleteItemAsync("jwt_token");
-
-    // Update HTTP headers
-    axios.defaults.headers.common["Authorization"] = "";
 
     // reset auth state
     setAuthState({
