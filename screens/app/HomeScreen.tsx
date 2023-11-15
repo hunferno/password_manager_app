@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { appStyles } from "../../styles/app/appStyles";
@@ -12,11 +12,14 @@ import BottomSheet, {
 import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
 import { AppContext } from "../../context/appContext";
+import { useIsFocused } from "@react-navigation/native";
 
-const HomeScreen = ({ navigation }: { navigation: any }) => {
+const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   const { onGetAllIdentifications } = useContext(AppContext);
 
-  const [reload, setReload] = useState(false); // [1
+  const isFocused = useIsFocused();
+
+  const [reload, setReload] = useState(false); // [
   const [datas, setDatas] = useState<any>([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
@@ -32,9 +35,13 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ["50%"];
   // callbacks
-  const handleActionModal = () => {
+  const handleActionModalOpen = () => {
     bottomSheetRef.current?.expand();
     setBottomSheetVisible(true);
+  };
+
+  const handleActionModalClose = () => {
+    bottomSheetRef.current?.close();
   };
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -49,12 +56,20 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   );
 
   useEffect(() => {
-    const fetchIdentifications = async () => {
-      const result = await onGetAllIdentifications!();
-      setDatas(result);
-    };
-    fetchIdentifications();
-  }, [reload]);
+    if (route.params?.datas) {
+      setDatas(route.params.datas);
+    }
+  }, [route.params?.datas]);
+
+  useEffect(() => {
+    if (isFocused) {
+      const fetchIdentifications = async () => {
+        const result = await onGetAllIdentifications!();
+        setDatas(result);
+      };
+      fetchIdentifications();
+    }
+  }, [isFocused, reload]);
 
   return (
     <View style={appStyles.container}>
@@ -66,7 +81,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
               <>
                 <IdentificationItem
                   data={item}
-                  handleActionModal={handleActionModal}
+                  handleActionModal={handleActionModalOpen}
                   setSelectedItem={setSelectedItem}
                 />
               </>
@@ -86,7 +101,13 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             onClose={() => setBottomSheetVisible(false)}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
-              <Actions data={selectedItem} navigation={navigation} />
+              <Actions
+                data={selectedItem}
+                navigation={navigation}
+                handleActionModalClose={handleActionModalClose}
+                reload={reload}
+                setReload={setReload}
+              />
             </BottomSheetView>
           </BottomSheet>
         </>

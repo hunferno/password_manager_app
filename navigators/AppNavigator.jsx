@@ -3,7 +3,6 @@ import TabNavigator from "./TabNavigator";
 import AddScreen from "../screens/app/AddScreen";
 import { appStyles } from "../styles/app/appStyles";
 import { COLORS } from "../assets/COLORS";
-import HeaderRightButton from "../components/app/identification/HeaderRightButton";
 
 const App = createNativeStackNavigator();
 
@@ -20,8 +19,6 @@ const AppNavigator = () => {
           headerTitleStyle: {
             fontWeight: "bold",
           },
-          headerTitle: "Ajouter un identifiant",
-          // headerRight: () => <HeaderRightButton />,
         }}
       />
     </App.Navigator>

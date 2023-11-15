@@ -13,10 +13,16 @@ import toaster from "../../toaster";
 const Actions = ({
   data,
   navigation,
+  handleActionModalClose,
+  reload,
+  setReload,
 }: {
   data: IdentificationType;
   navigation: any;
-}) => {  
+  handleActionModalClose: any;
+  reload: any;
+  setReload: any;
+}) => {
   const { onDeleteIdentification } = useContext(AppContext);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -37,6 +43,8 @@ const Actions = ({
       console.log(result);
     } else {
       toaster("success", "Suppression", "Identification supprimée");
+      setReload(!reload);
+      handleActionModalClose();
       navigation.navigate("Home");
     }
   };
@@ -79,7 +87,10 @@ const Actions = ({
 
         <TouchableOpacity
           style={identificationStyles.actionBodyTextContainer}
-          onPress={() => navigation.navigate("Add", { data: data })}
+          onPress={() => {
+            handleActionModalClose();
+            navigation.navigate("Add", { data: data });
+          }}
         >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />
           <Text style={identificationStyles.actionBodyText}>Modifier</Text>

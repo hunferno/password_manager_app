@@ -19,6 +19,7 @@
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
+    "@types/lodash": "^4.14.201",
     "axios": "^1.6.0",
     "expo": "~49.0.15",
     "expo-clipboard": "~4.3.1",

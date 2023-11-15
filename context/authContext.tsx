@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { axiosAPI, axiosPostAPI } from "../config/ApiRequestLayout";
 import * as SecureStore from "expo-secure-store";
+import toaster from "../components/toaster";
 
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
@@ -44,7 +45,7 @@ export const AuthProvider = ({ children }: any) => {
               token: null,
               authenticated: false,
             });
-            console.log("token supprimé suite a invalidité");
+            toaster("error", "Erreur", "Votre session a expiré");
             return;
           }
 
@@ -87,13 +88,13 @@ export const AuthProvider = ({ children }: any) => {
         password,
       });
 
+      //   Stocker le token dans le secure store
+      await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
+
       setAuthState({
         token: result.data.userInfo.jwt,
         authenticated: true,
       });
-
-      //   Stocker le token dans le secure store
-      await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
     } catch (e: any) {
       return { error: true, message: (e as any).response.data.message };
     }

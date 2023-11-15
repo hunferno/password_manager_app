@@ -1,10 +1,9 @@
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 import IdentificationImage from "./IdentificationImage";
 import IdentificationInfo from "./IdentificationInfo";
 import IdentificationActions from "./IdentificationActions";
 
-import { useCallback, useRef, useState } from "react";
 import { IdentificationType } from "../../../types/identificationType";
 
 const IdentificationItem = ({

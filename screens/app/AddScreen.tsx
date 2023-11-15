@@ -16,11 +16,11 @@ import { identificationStyles } from "../../styles/app/identificationStyles";
 import HeaderRightButton from "../../components/app/identification/HeaderRightButton";
 import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGeneratorModal";
 import { AppContext } from "../../context/appContext";
-import Toast from "react-native-toast-message";
 import toaster from "../../components/toaster";
 
 const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
-  const { onCreateIdentification } = useContext(AppContext);
+  const { onCreateIdentification, onUpdateIdentification } =
+    useContext(AppContext);
 
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -30,12 +30,15 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitle: data ? "Modifier l'identifiant" : "Ajouter un identifiant",
       headerRight: () => <HeaderRightButton formRef={formRef} />,
     });
   }, []);
 
-  const showToast = () => {
-    toaster("success", "Création", "Identification ajoutée");
+  const showToast = (status: string) => {
+    if (status == "Modification")
+      toaster("success", "Modification", "Identification modifiée");
+    else toaster("success", "Création", "Identification ajoutée");
   };
 
   return (
@@ -54,7 +57,7 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
         onSubmit={async (values) => {
           const { name, url, username, password, twoFactorCode } = values;
 
-          const data = {
+          const object = {
             name,
             url,
             username,
@@ -63,16 +66,18 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             category: "Identification",
           };
 
-          if (data.twoFactorCode == "") {
-            delete data.twoFactorCode;
+          if (object.twoFactorCode == "") {
+            delete object.twoFactorCode;
           }
 
-          const result = await onCreateIdentification!(data);
+          const result = data
+            ? await onUpdateIdentification!(data._id, object)
+            : await onCreateIdentification!(object);
 
           if (result && result.error) {
             console.log(result.message);
           } else {
-            showToast();
+            showToast(data ? "Modification" : "Création");
             navigation.navigate("Home");
           }
         }}
