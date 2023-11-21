@@ -72,6 +72,7 @@ export const appStyles = StyleSheet.create({
   },
 
   searchInput: {
+    width:"100%",
     padding: 10,
     color: COLORS.blue,
   },

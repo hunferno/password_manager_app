@@ -12,10 +12,12 @@ import { appStyles } from "../../styles/app/appStyles";
 const ModalLittleBox = ({
   modalVisible,
   setModalVisible,
+  modalText,
   action,
 }: {
   modalVisible: any;
   setModalVisible: any;
+  modalText: any;
   action: any;
 }) => {
   return (
@@ -33,9 +35,7 @@ const ModalLittleBox = ({
         </TouchableWithoutFeedback>
 
         <View style={modalStyles.logoutModalContainer}>
-          <Text style={appStyles.modalText}>
-            Êtes-vous sûr de vouloir vous déconnecter ?
-          </Text>
+          <Text style={appStyles.modalText}>{modalText}</Text>
 
           <View style={appStyles.modalBtnContainer}>
             <TouchableOpacity

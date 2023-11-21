@@ -15,7 +15,9 @@ function TabNavigator() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: appStyles.headerBg,
-      headerTitle: () => <HeaderTitle title="Accueil" />,
+      headerTitle: () => (
+        <HeaderTitle title="Accueil" navigation={navigation} />
+      ),
     });
   }, [navigation]);
 

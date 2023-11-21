@@ -1,18 +1,23 @@
 import { createContext, useEffect, useState } from "react";
-import { axiosAPI, axiosPostAPI } from "../config/ApiRequestLayout";
+import { axiosPostAPI } from "../config/ApiRequestLayout";
 import * as SecureStore from "expo-secure-store";
+import * as LocalAuthentication from "expo-local-authentication";
 import toaster from "../components/toaster";
 
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
+  isBiometricSupported?: boolean;
+  isBiometricSet?: boolean;
+  isBioConnexionActive?: boolean;
   onRegister?: (email: string, password: string) => Promise<any>;
   onLogin?: (email: string, password: string) => Promise<any>;
   onVerificationCode?: (email: string, otpCode: string) => Promise<any>;
   onResendVerificationCode?: (email: string) => Promise<any>;
   onResetPassword?: (email: string, password: string) => Promise<any>;
   isEmailExistsInDB?: (email: string) => Promise<any>;
-  activeBioConnexion?: (email: string) => Promise<any>;
-  desactiveBioConnexion?: (email: string) => Promise<any>;
+  activeBioConnexion?: () => void;
+  desactiveBioConnexion?: () => void;
+  biometricConnexion?: () => Promise<any>;
   onLogout?: () => Promise<any>;
 }
 
@@ -26,45 +31,90 @@ export const AuthProvider = ({ children }: any) => {
     token: null,
     authenticated: null,
   });
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const [isBiometricSet, setIsBiometricSet] = useState(false);
+  const [isBioConnexionActive, setIsBioConnexionActive] = useState(false);
 
-  useEffect(() => {
-    const checkToken = async () => {
-      // Get token from storage
-      const token = await SecureStore.getItemAsync("jwt_token");
+  // UTILS FUNCTIONS
+  const checkToken = async () => {
+    // Get token from storage
+    const token = await SecureStore.getItemAsync("jwt_token");
 
-      if (token) {
-        try {
-          // check if token is still valid
-          const result = await axiosPostAPI("/user/verify_token_validity", {
-            token,
-          });
+    if (token) {
+      try {
+        // check if token is still valid
+        const result = await axiosPostAPI("/user/verify_token_validity", {
+          token,
+        });
 
-          if (["4", "5"].includes((result as any).status)) {
-            await SecureStore.deleteItemAsync("jwt_token");
-            setAuthState({
-              token: null,
-              authenticated: false,
-            });
-            toaster("error", "Erreur", "Votre session a expiré");
-            return;
-          }
-
-          setAuthState({
-            token,
-            authenticated: true,
-          });
-        } catch (e) {
+        if (["4", "5"].includes((result as any).status)) {
           await SecureStore.deleteItemAsync("jwt_token");
+          await SecureStore.deleteItemAsync("email");
+          await SecureStore.deleteItemAsync("active_bio");
           setAuthState({
             token: null,
             authenticated: false,
           });
+          toaster("error", "Erreur", "Votre session a expiré");
+          return;
         }
+
+        setAuthState({
+          token: token,
+          authenticated: false,
+        });
+
+        // Check if biometric connexion is active
+        const activeBio = await SecureStore.getItemAsync("active_bio");
+        if (activeBio) {
+          setIsBioConnexionActive(true);
+        }
+      } catch (e) {
+        await SecureStore.deleteItemAsync("jwt_token");
+        setAuthState({
+          token: null,
+          authenticated: false,
+        });
       }
-    };
+    }
+  };
+
+  const biometricConnexion = async () => {
+    //Active fingerprint connexion
+    const fingerprintAuth = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Confirmez votre identité",
+      disableDeviceFallback: true,
+      cancelLabel: "ANNULER",
+    });
+
+    if (fingerprintAuth.success == true) {
+      // Set authenticated to true
+      setAuthState((prevState) => {
+        return { ...prevState, authenticated: true };
+      });
+    } else {
+      return false;
+    }
+  };
+
+  // Check if is hardware supported
+  const checkBiometricSupport = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    setIsBiometricSupported(hasHardware);
+  };
+  // check if biometric is set
+  const checkBiometricSet = async () => {
+    const isEnroll = await LocalAuthentication.isEnrolledAsync();
+    setIsBiometricSet(isEnroll);
+  };
+
+  useEffect(() => {
     checkToken();
+    checkBiometricSupport();
+    checkBiometricSet();
   }, []);
 
+  // API FUNCTIONS
   const register = async (email: string, password: string) => {
     try {
       return await axiosPostAPI("/user/register", { email, password });
@@ -90,6 +140,8 @@ export const AuthProvider = ({ children }: any) => {
 
       //   Stocker le token dans le secure store
       await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
+      // Stocker l'email dans le secure store
+      await SecureStore.setItemAsync("email", email);
 
       setAuthState({
         token: result.data.userInfo.jwt,
@@ -127,53 +179,23 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  const activeBioConnexion = async (email: string) => {
-    try {
-      // récupérer le storage
-      const emailInStorage = await SecureStore.getItemAsync("email");
-
-      if (emailInStorage) {
-        return {
-          error: true,
-          message: "Vous avez déjà activé la connexion biométrique!",
-        };
-      }
-
-      // stocker l'email dans le storage
-      await SecureStore.setItemAsync("email", email);
-    } catch (e) {
-      return {
-        error: true,
-        message: "Une erreur est survenue lors de la sauvegarde des données! ",
-      };
-    }
+  const activeBioConnexion = async () => {
+    await SecureStore.setItemAsync("active_bio", "true");
+    setIsBioConnexionActive(true);
   };
 
-  const desactiveBioConnexion = async (email: string) => {
-    try {
-      // récupérer le storage
-      const emailInStorage = await SecureStore.getItemAsync("email");
-
-      if (!emailInStorage) {
-        return {
-          error: true,
-          message: "Votre connexion biométrique n'existe pas!",
-        };
-      }
-
-      // stocker l'email dans le storage
-      await SecureStore.deleteItemAsync("email");
-    } catch (e) {
-      return {
-        error: true,
-        message: "Une erreur est survenue lors de la sauvegarde des données! ",
-      };
-    }
+  const desactiveBioConnexion = async () => {
+    await SecureStore.deleteItemAsync("active_bio");
+    setIsBioConnexionActive(false);
   };
 
   const logout = async () => {
     // Delete token from storage
     await SecureStore.deleteItemAsync("jwt_token");
+    await SecureStore.deleteItemAsync("email");
+    await SecureStore.deleteItemAsync("active_bio");
+
+    setIsBioConnexionActive(false);
 
     // reset auth state
     setAuthState({
@@ -191,8 +213,12 @@ export const AuthProvider = ({ children }: any) => {
     onResetPassword: resetPassword,
     isEmailExistsInDB,
     activeBioConnexion,
+    biometricConnexion,
     desactiveBioConnexion,
     authState,
+    isBiometricSupported,
+    isBiometricSet,
+    isBioConnexionActive,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

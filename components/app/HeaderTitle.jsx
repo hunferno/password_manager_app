@@ -3,16 +3,11 @@ import { appStyles } from "../../styles/app/appStyles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../assets/COLORS";
 import SearchBox from "./SearchBox";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../context/authContext";
-import ModalLittleBox from "../modals/ModalLittleBox";
+import { DrawerActions } from "@react-navigation/native";
 
-const HeaderTitle = ({ title }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const { onLogout } = useContext(AuthContext);
-
-  const onOpenMenu = () => {
-    console.log("Open menu");
+const HeaderTitle = ({ title, navigation }) => {
+  const handleOpenMenu = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
   };
 
   return (
@@ -21,28 +16,14 @@ const HeaderTitle = ({ title }) => {
         <View style={appStyles.headerTitleContainer}>
           <TouchableOpacity
             style={appStyles.headerTitleIconMenuContainer}
-            onPress={() => onOpenMenu}
+            onPress={() => handleOpenMenu()}
           >
             <MaterialIcons name="menu" size={30} color={COLORS.light} />
           </TouchableOpacity>
 
           <Text style={appStyles.headerTitle}>{title}</Text>
         </View>
-
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <MaterialIcons
-            name="power-settings-new"
-            size={30}
-            color={COLORS.failure}
-          />
-        </TouchableOpacity>
       </View>
-
-      <ModalLittleBox
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        action={onLogout}
-      />
       <SearchBox />
     </View>
   );

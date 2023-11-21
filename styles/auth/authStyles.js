@@ -139,4 +139,27 @@ export const authStyles = StyleSheet.create({
     borderColor: COLORS.blue,
     borderWidth: 2,
   },
+  bioContainer: {
+    paddingTop: statusBarHeight,
+    paddingHorizontal: 10,
+  },
+  bioHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bioLogo: {
+    width: windowWidth * 0.35,
+    height: windowWidth * 0.35,
+  },
+  bioLogoTitle: {
+    color: COLORS.blue,
+    fontSize: 30,
+    fontWeight: "bold",
+    fontStyle: "italic",
+  },
+  bioBodyText: {
+    color: COLORS.blue,
+    fontSize: 25,
+    fontWeight: "bold",
+  },
 });

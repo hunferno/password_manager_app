@@ -9,6 +9,7 @@ import {
 import { IdentificationType } from "../types/identificationType";
 
 interface AppProps {
+  userEmail?: string;
   onCreateIdentification?: (data: IdentificationType) => Promise<any>;
   onGetAllIdentifications?: () => Promise<any>;
   onSearchItems?: (search: string) => Promise<any>;
@@ -22,6 +23,16 @@ interface AppProps {
 export const AppContext = createContext<AppProps>({});
 
 export const AppProvider = ({ children }: any) => {
+  const [userEmail, setUserEmail] = useState<string>("");
+  useEffect(() => {
+    // get user email from storage
+    const getUserEmail = async () => {
+      const email = await SecureStore.getItemAsync("email");
+      setUserEmail(email as string);
+    };
+    getUserEmail();
+  },[]);
+
   const createIdentification = async (data: IdentificationType) => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -100,6 +111,7 @@ export const AppProvider = ({ children }: any) => {
   };
 
   const value = {
+    userEmail,
     onCreateIdentification: createIdentification,
     onGetAllIdentifications: getAllIdentifications,
     onSearchItems: searchIdentifications,

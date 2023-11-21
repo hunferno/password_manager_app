@@ -2,7 +2,7 @@ import { View, TextInput } from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
 import { COLORS } from "../../assets/COLORS";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 import debounce from "lodash/debounce";
 import { AppContext } from "../../context/appContext";
 import { useNavigation } from "@react-navigation/native";
