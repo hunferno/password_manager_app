@@ -9,6 +9,7 @@ export const parameterStyles = StyleSheet.create({
     padding: 20,
   },
   actionContainer: {
+    maxWidth: windowWidth * 0.8,
     marginBottom: 35,
   },
   actionTitle: {

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Switch, View } from "react-native";
 import { useContext, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { version } from "../../package.json";
@@ -6,6 +6,7 @@ import { parameterStyles } from "../../styles/app/parameters/parameterStyles";
 import ParameterAction from "../../components/parameter/ParameterAction";
 import ModalLittleBox from "../../components/modals/ModalLittleBox";
 import { AuthContext } from "../../context/authContext";
+import { COLORS } from "../../assets/COLORS";
 
 const Parametres = () => {
   const {
@@ -14,7 +15,7 @@ const Parametres = () => {
     desactiveBioConnexion,
     isBioConnexionActive,
   } = useContext(AuthContext);
-  
+
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [bioModalVisible, setBioModalVisible] = useState(false);
 
@@ -31,6 +32,15 @@ const Parametres = () => {
         "Dévérouillez l'application à l'aide de votre empriente digitale",
       action: () => {
         setBioModalVisible(true);
+      },
+      extraComponent: () => {
+        return (
+          <Switch
+            trackColor={{ false: COLORS.blue, true: COLORS.blue }}
+            thumbColor={isBioConnexionActive ? COLORS.success : COLORS.failure}
+            value={isBioConnexionActive}
+          />
+        );
       },
     },
     {
@@ -57,6 +67,7 @@ const Parametres = () => {
           title={param.title}
           description={param.description}
           action={param.action}
+          extraComponent={param.extraComponent}
         />
       ))}
 

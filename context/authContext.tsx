@@ -45,12 +45,14 @@ export const AuthProvider = ({ children }: any) => {
         // check if token is still valid
         const result = await axiosPostAPI("/user/verify_token_validity", {
           token,
-        });
+        });        
 
         if (["4", "5"].includes((result as any).status)) {
           await SecureStore.deleteItemAsync("jwt_token");
           await SecureStore.deleteItemAsync("email");
           await SecureStore.deleteItemAsync("active_bio");
+
+          setIsBioConnexionActive(false);
           setAuthState({
             token: null,
             authenticated: false,
@@ -92,9 +94,20 @@ export const AuthProvider = ({ children }: any) => {
       setAuthState((prevState) => {
         return { ...prevState, authenticated: true };
       });
+      toaster("success", "Succès", "Connexion réussie");
     } else {
       return false;
     }
+  };
+
+  const activeBioConnexion = async () => {
+    await SecureStore.setItemAsync("active_bio", "true");
+    setIsBioConnexionActive(true);
+  };
+
+  const desactiveBioConnexion = async () => {
+    await SecureStore.deleteItemAsync("active_bio");
+    setIsBioConnexionActive(false);
   };
 
   // Check if is hardware supported
@@ -177,16 +190,6 @@ export const AuthProvider = ({ children }: any) => {
     } catch (e) {
       return { error: true, message: (e as any).response.data.message };
     }
-  };
-
-  const activeBioConnexion = async () => {
-    await SecureStore.setItemAsync("active_bio", "true");
-    setIsBioConnexionActive(true);
-  };
-
-  const desactiveBioConnexion = async () => {
-    await SecureStore.deleteItemAsync("active_bio");
-    setIsBioConnexionActive(false);
   };
 
   const logout = async () => {

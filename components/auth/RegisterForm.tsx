@@ -7,6 +7,7 @@ import ButtonForm from "./ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { registerFormStruct } from "../../models/registerFormStruct";
 import { AuthContext } from "../../context/authContext";
+import toaster from "../toaster";
 
 const RegisterForm = ({
   registerStep,
@@ -76,11 +77,11 @@ const RegisterForm = ({
           setRegisterMsgErr(registration.message);
           return;
         }
-
-        const biometric = await activeBioConnexion!(email);
-        if (biometric && biometric.error === true) {
-          setActiveBioErrMsg(biometric.message);
+        if (activeBio) {
+          activeBioConnexion!();
         }
+
+        toaster("success", "Inscription", "Inscription réussie");
 
         navigation.navigate("VerificationCode", {
           email,

@@ -83,7 +83,10 @@ const Navigation = () => {
             />
           </Drawer.Navigator>
         </AppProvider>
-      ) : isBiometricSupported && isBiometricSet && isBioConnexionActive ? (
+      ) : isBiometricSupported &&
+        isBiometricSet &&
+        isBioConnexionActive &&
+        authState?.token != null ? (
         <BiometricConnexion />
       ) : (
         <AuthNavigator />

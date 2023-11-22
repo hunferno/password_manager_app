@@ -9,9 +9,7 @@ const BiometricConnexion = () => {
   const { biometricConnexion } = useContext(AuthContext);
   useEffect(() => {
     const bioConnexion = async () => {
-      await biometricConnexion!().then((res) => {
-        console.log("res", res);
-        
+      await biometricConnexion!().then((res) => {        
         if (res === false) {
           BackHandler.exitApp();
         }
@@ -28,7 +26,7 @@ const BiometricConnexion = () => {
           style={authStyles.bioLogo}
           contentFit="contain"
         />
-        <Text style={authStyles.bioLogoTitle}>Manager-4u</Text>
+        <Text style={authStyles.bioLogoTitle}>Psw-Man-4u</Text>
       </View>
       <Text style={authStyles.bioBodyText}>
         Déverrouillage par authentication biometrique

@@ -6,15 +6,20 @@ const ParameterAction = ({
   title,
   description,
   action,
+  extraComponent,
 }: {
   title: string;
   description: string;
   action: Function;
+  extraComponent?: Function;
 }) => {
   return (
-    <TouchableOpacity style={parameterStyles.actionContainer} onPress={() => action()}>
-      <Text style={parameterStyles.actionTitle}>{title}</Text>
-      <Text style={parameterStyles.actionDescription}>{description}</Text>
+    <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => action()}>
+      <View style={parameterStyles.actionContainer}>
+        <Text style={parameterStyles.actionTitle}>{title}</Text>
+        <Text style={parameterStyles.actionDescription}>{description}</Text>
+      </View>
+      <View>{extraComponent && extraComponent()}</View>
     </TouchableOpacity>
   );
 };
