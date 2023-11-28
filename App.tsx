@@ -10,7 +10,7 @@ export default function App() {
       <AuthProvider>
         <Navigation />
       </AuthProvider>
-      <Toast/>
+      <Toast />
     </GestureHandlerRootView>
   );
 }

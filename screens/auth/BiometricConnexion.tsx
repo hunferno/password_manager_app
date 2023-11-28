@@ -26,7 +26,7 @@ const BiometricConnexion = () => {
           style={authStyles.bioLogo}
           contentFit="contain"
         />
-        <Text style={authStyles.bioLogoTitle}>Psw-Man-4u</Text>
+        <Text style={authStyles.bioLogoTitle}>LockWords</Text>
       </View>
       <Text style={authStyles.bioBodyText}>
         Déverrouillage par authentication biometrique

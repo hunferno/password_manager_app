@@ -18,6 +18,7 @@ interface AppProps {
     data: IdentificationType
   ) => Promise<any>;
   onDeleteIdentification?: (id: string) => Promise<any>;
+  onUpdateUser?: (data: any) => Promise<any>;
 }
 
 export const AppContext = createContext<AppProps>({});
@@ -31,7 +32,7 @@ export const AppProvider = ({ children }: any) => {
       setUserEmail(email as string);
     };
     getUserEmail();
-  },[]);
+  }, []);
 
   const createIdentification = async (data: IdentificationType) => {
     const token = await SecureStore.getItemAsync("jwt_token");
@@ -109,6 +110,26 @@ export const AppProvider = ({ children }: any) => {
       return { error: true, message: (e as any).response.data.message };
     }
   };
+  const updateUser = async (data: any) => {
+    // password for now
+    const { oldPassword, newPassword } = data;
+    const token = await SecureStore.getItemAsync("jwt_token");
+    const userId = await SecureStore.getItemAsync("user_id");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosPatchAPI(
+        `/user/update/${userId}`,
+        { oldPassword, newPassword },
+        token as string
+      );
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
 
   const value = {
     userEmail,
@@ -117,6 +138,7 @@ export const AppProvider = ({ children }: any) => {
     onSearchItems: searchIdentifications,
     onUpdateIdentification: updateIdentification,
     onDeleteIdentification: deleteIdentification,
+    onUpdateUser: updateUser,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

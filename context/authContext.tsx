@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: any) => {
         // check if token is still valid
         const result = await axiosPostAPI("/user/verify_token_validity", {
           token,
-        });        
+        });
 
         if (["4", "5"].includes((result as any).status)) {
           await SecureStore.deleteItemAsync("jwt_token");
@@ -151,8 +151,12 @@ export const AuthProvider = ({ children }: any) => {
         password,
       });
 
+      const { _id, jwt } = result.data.userInfo;
+
+      //Stocker le user dans le secure store
+      await SecureStore.setItemAsync("user_id", _id);
       //   Stocker le token dans le secure store
-      await SecureStore.setItemAsync("jwt_token", result.data.userInfo.jwt);
+      await SecureStore.setItemAsync("jwt_token", jwt);
       // Stocker l'email dans le secure store
       await SecureStore.setItemAsync("email", email);
 

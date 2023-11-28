@@ -1,4 +1,4 @@
-import { Switch, View } from "react-native";
+import { Modal, Switch, View } from "react-native";
 import { useContext, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { version } from "../../package.json";
@@ -7,6 +7,7 @@ import ParameterAction from "../../components/parameter/ParameterAction";
 import ModalLittleBox from "../../components/modals/ModalLittleBox";
 import { AuthContext } from "../../context/authContext";
 import { COLORS } from "../../assets/COLORS";
+import UpdateUserModal from "../../components/modals/UpdateUserModal";
 
 const Parametres = () => {
   const {
@@ -18,13 +19,17 @@ const Parametres = () => {
 
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [bioModalVisible, setBioModalVisible] = useState(false);
+  const [changePasswordModalVisible, setChangePasswordModalVisible] =
+    useState(false);
 
   const params = [
     {
       title: "Modifer mon mot de passe",
       description:
         "Modifier le mot de passe qui vous permet de vous connecter à votre compte",
-      action: () => {},
+      action: () => {
+        setChangePasswordModalVisible(true);
+      },
     },
     {
       title: "Dévérouillage biométrique",
@@ -89,6 +94,12 @@ const Parametres = () => {
           isBioConnexionActive ? desactiveBioConnexion : activeBioConnexion
         }
       />
+      {changePasswordModalVisible && (
+        <UpdateUserModal
+          changePasswordModalVisible={changePasswordModalVisible}
+          setChangePasswordModalVisible={setChangePasswordModalVisible}
+        />
+      )}
     </View>
   );
 };

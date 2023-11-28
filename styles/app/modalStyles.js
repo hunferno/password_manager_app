@@ -84,7 +84,6 @@ export const modalStyles = StyleSheet.create({
     position: "absolute",
     top: windowHeight * 0.35,
     left: windowWidth * 0.2,
-    backgroundColor: COLORS.light,
     width: windowWidth * 0.6,
     height: windowHeight * 0.3,
     borderRadius: windowWidth * 0.05,
@@ -92,5 +91,45 @@ export const modalStyles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     backgroundColor: COLORS.blue,
+  },
+
+  // USER MODAL
+  updateUserContainer: {
+    backgroundColor: COLORS.grey,
+    width: windowWidth,
+    borderRadius: windowWidth * 0.05,
+    padding: 10,
+  },
+  updateInputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomColor: COLORS.light,
+    borderBottomWidth: 2,
+    marginBottom: 10,
+  },
+  updateErrorText: {
+    color: COLORS.failure,
+    fontSize: 12,
+    fontWeight: "bold",
+    fontStyle: "italic",
+  },
+  updateInput: {
+    width: windowWidth * 0.85,
+    height: windowHeight * 0.05,
+    paddingHorizontal: 10,
+  },
+  updateModalBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  updateModalBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: windowWidth * 0.3,
+    height: windowHeight * 0.05,
+    borderRadius: 10,
   },
 });
