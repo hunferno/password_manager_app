@@ -97,7 +97,9 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             </View>
             {touched.name && errors.name && (
               <View style={authStyles.errorMsgContainer}>
-                <Text style={authStyles.errorMsgText}>{errors.name}</Text>
+                <Text style={authStyles.errorMsgText}>
+                  {(errors as any).name}
+                </Text>
               </View>
             )}
 
@@ -114,7 +116,9 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             </View>
             {touched.url && errors.url && (
               <View style={authStyles.errorMsgContainer}>
-                <Text style={authStyles.errorMsgText}>{errors.url}</Text>
+                <Text style={authStyles.errorMsgText}>
+                  {(errors as any).url}
+                </Text>
               </View>
             )}
 
@@ -131,7 +135,9 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             </View>
             {touched.username && errors.username && (
               <View style={authStyles.errorMsgContainer}>
-                <Text style={authStyles.errorMsgText}>{errors.username}</Text>
+                <Text style={authStyles.errorMsgText}>
+                  {(errors as any).username}
+                </Text>
               </View>
             )}
 
@@ -181,7 +187,9 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             </View>
             {touched.password && errors.password && (
               <View style={authStyles.errorMsgContainer}>
-                <Text style={authStyles.errorMsgText}>{errors.password}</Text>
+                <Text style={authStyles.errorMsgText}>
+                  {(errors as any).password}
+                </Text>
               </View>
             )}
 

@@ -114,6 +114,7 @@ const Actions = ({
       <ModalLittleBox
         modalVisible={deleteModal}
         setModalVisible={setDeleteModal}
+        modalText={"Êtes-vous sûr de vouloir supprimer cette identification ?"}
         action={handleDelete}
       />
     </>

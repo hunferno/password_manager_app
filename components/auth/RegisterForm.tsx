@@ -7,7 +7,6 @@ import ButtonForm from "./ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { registerFormStruct } from "../../models/registerFormStruct";
 import { AuthContext } from "../../context/authContext";
-import toaster from "../toaster";
 
 const RegisterForm = ({
   registerStep,
@@ -80,8 +79,6 @@ const RegisterForm = ({
         if (activeBio) {
           activeBioConnexion!();
         }
-
-        toaster("success", "Inscription", "Inscription réussie");
 
         navigation.navigate("VerificationCode", {
           email,

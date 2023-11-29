@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { AuthContext } from "../../context/authContext";
+import toaster from "../../components/toaster";
 
 const VerificationCodeScreen = ({
   route,
@@ -19,7 +20,6 @@ const VerificationCodeScreen = ({
     useContext(AuthContext);
 
   const [otpErrMessage, setOtpErrMessage] = useState("");
-  const [otpSuccessMessage, setOtpSuccessMessage] = useState("");
   const [otpValues, setOtpValues] = useState({
     1: "",
     2: "",
@@ -64,6 +64,7 @@ const VerificationCodeScreen = ({
     }
 
     if (destination === "login") {
+      toaster("success", "Inscription", "Vous êtes maintenant inscrit");
       navigation.navigate("Login");
     } else if (destination === "forgotPassword") {
       navigation.navigate("ForgotPassword", {
@@ -80,7 +81,7 @@ const VerificationCodeScreen = ({
       setOtpErrMessage(resendResponse.message);
     }
 
-    setOtpSuccessMessage("Code renvoyé avec succès. Verifiez votre boite mail");
+    toaster("success", "Renvoie code", "Code renvoyé avec succès");
   };
 
   return (
@@ -108,11 +109,6 @@ const VerificationCodeScreen = ({
       {otpErrMessage && (
         <Text style={[authStyles.errorMsgText, { fontWeight: "bold" }]}>
           {otpErrMessage}
-        </Text>
-      )}
-      {otpSuccessMessage && (
-        <Text style={[authStyles.successMsgText, { fontWeight: "bold" }]}>
-          {otpSuccessMessage}
         </Text>
       )}
 

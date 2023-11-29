@@ -14,7 +14,7 @@ const ForgotPasswordScreen = ({
 }: {
   navigation: any;
   route: any;
-}) => {
+}) => {  
   const email = route.params?.email;
 
   const [forgetPswStep, setForgetPswStep] = useState(1);
@@ -24,7 +24,7 @@ const ForgotPasswordScreen = ({
     if (route.params?.from === "verificationCode") {
       setForgetPswStep(2);
     }
-  }, []);
+  }, [route.params?.from]);
 
   const handleConnexion = () => {
     navigation.navigate("Login");
