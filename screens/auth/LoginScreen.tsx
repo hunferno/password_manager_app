@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { KeyboardAvoidingView, Text, View } from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
@@ -9,7 +9,7 @@ const LoginScreen = ({ navigation }: any) => {
   const [loginStep, setLoginStep] = useState(1);
 
   return (
-    <View style={authStyles.container}>
+    <KeyboardAvoidingView style={authStyles.container}>
       <StatusBar style="light" />
       <View style={authStyles.logoWrapper}>
         <Image
@@ -18,12 +18,12 @@ const LoginScreen = ({ navigation }: any) => {
           style={authStyles.logo}
         />
       </View>
-      <View style={{ paddingHorizontal: 25, marginVertical: 10 }}>
+      <View style={{ paddingHorizontal: 25, marginTop: 10, marginBottom: 20 }}>
         <Text style={authStyles.registerStepDescriptionText}>
           {loginStep == 1 &&
             "Entrez votre e-mail afin de vérifier s'il est connu de notre base..."}
           {loginStep == 2 &&
-            "...Votre email est bien connu. Maintenant entrez le mot de passe associé et vous serez connecté"}
+            "...Email reconnu. Entrez votre mot de passe"}
         </Text>
       </View>
       <View style={authStyles.formWrapper}>
@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }: any) => {
           setLoginStep={setLoginStep}
         />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

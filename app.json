@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "password_manager",
-    "slug": "password_manager",
+    "name": "lockwords",
+    "slug": "lockwords",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

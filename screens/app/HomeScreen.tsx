@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
 
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["50%"];
+  const snapPoints = ["55%"];
   // callbacks
   const handleActionModalOpen = () => {
     bottomSheetRef.current?.expand();

@@ -29,7 +29,7 @@ export const authStyles = StyleSheet.create({
   },
   logo: {
     width: windowWidth,
-    height: windowHeight * 0.2,
+    height: windowHeight * 0.15,
   },
   launchTextWrapper: {
     flex: 1,
