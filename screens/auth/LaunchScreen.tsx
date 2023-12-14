@@ -19,7 +19,7 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
             { fontSize: 40, textAlign: "center" },
           ]}
         >
-          PASSWORD MANAGER
+          LOCK WORDS
         </Text>
         <Text
           style={[
@@ -32,7 +32,7 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
             },
           ]}
         >
-          L'application qui sécurise vos mots de passe. Dormez tranquille...
+          L'application qui sécurise vos mots de passe. Dormez paisiblement...
         </Text>
       </View>
 

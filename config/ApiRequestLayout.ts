@@ -1,9 +1,7 @@
 import axios from "axios";
 
 export const axiosAPI = axios.create({
-  baseURL: "http://10.5.36.13:6002/api",
-  // baseURL: "http://192.168.1.10:6002/api",
-  // baseURL: "http://192.168.1.21:6002/api",
+  baseURL: "https://lock-words-api.onrender.com/api",
   headers: {},
 });
 
