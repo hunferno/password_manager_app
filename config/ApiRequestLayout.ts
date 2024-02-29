@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosAPI = axios.create({
-  baseURL: "https://lock-words-api.onrender.com/api",
+  baseURL: "vps-e0edc1a2.vps.ovh.net:6002/api",
   headers: {},
 });
 
