@@ -119,7 +119,7 @@ const RegisterForm = ({
                   autoCapitalize="none"
                   style={authStyles.input}
                   placeholder="Email"
-                  placeholderTextColor={COLORS.grey}
+                  placeholderTextColor={COLORS.lightBlue}
                   keyboardType="email-address"
                   value={values.email}
                   onBlur={() => setFieldTouched("email")}
@@ -147,7 +147,7 @@ const RegisterForm = ({
                 <TextInput
                   style={authStyles.input}
                   placeholder="Mot de passe Maitre"
-                  placeholderTextColor={COLORS.grey}
+                  placeholderTextColor={COLORS.lightBlue}
                   keyboardType="default"
                   secureTextEntry={!showPasswordOne}
                   value={values.password}
@@ -185,7 +185,7 @@ const RegisterForm = ({
                 <TextInput
                   style={authStyles.input}
                   placeholder="Confirmer le mot de passe"
-                  placeholderTextColor={COLORS.grey}
+                  placeholderTextColor={COLORS.lightBlue}
                   keyboardType="default"
                   secureTextEntry={!showPasswordTwo}
                   value={values.confirmPassword}
@@ -251,15 +251,16 @@ const RegisterForm = ({
               bgColor={COLORS.light}
             />
 
-            <ButtonForm
-              title={registerStep === 4 ? "CONNEXION" : "CONTINUER"}
-              action={() =>
-                registerStep === 4 ? handleSubmit() : handleChangeStep(errors)
-              }
-              color={COLORS.light}
-              bgColor={COLORS.blue}
-              disableButton={handleDisableContinueButton()}
-            />
+            {!handleDisableContinueButton() && (
+              <ButtonForm
+                title={registerStep === 4 ? "CONNEXION" : "CONTINUER"}
+                action={() =>
+                  registerStep === 4 ? handleSubmit() : handleChangeStep(errors)
+                }
+                color={COLORS.light}
+                bgColor={COLORS.blue}
+              />
+            )}
           </View>
         </>
       )}

@@ -79,7 +79,7 @@ const LoginForm = ({
                   autoCapitalize="none"
                   style={authStyles.input}
                   placeholder="Email"
-                  placeholderTextColor={COLORS.grey}
+                  placeholderTextColor={COLORS.lightBlue}
                   keyboardType="email-address"
                   value={values.email}
                   onBlur={() => setFieldTouched("email")}
@@ -104,7 +104,7 @@ const LoginForm = ({
                 <TextInput
                   style={authStyles.input}
                   placeholder="Mot de passe Maitre"
-                  placeholderTextColor={COLORS.grey}
+                  placeholderTextColor={COLORS.lightBlue}
                   keyboardType="default"
                   secureTextEntry={!showPassword}
                   value={values.password}
@@ -137,7 +137,7 @@ const LoginForm = ({
             <Text
               style={[
                 authStyles.registerHomeText,
-                { fontStyle: "italic", color: COLORS.grey, marginTop: 10 },
+                { fontStyle: "italic", color: COLORS.blue, marginTop: 10 },
               ]}
             >
               Mot de passe oublié ?
