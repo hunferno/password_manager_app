@@ -27,7 +27,7 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
             {
               fontSize: 20,
               marginTop: 10,
-              color: COLORS.gold,
+              color: COLORS.lightBlue,
               textAlign: "center",
             },
           ]}

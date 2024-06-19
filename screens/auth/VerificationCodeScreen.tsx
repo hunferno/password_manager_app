@@ -119,7 +119,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputOne}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               text && inputTwo.current?.focus();
@@ -131,7 +131,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputTwo}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               !text ? inputOne.current?.focus() : inputThree.current?.focus();
@@ -143,7 +143,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputThree}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               !text ? inputTwo.current?.focus() : inputFour.current?.focus();
@@ -155,7 +155,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputFour}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               !text ? inputThree.current?.focus() : inputFive.current?.focus();
@@ -167,7 +167,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputFive}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               !text ? inputFour.current?.focus() : inputSix.current?.focus();
@@ -179,7 +179,7 @@ const VerificationCodeScreen = ({
             maxLength={1}
             ref={inputSix}
             placeholder={"*"}
-            placeholderTextColor={COLORS.blue}
+            placeholderTextColor={COLORS.lightBlue}
             keyboardType={"number-pad"}
             onChangeText={(text) => {
               !text ? inputFive.current?.focus() : inputSix.current?.focus();

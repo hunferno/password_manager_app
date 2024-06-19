@@ -59,7 +59,7 @@ const ForgotPasswordForm = ({
               <TextInput
                 style={authStyles.input}
                 placeholder="Mot de passe Maitre"
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={COLORS.lightBlue}
                 keyboardType="default"
                 secureTextEntry={!showPasswordOne}
                 value={values.password}
@@ -85,7 +85,7 @@ const ForgotPasswordForm = ({
               <TextInput
                 style={authStyles.input}
                 placeholder="Confirmer le mot de passe"
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={COLORS.lightBlue}
                 keyboardType="default"
                 secureTextEntry={!showPasswordTwo}
                 value={values.confirmPassword}
