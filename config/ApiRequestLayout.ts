@@ -1,7 +1,11 @@
 import axios from "axios";
 
 export const axiosAPI = axios.create({
-  baseURL: "http://vps-e0edc1a2.vps.ovh.net:6002/api",
+  // baseURL: "http://vps-e0edc1a2.vps.ovh.net:6002/api", // URL VPS API
+  // baseURL: "http://10.37.1.210:6002/api", // URL node API (internet redspher)
+  baseURL: "http://192.168.1.10:6002/api", // URL node API (internet maison)
+  // baseURL: "http://172.17.0.1:6002/api", // URL node API (internet marc)
+  
   headers: {},
 });
 

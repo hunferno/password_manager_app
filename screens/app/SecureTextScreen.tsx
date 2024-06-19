@@ -1,34 +1,27 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useCallback, useContext, useRef, useState } from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import SecureTextItem from "../../components/app/secureText/SecureTextItem";
 import EmptyItems from "../../components/app/identification/EmptyItems";
-import IdentificationItem from "../../components/app/identification/IdentificationItem";
-
-import BottomSheet, {
-  BottomSheetView,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
-import Actions from "../../components/app/identification/Actions";
-import { IdentificationType } from "../../types/identificationType";
-import { AppContext } from "../../context/appContext";
+import { MaterialIcons } from "@expo/vector-icons";
+import { SecureTextType } from "../../types/secureTextType";
 import { useIsFocused } from "@react-navigation/native";
+import { AppContext } from "../../context/appContext";
 
-const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+const SecureTextScreen = ({ navigation }: { navigation: any }) => {
   const { onGetAllIdentifications } = useContext(AppContext);
 
   const isFocused = useIsFocused();
 
-  const [reload, setReload] = useState(false); // [
   const [datas, setDatas] = useState<any>([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<IdentificationType>({
+  const [selectedItem, setSelectedItem] = useState<SecureTextType>({
     id: "",
-    name: "",
-    category: "",
-    url: "",
-    username: "",
-    password: "",
+    title: "",
+    text: "",
+    createdAt: "",
+    updatedAt: "",
   } as any);
 
   // ref
@@ -55,22 +48,6 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
     []
   );
 
-  useEffect(() => {
-    if (route.params?.datas) {
-      setDatas(route.params.datas);
-    }
-  }, [route.params?.datas]);
-
-  useEffect(() => {
-    if (isFocused) {
-      const fetchIdentifications = async () => {
-        const result = await onGetAllIdentifications!();
-        setDatas(result);
-      };
-      fetchIdentifications();
-    }
-  }, [isFocused, reload]);
-
   return (
     <View style={appStyles.container}>
       {Array.isArray(datas) && datas.length > 0 ? (
@@ -79,10 +56,10 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             data={datas}
             renderItem={({ item }) => (
               <>
-                <IdentificationItem
+                <SecureTextItem
                   data={item}
-                  handleActionModal={handleActionModalOpen}
-                  setSelectedItem={setSelectedItem}
+                  //   handleActionModal={handleActionModalOpen}
+                  //   setSelectedItem={setSelectedItem}
                 />
               </>
             )}
@@ -92,7 +69,7 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
           />
 
           {/* BOTTOM SHEET */}
-          <BottomSheet
+          {/* <BottomSheet
             ref={bottomSheetRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
@@ -109,22 +86,24 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
                 setReload={setReload}
               />
             </BottomSheetView>
-          </BottomSheet>
+          </BottomSheet> */}
         </>
       ) : (
-        <EmptyItems sectionName="identifiants" sectionText="tous vos identifiants"/>
+        <EmptyItems
+          sectionName="notes sécurisées"
+          sectionText="toutes vos notes sécurisées"
+        />
       )}
-      {!bottomSheetVisible && (
-        <TouchableOpacity
-          style={appStyles.addBtnContainer}
-          onPress={() => navigation.navigate("AddIdentifications")}
-        >
-          <MaterialIcons name="add" size={24} color="white" />
-          <Text style={appStyles.addBtnText}>Ajouter</Text>
-        </TouchableOpacity>
-      )}
+
+      <TouchableOpacity
+        style={appStyles.addBtnContainer}
+        onPress={() => navigation.navigate("AddSecureText")}
+      >
+        <MaterialIcons name="add" size={24} color="white" />
+        <Text style={appStyles.addBtnText}>Ajouter</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default HomeScreen;
+export default SecureTextScreen;

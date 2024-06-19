@@ -7,6 +7,7 @@ import {
   axiosPostAPI,
 } from "../config/ApiRequestLayout";
 import { IdentificationType } from "../types/identificationType";
+import { SecureTextType } from "../types/secureTextType";
 
 interface AppProps {
   userEmail?: string;
@@ -18,7 +19,14 @@ interface AppProps {
     data: IdentificationType
   ) => Promise<any>;
   onDeleteIdentification?: (id: string) => Promise<any>;
+
   onUpdateUser?: (data: any) => Promise<any>;
+
+  onCreateSecureText?: (data: any) => Promise<any>;
+  onGetAllSecureText?: () => Promise<any>;
+  onSearchSecureText?: (search: string) => Promise<any>;
+  onUpdateSecureText?: (id: string, data: SecureTextType) => Promise<any>;
+  onDeleteSecureText?: (id: string) => Promise<any>;
 }
 
 export const AppContext = createContext<AppProps>({});
@@ -34,6 +42,9 @@ export const AppProvider = ({ children }: any) => {
     getUserEmail();
   }, []);
 
+  // --------------
+  //IDENTIFICATIONS PART
+  // --------------
   const createIdentification = async (data: IdentificationType) => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -110,6 +121,10 @@ export const AppProvider = ({ children }: any) => {
       return { error: true, message: (e as any).response.data.message };
     }
   };
+
+  // --------------
+  //USER PART
+  // --------------
   const updateUser = async (data: any) => {
     // password for now
     const { oldPassword, newPassword } = data;
@@ -131,6 +146,83 @@ export const AppProvider = ({ children }: any) => {
     }
   };
 
+  // --------------
+  //SECURE TEXT PART
+  // --------------
+  const createSecureText = async (data: any) => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosPostAPI("/secureText/create", data, token as string);
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const getAllSecureText = async () => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosGetAPI("/secureText/get-all", token);
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const searchSecureText = async (search: string) => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosGetAPI(`/secureText/search/${search}`, token);
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const updateSecureText = async (id: string, data: any) => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosPatchAPI(
+        `/secureText/update/${id}`,
+        data,
+        token as string
+      );
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
+  const deleteSecureText = async (id: string) => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return { error: true, message: "Clé d'autentification non trouvée." };
+    }
+
+    try {
+      return await axiosDeleteAPI(`/secureText/delete/${id}`, token as string);
+    } catch (e: any) {
+      return { error: true, message: (e as any).response.data.message };
+    }
+  };
+
   const value = {
     userEmail,
     onCreateIdentification: createIdentification,
@@ -139,6 +231,11 @@ export const AppProvider = ({ children }: any) => {
     onUpdateIdentification: updateIdentification,
     onDeleteIdentification: deleteIdentification,
     onUpdateUser: updateUser,
+    onCreateSecureText: createSecureText,
+    onGetAllSecureText: getAllSecureText,
+    onSearchSecureText: searchSecureText,
+    onUpdateSecureText: updateSecureText,
+    onDeleteSecureText: deleteSecureText,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

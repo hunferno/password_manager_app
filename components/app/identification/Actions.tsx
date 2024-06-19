@@ -89,7 +89,7 @@ const Actions = ({
           style={identificationStyles.actionBodyTextContainer}
           onPress={() => {
             handleActionModalClose();
-            navigation.navigate("Add", { data: data });
+            navigation.navigate("AddIdentifications", { data: data });
           }}
         >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />

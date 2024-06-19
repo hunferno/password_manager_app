@@ -6,6 +6,7 @@ import { useLayoutEffect } from "react";
 import { appStyles } from "../styles/app/appStyles";
 import { StatusBar } from "expo-status-bar";
 import HeaderTitle from "../components/app/HeaderTitle";
+import SecureTextScreen from "../screens/app/SecureTextScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,6 +32,15 @@ function TabNavigator() {
           options={{
             tabBarStyle: appStyles.topBarBg,
             tabBarLabel: "IDENTIFIANTS",
+            tabBarActiveTintColor: COLORS.light,
+          }}
+        />
+        <Tab.Screen
+          name="SecureText"
+          component={SecureTextScreen}
+          options={{
+            tabBarStyle: appStyles.topBarBg,
+            tabBarLabel: "NOTES SECURISEES",
             tabBarActiveTintColor: COLORS.light,
           }}
         />
