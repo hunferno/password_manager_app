@@ -11,7 +11,7 @@ const IdentificationInfo = ({
   return (
     <View style={identificationStyles.infoContainer}>
       <Text style={identificationStyles.infoText}>{url.substring(4)}</Text>
-      <Text style={identificationStyles.infoSubtText}>{username}</Text>
+      <Text numberOfLines={1} style={identificationStyles.infoSubtText}>{username}</Text>
     </View>
   );
 };

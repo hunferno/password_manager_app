@@ -31,10 +31,25 @@ export const identificationStyles = StyleSheet.create({
   },
 
   identificationContainer: {
-    paddingHorizontal: 10,
+    width: windowWidth,
+    paddingHorizontal: 20,
     marginBottom: 15,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  identificationImageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 50,
+    backgroundColor: COLORS.softBlue,
+    borderColor: COLORS.lightBlue,
+  },
+  identificationImage: {
+    color: COLORS.gold,
   },
 
   imageContainer: {

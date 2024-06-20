@@ -32,4 +32,40 @@ export const secureTextStyles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.blue,
   },
+
+  secureContainer: {
+    width: windowWidth,
+    paddingHorizontal: 20,
+    marginBottom: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  secureImageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderRadius: 50,
+    backgroundColor: COLORS.softBlue,
+    borderColor: COLORS.lightBlue,
+  },
+  secureImage: {
+    color: COLORS.gold,
+  },
+  secureInfoTitle: {
+    fontSize: 16,
+    color: COLORS.blue,
+  },
+
+  actionHeaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  actionsContainer: {
+    height: 30,
+  },
 });

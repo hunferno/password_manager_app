@@ -15,8 +15,7 @@ const AddSecureText = ({
   navigation: any;
   route: any;
 }) => {
-  const { onCreateSecureText, onUpdateSecureText } =
-    useContext(AppContext);
+  const { onCreateSecureText, onUpdateSecureText } = useContext(AppContext);
 
   const formRef = useRef(null);
   const data = route.params?.data;
@@ -39,29 +38,27 @@ const AddSecureText = ({
       <Formik
         initialValues={{
           title: data ? data.title : "",
-          text: data ? data.username : "",
+          text: data ? data.text : "",
         }}
         validationSchema={secureTextForm}
         enableReinitialize={true}
         innerRef={formRef}
         onSubmit={async (values) => {
-          console.log(values);
-          
-          // const { title, text } = values;
-          // const object = {
-          //   title,
-          //   text,
-          //   category: "SecureText",
-          // };
-          // const result = data
-          //   ? await onUpdateIdentification!(data._id, object)
-          //   : await onCreateIdentification!(object);
-          // if (result && result.error) {
-          //   console.log(result.message);
-          // } else {
-          //   showToast(data ? "Modification" : "Création");
-          //   navigation.navigate("SecureText");
-          // }
+          const { title, text } = values;
+          const object = {
+            title,
+            text,
+            category: "SecureText",
+          };
+          const result = data
+            ? await onUpdateSecureText!(data._id, object)
+            : await onCreateSecureText!(object);
+          if (result && result.error) {
+            console.log(result.message);
+          } else {
+            showToast(data ? "Modification" : "Création");
+            navigation.navigate("SecureText");
+          }
         }}
       >
         {({ handleChange, setFieldTouched, touched, values, errors }) => (

@@ -28,9 +28,11 @@ const BiometricConnexion = () => {
         />
         <Text style={authStyles.bioLogoTitle}>LockWords</Text>
       </View>
-      <Text style={authStyles.bioBodyText}>
-        Déverrouillage par authentication biometrique
-      </Text>
+      <View style={authStyles.bioBodyContainer}>
+        <Text style={authStyles.bioBodyText}>
+          Déverrouillage par authentication biometrique
+        </Text>
+      </View>
     </View>
   );
 };

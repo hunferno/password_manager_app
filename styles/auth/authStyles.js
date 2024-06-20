@@ -157,9 +157,15 @@ export const authStyles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
   },
+  bioBodyContainer: {
+    marginVertical: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   bioBodyText: {
     color: COLORS.blue,
     fontSize: 25,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });

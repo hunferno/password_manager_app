@@ -157,12 +157,11 @@ export const AppProvider = ({ children }: any) => {
     }
 
     try {
-      return await axiosPostAPI("/secureText/create", data, token as string);
+      return await axiosPostAPI("/securetext/create", data, token as string);
     } catch (e: any) {
       return { error: true, message: (e as any).response.data.message };
     }
   };
-
   const getAllSecureText = async () => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -171,12 +170,11 @@ export const AppProvider = ({ children }: any) => {
     }
 
     try {
-      return await axiosGetAPI("/secureText/get-all", token);
+      return await axiosGetAPI("/securetext/get-all", token);
     } catch (e: any) {
       return { error: true, message: (e as any).response.data.message };
     }
   };
-
   const searchSecureText = async (search: string) => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -185,12 +183,11 @@ export const AppProvider = ({ children }: any) => {
     }
 
     try {
-      return await axiosGetAPI(`/secureText/search/${search}`, token);
+      return await axiosGetAPI(`/securetext/search/${search}`, token);
     } catch (e: any) {
       return { error: true, message: (e as any).response.data.message };
     }
   };
-
   const updateSecureText = async (id: string, data: any) => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -200,7 +197,7 @@ export const AppProvider = ({ children }: any) => {
 
     try {
       return await axiosPatchAPI(
-        `/secureText/update/${id}`,
+        `/securetext/update/${id}`,
         data,
         token as string
       );
@@ -208,7 +205,6 @@ export const AppProvider = ({ children }: any) => {
       return { error: true, message: (e as any).response.data.message };
     }
   };
-
   const deleteSecureText = async (id: string) => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
@@ -217,7 +213,7 @@ export const AppProvider = ({ children }: any) => {
     }
 
     try {
-      return await axiosDeleteAPI(`/secureText/delete/${id}`, token as string);
+      return await axiosDeleteAPI(`/securetext/delete/${id}`, token as string);
     } catch (e: any) {
       return { error: true, message: (e as any).response.data.message };
     }
