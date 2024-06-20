@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useContext, useEffect, useRef, useState } from "react";
 import { authStyles } from "../../styles/auth/authStyles";
 import { COLORS } from "../../assets/COLORS";
@@ -17,8 +17,15 @@ import HeaderRightButton from "../../components/app/identification/HeaderRightBu
 import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGeneratorModal";
 import { AppContext } from "../../context/appContext";
 import toaster from "../../components/toaster";
+import * as Clipboard from "expo-clipboard";
 
-const AddIdentifications = ({ navigation, route }: { navigation: any; route: any }) => {
+const AddIdentifications = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
 
@@ -27,11 +34,19 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
   const [modalVisible, setModalVisible] = useState(false);
 
   const data = route.params?.data;
+  const readOnly = route.params?.readOnly;
 
   useEffect(() => {
+    let title = "Ajouter un identifiant";
+    if (data && !readOnly) {
+      title = "Modifier l'identifiant";
+    } else if (data && readOnly) {
+      title = "Détails de l'identifiant";
+    }
     navigation.setOptions({
-      headerTitle: data ? "Modifier l'identifiant" : "Ajouter un identifiant",
-      headerRight: () => <HeaderRightButton formRef={formRef} />,
+      headerTitle: title,
+      headerRight: () =>
+        !readOnly ? <HeaderRightButton formRef={formRef} /> : <Text />,
     });
   }, []);
 
@@ -39,6 +54,10 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
     if (status == "Modification")
       toaster("success", "Modification", "Identification modifiée");
     else toaster("success", "Création", "Identification ajoutée");
+  };
+
+  const handleCopyPassword = async () => {
+    await Clipboard.setStringAsync(data.password);
   };
 
   return (
@@ -88,6 +107,7 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
           >
             <View style={identificationStyles.formInputContainer}>
               <TextInput
+                editable={!readOnly}
                 style={identificationStyles.formInputText}
                 placeholder="Nom du site web *"
                 onBlur={() => setFieldTouched("name")}
@@ -105,6 +125,7 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
 
             <View style={identificationStyles.formInputContainer}>
               <TextInput
+                editable={!readOnly}
                 style={identificationStyles.formInputText}
                 autoCapitalize="none"
                 placeholder="URL (https://www.example.com) *"
@@ -124,6 +145,7 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
 
             <View style={identificationStyles.formInputContainer}>
               <TextInput
+                editable={!readOnly}
                 style={identificationStyles.formInputText}
                 autoCapitalize="none"
                 placeholder="Nom d'utilisateur *"
@@ -158,6 +180,7 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
                 ]}
               >
                 <TextInput
+                  editable={!readOnly}
                   style={identificationStyles.formInputText}
                   autoCapitalize="none"
                   placeholder="Mot de passe *"
@@ -176,14 +199,27 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
                   />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={identificationStyles.formPasswordGenerateContainer}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={identificationStyles.formPasswordGenerateText}>
-                  Générer
-                </Text>
-              </TouchableOpacity>
+              {!readOnly ? (
+                <TouchableOpacity
+                  style={identificationStyles.formPasswordGenerateContainer}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Text style={identificationStyles.formPasswordGenerateText}>
+                    Générer
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleCopyPassword}
+                  style={{ marginLeft: 20 }}
+                >
+                  <MaterialIcons
+                    name="content-copy"
+                    size={30}
+                    color={COLORS.blue}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             {touched.password && errors.password && (
               <View style={authStyles.errorMsgContainer}>
@@ -195,6 +231,7 @@ const AddIdentifications = ({ navigation, route }: { navigation: any; route: any
 
             <View style={identificationStyles.formInputContainer}>
               <TextInput
+                editable={!readOnly}
                 style={identificationStyles.formInputText}
                 autoCapitalize="none"
                 placeholder="Code à 2 facteurs"

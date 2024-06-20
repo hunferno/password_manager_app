@@ -80,6 +80,7 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             renderItem={({ item }) => (
               <>
                 <IdentificationItem
+                  navigation={navigation}
                   data={item}
                   handleActionModal={handleActionModalOpen}
                   setSelectedItem={setSelectedItem}
@@ -112,7 +113,10 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
           </BottomSheet>
         </>
       ) : (
-        <EmptyItems sectionName="identifiants" sectionText="tous vos identifiants"/>
+        <EmptyItems
+          sectionName="identifiants"
+          sectionText="tous vos identifiants"
+        />
       )}
       {!bottomSheetVisible && (
         <TouchableOpacity
