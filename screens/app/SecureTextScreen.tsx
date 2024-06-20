@@ -1,21 +1,27 @@
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import SecureTextItem from "../../components/app/secureText/SecureTextItem";
 import EmptyItems from "../../components/app/identification/EmptyItems";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SecureTextType } from "../../types/secureTextType";
 import { useIsFocused } from "@react-navigation/native";
 import { AppContext } from "../../context/appContext";
+import Actions from "../../components/app/secureText/Actions";
 
 const SecureTextScreen = ({ navigation }: { navigation: any }) => {
-  const { onGetAllIdentifications } = useContext(AppContext);
+  const { onGetAllSecureText } = useContext(AppContext);
 
   const isFocused = useIsFocused();
 
+  const [reload, setReload] = useState(false);
   const [datas, setDatas] = useState<any>([]);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [secureBottomSheetVisible, setSecureBottomSheetVisible] =
+    useState(false);
   const [selectedItem, setSelectedItem] = useState<SecureTextType>({
     id: "",
     title: "",
@@ -25,16 +31,16 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
   } as any);
 
   // ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["55%"];
+  const bottomSheetSecureRef = useRef<BottomSheet>(null);
+  const snapPoints = ["30%"];
   // callbacks
   const handleActionModalOpen = () => {
-    bottomSheetRef.current?.expand();
-    setBottomSheetVisible(true);
+    bottomSheetSecureRef.current?.expand();
+    setSecureBottomSheetVisible(true);
   };
 
   const handleActionModalClose = () => {
-    bottomSheetRef.current?.close();
+    bottomSheetSecureRef.current?.close();
   };
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -48,6 +54,16 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
     []
   );
 
+  useEffect(() => {
+    if (isFocused) {
+      const fetchSecureTexts = async () => {
+        const result = await onGetAllSecureText!();
+        setDatas(result);
+      };
+      fetchSecureTexts();
+    }
+  }, [isFocused, reload]);
+
   return (
     <View style={appStyles.container}>
       {Array.isArray(datas) && datas.length > 0 ? (
@@ -57,9 +73,10 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
             renderItem={({ item }) => (
               <>
                 <SecureTextItem
+                  navigation={navigation}
                   data={item}
-                  //   handleActionModal={handleActionModalOpen}
-                  //   setSelectedItem={setSelectedItem}
+                  handleActionModal={handleActionModalOpen}
+                  setSelectedItem={setSelectedItem}
                 />
               </>
             )}
@@ -69,13 +86,13 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
           />
 
           {/* BOTTOM SHEET */}
-          {/* <BottomSheet
-            ref={bottomSheetRef}
+          <BottomSheet
+            ref={bottomSheetSecureRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
             index={-1}
             enablePanDownToClose={true}
-            onClose={() => setBottomSheetVisible(false)}
+            onClose={() => setSecureBottomSheetVisible(false)}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
               <Actions
@@ -86,7 +103,7 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
                 setReload={setReload}
               />
             </BottomSheetView>
-          </BottomSheet> */}
+          </BottomSheet>
         </>
       ) : (
         <EmptyItems
@@ -95,13 +112,15 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
         />
       )}
 
-      <TouchableOpacity
-        style={appStyles.addBtnContainer}
-        onPress={() => navigation.navigate("AddSecureText")}
-      >
-        <MaterialIcons name="add" size={24} color="white" />
-        <Text style={appStyles.addBtnText}>Ajouter</Text>
-      </TouchableOpacity>
+      {!secureBottomSheetVisible && (
+        <TouchableOpacity
+          style={appStyles.addBtnContainer}
+          onPress={() => navigation.navigate("AddSecureText")}
+        >
+          <MaterialIcons name="add" size={24} color="white" />
+          <Text style={appStyles.addBtnText}>Ajouter</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
