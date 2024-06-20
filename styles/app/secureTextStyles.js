@@ -68,4 +68,10 @@ export const secureTextStyles = StyleSheet.create({
   actionsContainer: {
     height: 30,
   },
+
+  date: {
+    fontWeight: "bold",
+    fontStyle: "italic",
+    color: COLORS.grey,
+  }
 });

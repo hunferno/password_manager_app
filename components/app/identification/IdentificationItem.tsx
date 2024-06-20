@@ -7,16 +7,23 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { IdentificationType } from "../../../types/identificationType";
 
 const IdentificationItem = ({
+  navigation,
   data,
   handleActionModal,
   setSelectedItem,
 }: {
+  navigation: any;
   data: IdentificationType;
   handleActionModal: any;
   setSelectedItem: any;
 }) => {
   return (
-    <TouchableOpacity style={identificationStyles.identificationContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("AddIdentifications", { data, readOnly: true });
+      }}
+      style={identificationStyles.identificationContainer}
+    >
       <View style={{ flexDirection: "row" }}>
         <View style={identificationStyles.identificationImageContainer}>
           <FontAwesome5

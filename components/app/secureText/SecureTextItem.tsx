@@ -17,7 +17,9 @@ const SecureTextItem = ({
 }) => {
   return (
     <TouchableOpacity
-      //onPress={navigation.navigate("AddSecureText")}
+      onPress={() => {
+        navigation.navigate("AddSecureText", { data, readOnly: true });
+      }}
       style={secureTextStyles.secureContainer}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>

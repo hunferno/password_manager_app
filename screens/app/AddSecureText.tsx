@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, ScrollView } from "react-native";
 import HeaderRightButton from "../../components/app/identification/HeaderRightButton";
 import { AppContext } from "../../context/appContext";
@@ -7,6 +7,8 @@ import { Formik } from "formik";
 import { secureTextForm } from "../../models/secureTextFormStruct";
 import { secureTextStyles } from "../../styles/app/secureTextStyles";
 import { authStyles } from "../../styles/auth/authStyles";
+import moment from "moment";
+import "moment/min/locales";
 
 const AddSecureText = ({
   navigation,
@@ -19,11 +21,22 @@ const AddSecureText = ({
 
   const formRef = useRef(null);
   const data = route.params?.data;
+  const readOnly = route.params?.readOnly;
 
   useEffect(() => {
+    // Set the locale to French
+    moment.locale("fr");
+
+    let title = "Ajouter une note";
+    if (data && !readOnly) {
+      title = "Modifier la note";
+    } else if (data && readOnly) {
+      title = "Détails de la note";
+    }
     navigation.setOptions({
-      headerTitle: data ? "Modifier l'identifiant" : "Ajouter une note",
-      headerRight: () => <HeaderRightButton formRef={formRef} />,
+      headerTitle: title,
+      headerRight: () =>
+        !readOnly ? <HeaderRightButton formRef={formRef} /> : <Text />,
     });
   }, []);
 
@@ -65,6 +78,7 @@ const AddSecureText = ({
           <View style={secureTextStyles.formContainer}>
             <View style={secureTextStyles.titleContainer}>
               <TextInput
+                editable={!readOnly}
                 style={secureTextStyles.titleText}
                 placeholder="Titre de la note *"
                 onBlur={() => setFieldTouched("title")}
@@ -81,6 +95,7 @@ const AddSecureText = ({
             )}
             <ScrollView contentContainerStyle={secureTextStyles.noteContainer}>
               <TextInput
+                editable={!readOnly}
                 style={secureTextStyles.noteText}
                 placeholder="Votre note sécurisée *"
                 onBlur={() => setFieldTouched("text")}
@@ -89,6 +104,18 @@ const AddSecureText = ({
                 multiline={true}
               />
             </ScrollView>
+            {data && (
+              <View style={{ marginVertical: 15 }}>
+                <Text style={secureTextStyles.date}>
+                  Créé le :{" "}
+                  {moment(data.createdAt).format("DD MMMM YYYY [à] HH[h]mm")}{" "}
+                </Text>
+                <Text style={secureTextStyles.date}>
+                  Modifié le :{" "}
+                  {moment(data.updatedAt).format("DD MMMM YYYY [à] HH[h]mm")}{" "}
+                </Text>
+              </View>
+            )}
           </View>
         )}
       </Formik>
