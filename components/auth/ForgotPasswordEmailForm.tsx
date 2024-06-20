@@ -49,7 +49,7 @@ const ForgotPasswordEmailForm = ({ navigation }: { navigation: any }) => {
                 autoCapitalize="none"
                 style={authStyles.input}
                 placeholder="Email"
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={COLORS.lightBlue}
                 keyboardType="email-address"
                 value={values.email}
                 onChangeText={handleChange("email")}

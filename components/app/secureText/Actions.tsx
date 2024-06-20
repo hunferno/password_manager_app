@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import IdentificationImage from "./IdentificationImage";
 import * as Clipboard from "expo-clipboard";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
@@ -9,6 +8,8 @@ import { useContext, useState } from "react";
 import ModalLittleBox from "../../modals/ModalLittleBox";
 import { AppContext } from "../../../context/appContext";
 import toaster from "../../toaster";
+import { secureTextStyles } from "../../../styles/app/secureTextStyles";
+import { SecureTextType } from "../../../types/secureTextType";
 
 const Actions = ({
   data,
@@ -17,79 +18,48 @@ const Actions = ({
   reload,
   setReload,
 }: {
-  data: IdentificationType;
+  data: SecureTextType;
   navigation: any;
   handleActionModalClose: any;
   reload: any;
   setReload: any;
 }) => {
-  const { onDeleteIdentification } = useContext(AppContext);
+  const { onDeleteSecureText } = useContext(AppContext);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const handleCopyPassword = async () => {
-    await Clipboard.setStringAsync(data.password);
-  };
-  const handleCopyEmail = async () => {
-    await Clipboard.setStringAsync(data.username);
-  };
-  const handleCopyTwoFactorCode = async () => {
-    await Clipboard.setStringAsync(data.twoFactorCode);
-  };
-
   const handleDelete = async () => {
-    const result = await onDeleteIdentification!(data._id as string);
+    const result = await onDeleteSecureText!(data._id as string);
 
     if (result && result.error) {
       console.log(result);
     } else {
-      toaster("success", "Suppression", "Identification supprimée");
+      toaster("success", "Suppression", "Note supprimée");
       setReload(!reload);
       handleActionModalClose();
-      navigation.navigate("Home");
+      navigation.navigate("SecureText");
     }
   };
 
   return (
     <>
-      <View style={identificationStyles.actionHeaderContainer}>
-        <IdentificationImage name={data.name} />
+      <View style={secureTextStyles.actionHeaderContainer}>
+        <View style={secureTextStyles.secureImageContainer}>
+          <FontAwesome5
+            name="file-alt"
+            size={24}
+            color={secureTextStyles.secureImage.color}
+          />
+        </View>
+        <View>
+          <Text numberOfLines={1} style={secureTextStyles.secureInfoTitle}>{data.title}</Text>
+        </View>
       </View>
       <View style={identificationStyles.actionBodyContainer}>
         <TouchableOpacity
           style={identificationStyles.actionBodyTextContainer}
-          onPress={handleCopyEmail}
-        >
-          <MaterialIcons name="content-copy" size={30} color={COLORS.blue} />
-          <Text style={identificationStyles.actionBodyText}>
-            Copier l'adresse e-mail
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={identificationStyles.actionBodyTextContainer}
-          onPress={handleCopyPassword}
-        >
-          <MaterialIcons name="content-copy" size={30} color={COLORS.blue} />
-          <Text style={identificationStyles.actionBodyText}>
-            Copier le mot de passe
-          </Text>
-        </TouchableOpacity>
-        {data.twoFactorCode && (
-          <TouchableOpacity
-            style={identificationStyles.actionBodyTextContainer}
-            onPress={handleCopyTwoFactorCode}
-          >
-            <MaterialIcons name="content-copy" size={30} color={COLORS.blue} />
-            <Text style={identificationStyles.actionBodyText}>
-              Copier le 2FA code
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity
-          style={identificationStyles.actionBodyTextContainer}
           onPress={() => {
             handleActionModalClose();
-            navigation.navigate("AddIdentifications", { data: data });
+            navigation.navigate("AddSecureText", { data: data });
           }}
         >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />
@@ -114,7 +84,7 @@ const Actions = ({
       <ModalLittleBox
         modalVisible={deleteModal}
         setModalVisible={setDeleteModal}
-        modalText={"Êtes-vous sûr de vouloir supprimer cette identification ?"}
+        modalText={"Êtes-vous sûr de vouloir supprimer cette note ?"}
         action={handleDelete}
       />
     </>

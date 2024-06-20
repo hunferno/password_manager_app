@@ -33,7 +33,7 @@ const SearchBox = () => {
       <MaterialIcons name="search" size={16} color={COLORS.blue} />
       <TextInput
         placeholder="Recherchez un élément..."
-        placeholderTextColor={COLORS.blue}
+        placeholderTextColor={COLORS.lightBlue}
         style={appStyles.searchInput}
         onChangeText={debounceSearch}
       />

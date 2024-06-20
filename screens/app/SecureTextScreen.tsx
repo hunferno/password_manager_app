@@ -1,47 +1,46 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
-import EmptyItems from "../../components/app/identification/EmptyItems";
-import IdentificationItem from "../../components/app/identification/IdentificationItem";
-
 import BottomSheet, {
-  BottomSheetView,
   BottomSheetBackdrop,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import Actions from "../../components/app/identification/Actions";
-import { IdentificationType } from "../../types/identificationType";
-import { AppContext } from "../../context/appContext";
+import SecureTextItem from "../../components/app/secureText/SecureTextItem";
+import EmptyItems from "../../components/app/identification/EmptyItems";
+import { MaterialIcons } from "@expo/vector-icons";
+import { SecureTextType } from "../../types/secureTextType";
 import { useIsFocused } from "@react-navigation/native";
+import { AppContext } from "../../context/appContext";
+import Actions from "../../components/app/secureText/Actions";
 
-const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
-  const { onGetAllIdentifications } = useContext(AppContext);
+const SecureTextScreen = ({ navigation }: { navigation: any }) => {
+  const { onGetAllSecureText } = useContext(AppContext);
 
   const isFocused = useIsFocused();
 
-  const [reload, setReload] = useState(false); // [
+  const [reload, setReload] = useState(false);
   const [datas, setDatas] = useState<any>([]);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<IdentificationType>({
+  const [secureBottomSheetVisible, setSecureBottomSheetVisible] =
+    useState(false);
+  const [selectedItem, setSelectedItem] = useState<SecureTextType>({
     id: "",
-    name: "",
-    category: "",
-    url: "",
-    username: "",
-    password: "",
+    title: "",
+    text: "",
+    createdAt: "",
+    updatedAt: "",
   } as any);
 
   // ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["55%"];
+  const bottomSheetSecureRef = useRef<BottomSheet>(null);
+  const snapPoints = ["30%"];
   // callbacks
   const handleActionModalOpen = () => {
-    bottomSheetRef.current?.expand();
-    setBottomSheetVisible(true);
+    bottomSheetSecureRef.current?.expand();
+    setSecureBottomSheetVisible(true);
   };
 
   const handleActionModalClose = () => {
-    bottomSheetRef.current?.close();
+    bottomSheetSecureRef.current?.close();
   };
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -56,18 +55,12 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   );
 
   useEffect(() => {
-    if (route.params?.datas) {
-      setDatas(route.params.datas);
-    }
-  }, [route.params?.datas]);
-
-  useEffect(() => {
     if (isFocused) {
-      const fetchIdentifications = async () => {
-        const result = await onGetAllIdentifications!();
+      const fetchSecureTexts = async () => {
+        const result = await onGetAllSecureText!();
         setDatas(result);
       };
-      fetchIdentifications();
+      fetchSecureTexts();
     }
   }, [isFocused, reload]);
 
@@ -79,7 +72,8 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             data={datas}
             renderItem={({ item }) => (
               <>
-                <IdentificationItem
+                <SecureTextItem
+                  navigation={navigation}
                   data={item}
                   handleActionModal={handleActionModalOpen}
                   setSelectedItem={setSelectedItem}
@@ -93,12 +87,12 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
 
           {/* BOTTOM SHEET */}
           <BottomSheet
-            ref={bottomSheetRef}
+            ref={bottomSheetSecureRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
             index={-1}
             enablePanDownToClose={true}
-            onClose={() => setBottomSheetVisible(false)}
+            onClose={() => setSecureBottomSheetVisible(false)}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
               <Actions
@@ -112,12 +106,16 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
           </BottomSheet>
         </>
       ) : (
-        <EmptyItems sectionName="identifiants" sectionText="tous vos identifiants"/>
+        <EmptyItems
+          sectionName="notes sécurisées"
+          sectionText="toutes vos notes sécurisées"
+        />
       )}
-      {!bottomSheetVisible && (
+
+      {!secureBottomSheetVisible && (
         <TouchableOpacity
           style={appStyles.addBtnContainer}
-          onPress={() => navigation.navigate("AddIdentifications")}
+          onPress={() => navigation.navigate("AddSecureText")}
         >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>
@@ -127,4 +125,4 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   );
 };
 
-export default HomeScreen;
+export default SecureTextScreen;

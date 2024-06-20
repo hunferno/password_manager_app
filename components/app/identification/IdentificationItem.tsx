@@ -1,8 +1,8 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
-import IdentificationImage from "./IdentificationImage";
 import IdentificationInfo from "./IdentificationInfo";
 import IdentificationActions from "./IdentificationActions";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 import { IdentificationType } from "../../../types/identificationType";
 
@@ -16,9 +16,15 @@ const IdentificationItem = ({
   setSelectedItem: any;
 }) => {
   return (
-    <View style={identificationStyles.identificationContainer}>
+    <TouchableOpacity style={identificationStyles.identificationContainer}>
       <View style={{ flexDirection: "row" }}>
-        <IdentificationImage name={data.name} />
+        <View style={identificationStyles.identificationImageContainer}>
+          <FontAwesome5
+            name="key"
+            size={24}
+            color={identificationStyles.identificationImage.color}
+          />
+        </View>
         <IdentificationInfo url={data.url} username={data.username} />
       </View>
       <IdentificationActions
@@ -26,7 +32,7 @@ const IdentificationItem = ({
         handleActionModal={handleActionModal}
         setSelectedItem={setSelectedItem}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 
