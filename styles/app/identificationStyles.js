@@ -13,10 +13,11 @@ export const identificationStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 25,
+    paddingHorizontal: 20,
   },
 
   emptyItemsText: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "bold",
     color: COLORS.blue,
     marginBottom: 10,

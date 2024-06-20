@@ -18,7 +18,7 @@ import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGenera
 import { AppContext } from "../../context/appContext";
 import toaster from "../../components/toaster";
 
-const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+const AddIdentifications = ({ navigation, route }: { navigation: any; route: any }) => {
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
 
@@ -215,4 +215,4 @@ const AddScreen = ({ navigation, route }: { navigation: any; route: any }) => {
   );
 };
 
-export default AddScreen;
+export default AddIdentifications;
