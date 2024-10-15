@@ -5,7 +5,7 @@ import { windowHeight, windowWidth } from "../../assets/Dimensions";
 export const modalStyles = StyleSheet.create({
   // TEXT DESIGN
   modalText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "bold",
     color: COLORS.blue,
     marginBottom: 20,

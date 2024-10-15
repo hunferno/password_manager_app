@@ -29,12 +29,15 @@ const AddIdentifications = ({
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
 
+  const data = route.params?.data;
+  const readOnly = route.params?.readOnly;
+
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const data = route.params?.data;
-  const readOnly = route.params?.readOnly;
+  const [pswVisibleSize, setPswVisibleSize] = useState(
+    data && data.password.length > 15 ? 12 : 20
+  );
 
   useEffect(() => {
     let title = "Ajouter un identifiant";
@@ -58,6 +61,14 @@ const AddIdentifications = ({
 
   const handleCopyPassword = async () => {
     await Clipboard.setStringAsync(data.password);
+  };
+
+  const handlePasswordChange = (e: any) => {
+    if (e.length > 15) {
+      setPswVisibleSize(12);
+    } else {
+      setPswVisibleSize(20);
+    }
   };
 
   return (
@@ -101,7 +112,7 @@ const AddIdentifications = ({
           }
         }}
       >
-        {({ handleChange, setFieldTouched, touched, values, errors }) => (
+        {({ handleChange, setFieldTouched, setFieldValue, touched, values, errors }) => (
           <ScrollView
             contentContainerStyle={identificationStyles.formContainer}
           >
@@ -175,18 +186,24 @@ const AddIdentifications = ({
                   {
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    width: "65%",
+                    width: "70%",
                   },
                 ]}
               >
                 <TextInput
                   editable={!readOnly}
-                  style={identificationStyles.formInputText}
+                  style={[
+                    identificationStyles.formInputText,
+                    { fontSize: pswVisibleSize },
+                  ]}
                   autoCapitalize="none"
                   placeholder="Mot de passe *"
                   secureTextEntry={!showPassword}
                   onBlur={() => setFieldTouched("password")}
-                  onChangeText={handleChange("password")}
+                  onChangeText={(e) => {
+                    handlePasswordChange(e);
+                    setFieldValue("password", e);
+                  }}
                   value={values.password}
                 />
                 <TouchableOpacity
