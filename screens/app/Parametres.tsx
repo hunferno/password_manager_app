@@ -8,6 +8,7 @@ import ModalLittleBox from "../../components/modals/ModalLittleBox";
 import { AuthContext } from "../../context/authContext";
 import { COLORS } from "../../assets/COLORS";
 import UpdateUserModal from "../../components/modals/UpdateUserModal";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Parametres = () => {
   const {
@@ -40,11 +41,15 @@ const Parametres = () => {
       },
       extraComponent: () => {
         return (
-          <Switch
-            trackColor={{ false: COLORS.blue, true: COLORS.blue }}
-            thumbColor={isBioConnexionActive ? COLORS.success : COLORS.failure}
-            value={isBioConnexionActive}
-          />
+          <TouchableWithoutFeedback onPress={() => setBioModalVisible(true)}>
+            <Switch
+              trackColor={{ false: COLORS.blue, true: COLORS.blue }}
+              thumbColor={
+                isBioConnexionActive ? COLORS.success : COLORS.failure
+              }
+              value={isBioConnexionActive}
+            />
+          </TouchableWithoutFeedback>
         );
       },
     },
