@@ -29,12 +29,12 @@ const AddIdentifications = ({
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
 
+  const data = route.params?.data;
+  const readOnly = route.params?.readOnly;
+
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const data = route.params?.data;
-  const readOnly = route.params?.readOnly;
 
   useEffect(() => {
     let title = "Ajouter un identifiant";
@@ -101,7 +101,7 @@ const AddIdentifications = ({
           }
         }}
       >
-        {({ handleChange, setFieldTouched, touched, values, errors }) => (
+        {({ handleChange, setFieldTouched, setFieldValue, touched, values, errors }) => (
           <ScrollView
             contentContainerStyle={identificationStyles.formContainer}
           >
@@ -175,13 +175,16 @@ const AddIdentifications = ({
                   {
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    width: "65%",
+                    width: "70%",
                   },
                 ]}
               >
                 <TextInput
                   editable={!readOnly}
-                  style={identificationStyles.formInputText}
+                  style={[
+                    identificationStyles.formInputText,
+                    { fontSize: 14, fontWeight: "bold" },
+                  ]}
                   autoCapitalize="none"
                   placeholder="Mot de passe *"
                   secureTextEntry={!showPassword}

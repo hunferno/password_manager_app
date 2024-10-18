@@ -109,11 +109,7 @@ const AddPasswordGeneratorModal = ({
               style={{ marginLeft: 10 }}
               onPress={() => generatePassword()}
             >
-              <Ionicons
-                name="md-reload-outline"
-                size={24}
-                color={COLORS.blue}
-              />
+              <Ionicons name="reload-outline" size={24} color={COLORS.blue} />
             </TouchableOpacity>
           </View>
           <View style={{ marginLeft: 15, marginVertical: 10 }}>
@@ -129,20 +125,23 @@ const AddPasswordGeneratorModal = ({
         </View>
 
         <View style={modalStyles.generateBodyContainer}>
-          <Text style={modalStyles.modalText}>Longueur :</Text>
+          <Text style={modalStyles.modalText}>
+            Longueur : ({passwordLength})
+          </Text>
           <View style={modalStyles.generateSliderContainer}>
-            <Text style={modalStyles.modalText}>4</Text>
+            <Text style={modalStyles.modalText}>Min</Text>
             <Slider
               style={{ width: "85%" }}
+              step={1}
               minimumValue={4}
-              maximumValue={40}
+              maximumValue={25}
               minimumTrackTintColor={COLORS.blue}
               maximumTrackTintColor={COLORS.grey}
               thumbTintColor={COLORS.blue}
               value={passwordLength}
               onValueChange={(value) => setPasswordLength(value)}
             />
-            <Text style={modalStyles.modalText}>40</Text>
+            <Text style={modalStyles.modalText}>Max</Text>
           </View>
           <View style={modalStyles.generateSwitchContainer}>
             <Text style={modalStyles.modalText}>Chiffres (ex. 123)</Text>

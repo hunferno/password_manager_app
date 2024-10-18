@@ -13,7 +13,6 @@ export const identificationFormStruct = Yup.object().shape({
     )
     .required("Veuillez renseigner le site web."),
   username: Yup.string()
-    .email("Veuillez renseigner un email valide.")
     .required("Veuillez renseigner le nom d'utilisateur."),
   password: Yup.string()
     .min(4, "Au minimum 4 caractères.")
