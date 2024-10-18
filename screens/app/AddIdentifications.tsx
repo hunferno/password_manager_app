@@ -35,9 +35,6 @@ const AddIdentifications = ({
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [pswVisibleSize, setPswVisibleSize] = useState(
-    data && data.password.length > 15 ? 12 : 20
-  );
 
   useEffect(() => {
     let title = "Ajouter un identifiant";
@@ -61,14 +58,6 @@ const AddIdentifications = ({
 
   const handleCopyPassword = async () => {
     await Clipboard.setStringAsync(data.password);
-  };
-
-  const handlePasswordChange = (e: any) => {
-    if (e.length > 15) {
-      setPswVisibleSize(12);
-    } else {
-      setPswVisibleSize(20);
-    }
   };
 
   return (
@@ -194,16 +183,13 @@ const AddIdentifications = ({
                   editable={!readOnly}
                   style={[
                     identificationStyles.formInputText,
-                    { fontSize: pswVisibleSize },
+                    { fontSize: 14, fontWeight: "bold" },
                   ]}
                   autoCapitalize="none"
                   placeholder="Mot de passe *"
                   secureTextEntry={!showPassword}
                   onBlur={() => setFieldTouched("password")}
-                  onChangeText={(e) => {
-                    handlePasswordChange(e);
-                    setFieldValue("password", e);
-                  }}
+                  onChangeText={handleChange("password")}
                   value={values.password}
                 />
                 <TouchableOpacity
