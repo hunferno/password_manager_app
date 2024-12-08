@@ -18,6 +18,7 @@ import AddPasswordGeneratorModal from "../../components/modals/AddPasswordGenera
 import { AppContext } from "../../context/appContext";
 import toaster from "../../components/toaster";
 import * as Clipboard from "expo-clipboard";
+import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
 
 const AddIdentifications = ({
   navigation,
@@ -34,6 +35,7 @@ const AddIdentifications = ({
 
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [readOnlyPassword, setReadOnlyPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -165,39 +167,73 @@ const AddIdentifications = ({
                 alignItems: "center",
               }}
             >
-              <View
-                style={[
-                  identificationStyles.formInputContainer,
-                  {
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "70%",
-                  },
-                ]}
-              >
-                <TextInput
-                  editable={!readOnly}
+              {readOnly ? (
+                <View
                   style={[
-                    identificationStyles.formInputText,
-                    { fontSize: 14, fontWeight: "bold" },
+                    identificationStyles.formInputContainer,
+                    {
+                      flexDirection: "row",
+                      width: "70%",
+                      justifyContent: "space-between",
+                    },
                   ]}
-                  autoCapitalize="none"
-                  placeholder="Mot de passe *"
-                  secureTextEntry={!showPassword}
-                  onBlur={() => setFieldTouched("password")}
-                  onChangeText={handleChange("password")}
-                  value={values.password}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Entypo
-                    name={showPassword ? "eye" : "eye-with-line"}
-                    size={30}
-                    color={COLORS.blue}
+                  <View style={{ flexDirection: "row" }}>
+                    {values.password
+                      .split("")
+                      .map((letter: string, index: number) => {
+                        if (!readOnlyPassword) {
+                          return createTextFromLetter(index, "*", 14);
+                        } else {
+                          return createTextFromLetter(index, letter, 14);
+                        }
+                      })}
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => setReadOnlyPassword(!readOnlyPassword)}
+                  >
+                    <Entypo
+                      name={readOnlyPassword ? "eye" : "eye-with-line"}
+                      size={30}
+                      color={COLORS.blue}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
+                  style={[
+                    identificationStyles.formInputContainer,
+                    {
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "70%",
+                    },
+                  ]}
+                >
+                  <TextInput
+                    style={[
+                      identificationStyles.formInputText,
+                      { fontSize: 14, fontWeight: "bold" },
+                    ]}
+                    autoCapitalize="none"
+                    placeholder="Mot de passe *"
+                    secureTextEntry={!showPassword}
+                    onBlur={() => setFieldTouched("password")}
+                    onChangeText={handleChange("password")}
+                    value={values.password}
                   />
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Entypo
+                      name={showPassword ? "eye" : "eye-with-line"}
+                      size={30}
+                      color={COLORS.blue}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
               {!readOnly ? (
                 <TouchableOpacity
                   style={identificationStyles.formPasswordGenerateContainer}
