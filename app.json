@@ -2,7 +2,7 @@
   "expo": {
     "name": "lockwords",
     "slug": "lockwords",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,18 +21,30 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ],
+      "package": "com.lockwords.lockwords"
     },
     "web": {
       "favicon": "./assets/icon.png"
     },
     "plugins": [
       [
-        "expo-local-authentication",
+        "expo-build-properties",
         {
-          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "df1a8d31-2e08-4100-936a-19f9c9f728bb"
+      }
+    }
   }
 }

@@ -10,8 +10,12 @@ const IdentificationInfo = ({
 }) => {
   return (
     <View style={identificationStyles.infoContainer}>
-      <Text style={identificationStyles.infoText}>{url.substring(4)}</Text>
-      <Text numberOfLines={1} style={identificationStyles.infoSubtText}>{username}</Text>
+      <Text style={identificationStyles.infoText}>
+        {url.includes("www") ? url.substring(4) : url}
+      </Text>
+      <Text numberOfLines={1} style={identificationStyles.infoSubtText}>
+        {username}
+      </Text>
     </View>
   );
 };

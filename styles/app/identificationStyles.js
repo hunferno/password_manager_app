@@ -134,6 +134,7 @@ export const identificationStyles = StyleSheet.create({
     borderColor: COLORS.gold,
   },
   formInputText: {
+    width: "90%",
     paddingHorizontal: 10,
     fontSize: 20,
     color: COLORS.blue,

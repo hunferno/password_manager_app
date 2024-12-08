@@ -74,6 +74,7 @@ const Parametres = () => {
       {params.map((param, index) => (
         <ParameterAction
           key={index}
+          index={index}
           title={param.title}
           description={param.description}
           action={param.action}

@@ -68,26 +68,22 @@ const AddIdentifications = ({
           url: data ? data.url : "",
           username: data ? data.username : "",
           password: data ? data.password : "",
-          twoFactorCode: data ? data.twoFactorCode : "",
+          twoFACode: data ? data.twoFACode : "",
         }}
         validationSchema={identificationFormStruct}
         enableReinitialize={true}
         innerRef={formRef}
         onSubmit={async (values) => {
-          const { name, url, username, password, twoFactorCode } = values;
+          const { name, url, username, password, twoFACode } = values;
 
           const object = {
             name,
             url,
             username,
             password,
-            twoFactorCode,
+            twoFACode,
             category: "Identification",
           };
-
-          if (object.twoFactorCode == "") {
-            delete object.twoFactorCode;
-          }
 
           const result = data
             ? await onUpdateIdentification!(data._id, object)
@@ -101,7 +97,7 @@ const AddIdentifications = ({
           }
         }}
       >
-        {({ handleChange, setFieldTouched, setFieldValue, touched, values, errors }) => (
+        {({ handleChange, setFieldTouched, touched, values, errors }) => (
           <ScrollView
             contentContainerStyle={identificationStyles.formContainer}
           >
@@ -128,7 +124,7 @@ const AddIdentifications = ({
                 editable={!readOnly}
                 style={identificationStyles.formInputText}
                 autoCapitalize="none"
-                placeholder="URL (https://www.example.com) *"
+                placeholder="URL (www.example.com) *"
                 keyboardType="url"
                 onBlur={() => setFieldTouched("url")}
                 onChangeText={handleChange("url")}
@@ -239,8 +235,8 @@ const AddIdentifications = ({
                 autoCapitalize="none"
                 placeholder="Code à 2 facteurs"
                 keyboardType="default"
-                onChangeText={handleChange("twoFactorCode")}
-                value={values.twoFactorCode}
+                onChangeText={handleChange("twoFACode")}
+                value={values.twoFACode}
               />
             </View>
           </ScrollView>
