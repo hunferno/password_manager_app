@@ -104,7 +104,7 @@ const AddPasswordGeneratorModal = ({
             ]}
           >
             <View style={{ width: "90%", flexDirection: "row" }}>
-              {password.split("").map((letter, index) => createTextFromLetter(index, letter, 18))}
+              {password.split("").map((letter, index) => createTextFromLetter(index, letter, 15))}
             </View>
             <TouchableOpacity
               style={{ marginLeft: 10 }}
