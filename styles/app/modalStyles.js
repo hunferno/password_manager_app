@@ -11,10 +11,8 @@ export const modalStyles = StyleSheet.create({
     marginBottom: 20,
   },
   modalPasswordText: {
-    fontSize: 18,
     fontWeight: "bold",
-    color: COLORS.blue,
-    marginBottom: 20,
+    color: COLORS.blue
   },
   modalBtnText: {
     fontSize: 16,
