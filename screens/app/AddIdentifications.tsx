@@ -4,7 +4,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Modal,
 } from "react-native";
 import { Formik } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
@@ -19,6 +18,7 @@ import { AppContext } from "../../context/appContext";
 import toaster from "../../components/toaster";
 import * as Clipboard from "expo-clipboard";
 import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
+import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
 
 const AddIdentifications = ({
   navigation,
@@ -48,9 +48,13 @@ const AddIdentifications = ({
     navigation.setOptions({
       headerTitle: title,
       headerRight: () =>
-        !readOnly ? <HeaderRightButton formRef={formRef} /> : <Text />,
+        !readOnly ? (
+          <HeaderRightButton formRef={formRef} />
+        ) : (
+          <HeaderRightButtonEdit data={data} location="AddIdentifications" />
+        ),
     });
-  }, []);
+  }, [readOnly, data]);
 
   const showToast = (status: string) => {
     if (status == "Modification")

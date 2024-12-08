@@ -9,6 +9,7 @@ import { secureTextStyles } from "../../styles/app/secureTextStyles";
 import { authStyles } from "../../styles/auth/authStyles";
 import moment from "moment";
 import "moment/min/locales";
+import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
 
 const AddSecureText = ({
   navigation,
@@ -36,9 +37,13 @@ const AddSecureText = ({
     navigation.setOptions({
       headerTitle: title,
       headerRight: () =>
-        !readOnly ? <HeaderRightButton formRef={formRef} /> : <Text />,
+        !readOnly ? (
+          <HeaderRightButton formRef={formRef} />
+        ) : (
+          <HeaderRightButtonEdit data={data} location="AddSecureText" />
+        ),
     });
-  }, []);
+  }, [readOnly, data]);
 
   const showToast = (status: string) => {
     if (status == "Modification")
