@@ -1,7 +1,7 @@
 export type IdentificationType = {
   _id?: string;
   category: string;
-  twoFactorCode: string;
+  twoFACode: string;
   name: string;
   url: string;
   username: string;

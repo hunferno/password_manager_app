@@ -33,7 +33,7 @@ const Actions = ({
     await Clipboard.setStringAsync(data.username);
   };
   const handleCopyTwoFactorCode = async () => {
-    await Clipboard.setStringAsync(data.twoFactorCode);
+    await Clipboard.setStringAsync(data.twoFACode);
   };
 
   const handleDelete = async () => {
@@ -73,7 +73,7 @@ const Actions = ({
             Copier le mot de passe
           </Text>
         </TouchableOpacity>
-        {data.twoFactorCode && (
+        {data.twoFACode && (
           <TouchableOpacity
             style={identificationStyles.actionBodyTextContainer}
             onPress={handleCopyTwoFactorCode}

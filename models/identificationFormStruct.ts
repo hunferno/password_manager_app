@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 export const identificationFormStruct = Yup.object().shape({
   id: Yup.string(),
-  twoFactorCode: Yup.string(),
+  twoFACode: Yup.string(),
   name: Yup.string()
     .min(4, "Au minimum 4 caractères.")
     .required("Veuillez renseigner le nom du site web."),
