@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { modalStyles } from "../../styles/app/modalStyles";
 import { COLORS } from "../../assets/COLORS";
+import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
 
 const AddPasswordGeneratorModal = ({
   modalVisible,
@@ -55,20 +56,20 @@ const AddPasswordGeneratorModal = ({
     setPassword(result);
   };
   const generateBorderBottomColor = () => {
-    if (password.length <= 5) {
+    if (password.length <= 9) {
       return COLORS.failure;
-    } else if (password.length <= 9) {
+    } else if (password.length <= 13) {
       return COLORS.warning;
-    } else if (password.length > 9) {
+    } else if (password.length > 13) {
       return COLORS.success;
     }
   };
   const generateSecurityText = () => {
-    if (password.length <= 5) {
+    if (password.length <= 9) {
       return "Pas mal, mais on peut faire mieux.";
-    } else if (password.length <= 9) {
+    } else if (password.length <= 13) {
       return "Voila un bon mot de passe en béton.";
-    } else if (password.length > 9) {
+    } else if (password.length > 13) {
       return "On ne peut pas faire plus robuste.";
     }
   };
@@ -102,8 +103,8 @@ const AddPasswordGeneratorModal = ({
               },
             ]}
           >
-            <View style={{ width: "90%" }}>
-              <Text style={modalStyles.modalPasswordText}>{password}</Text>
+            <View style={{ width: "90%", flexDirection: "row" }}>
+              {password.split("").map((letter, index) => createTextFromLetter(index, letter))}
             </View>
             <TouchableOpacity
               style={{ marginLeft: 10 }}
