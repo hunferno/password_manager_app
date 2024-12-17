@@ -15,8 +15,11 @@ import DrawerHeader from "./components/drawer/DrawerHeader";
 import { windowWidth } from "./assets/Dimensions";
 import Parametres from "./screens/app/Parametres";
 import BiometricConnexion from "./screens/auth/BiometricConnexion";
+import ReactNativeInactivity from "react-native-inactivity";
+import toaster from "./components/toaster";
 
 const Drawer = createDrawerNavigator();
+const INACTIVITY_TIME = 1000 * 60 * 15;
 
 const Navigation = () => {
   const {
@@ -24,65 +27,72 @@ const Navigation = () => {
     isBiometricSupported,
     isBiometricSet,
     isBioConnexionActive,
+    onLogout,
   } = useContext(AuthContext);
 
   return (
     <NavigationContainer>
       {authState?.authenticated ? (
-        <AppProvider>
-          <Drawer.Navigator
-            drawerContent={(props) => {
-              return (
-                <SafeAreaView>
-                  <DrawerHeader />
-                  <DrawerItemList {...props} />
-                </SafeAreaView>
-              );
-            }}
-            screenOptions={{
-              drawerStyle: {
-                backgroundColor: COLORS.grey,
-                width: windowWidth * 0.6,
-              },
-              drawerLabelStyle: {
-                color: COLORS.blue,
-                fontSize: 16,
-                fontWeight: "bold",
-              },
-              headerShown: false,
-            }}
-          >
-            <Drawer.Screen
-              name="Accueil"
-              component={AppNavigator}
-              options={{
-                title: "Accueil",
-                drawerIcon: () => (
-                  <MaterialIcons name="home" size={20} color={COLORS.blue} />
-                ),
+        <ReactNativeInactivity
+          isActive={true}
+          onInactive={() => onLogout}
+          timeForInactivity={INACTIVITY_TIME}
+        >
+          <AppProvider>
+            <Drawer.Navigator
+              drawerContent={(props) => {
+                return (
+                  <SafeAreaView>
+                    <DrawerHeader />
+                    <DrawerItemList {...props} />
+                  </SafeAreaView>
+                );
               }}
-            />
-            <Drawer.Screen
-              name="Parametres"
-              component={Parametres}
-              options={{
-                headerShown: true,
-                headerStyle: {
-                  backgroundColor: COLORS.blue,
+              screenOptions={{
+                drawerStyle: {
+                  backgroundColor: COLORS.grey,
+                  width: windowWidth * 0.6,
                 },
-                headerTintColor: COLORS.light,
-                title: "Paramètres",
-                drawerIcon: () => (
-                  <MaterialIcons
-                    name="settings"
-                    size={20}
-                    color={COLORS.blue}
-                  />
-                ),
+                drawerLabelStyle: {
+                  color: COLORS.blue,
+                  fontSize: 16,
+                  fontWeight: "bold",
+                },
+                headerShown: false,
               }}
-            />
-          </Drawer.Navigator>
-        </AppProvider>
+            >
+              <Drawer.Screen
+                name="Accueil"
+                component={AppNavigator}
+                options={{
+                  title: "Accueil",
+                  drawerIcon: () => (
+                    <MaterialIcons name="home" size={20} color={COLORS.blue} />
+                  ),
+                }}
+              />
+              <Drawer.Screen
+                name="Parametres"
+                component={Parametres}
+                options={{
+                  headerShown: true,
+                  headerStyle: {
+                    backgroundColor: COLORS.blue,
+                  },
+                  headerTintColor: COLORS.light,
+                  title: "Paramètres",
+                  drawerIcon: () => (
+                    <MaterialIcons
+                      name="settings"
+                      size={20}
+                      color={COLORS.blue}
+                    />
+                  ),
+                }}
+              />
+            </Drawer.Navigator>
+          </AppProvider>
+        </ReactNativeInactivity>
       ) : isBiometricSupported &&
         isBiometricSet &&
         isBioConnexionActive &&
