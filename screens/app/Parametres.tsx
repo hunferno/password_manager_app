@@ -62,7 +62,7 @@ const Parametres = () => {
     },
     {
       title: "Version",
-      description: "1.0.0",
+      description: version,
       action: () => {
         Clipboard.setStringAsync(version);
       },
