@@ -30,13 +30,18 @@ const Navigation = () => {
     onLogout,
   } = useContext(AuthContext);
 
+  const handleIncativity = async (logout: any) => {
+    toaster("info", "Déconnexion", "Déconnexion pour inactivité");
+    await logout();
+  }
+
   return (
     <NavigationContainer>
       {authState?.authenticated ? (
         <ReactNativeInactivity
           isActive={true}
-          onInactive={() => onLogout}
-          timeForInactivity={INACTIVITY_TIME}
+          onInactive={() => handleIncativity(onLogout)}
+          timeForInactivity={10000}
         >
           <AppProvider>
             <Drawer.Navigator
