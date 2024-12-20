@@ -14,7 +14,6 @@ import { SafeAreaView } from "react-native";
 import DrawerHeader from "./components/drawer/DrawerHeader";
 import { windowWidth } from "./assets/Dimensions";
 import Parametres from "./screens/app/Parametres";
-import BiometricConnexion from "./screens/auth/BiometricConnexion";
 import ReactNativeInactivity from "react-native-inactivity";
 import toaster from "./components/toaster";
 
@@ -22,18 +21,12 @@ const Drawer = createDrawerNavigator();
 const INACTIVITY_TIME = 1000 * 60 * 15;
 
 const Navigation = () => {
-  const {
-    authState,
-    isBiometricSupported,
-    isBiometricSet,
-    isBioConnexionActive,
-    onLogout,
-  } = useContext(AuthContext);
+  const { authState, onLogout } = useContext(AuthContext);
 
   const handleIncativity = async (logout: any) => {
     toaster("info", "Déconnexion", "Déconnexion pour inactivité");
     await logout();
-  }
+  };
 
   return (
     <NavigationContainer>
@@ -41,7 +34,7 @@ const Navigation = () => {
         <ReactNativeInactivity
           isActive={true}
           onInactive={() => handleIncativity(onLogout)}
-          timeForInactivity={10000}
+          timeForInactivity={INACTIVITY_TIME}
         >
           <AppProvider>
             <Drawer.Navigator
@@ -98,11 +91,6 @@ const Navigation = () => {
             </Drawer.Navigator>
           </AppProvider>
         </ReactNativeInactivity>
-      ) : isBiometricSupported &&
-        isBiometricSet &&
-        isBioConnexionActive &&
-        authState?.token != null ? (
-        <BiometricConnexion />
       ) : (
         <AuthNavigator />
       )}
