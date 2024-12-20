@@ -96,7 +96,9 @@ export const AuthProvider = ({ children }: any) => {
       });
       toaster("success", "Succès", "Connexion réussie");
     } else {
-      return false;
+      setAuthState((prevState) => {
+        return { ...prevState, authenticated: null };
+      });
     }
   };
 

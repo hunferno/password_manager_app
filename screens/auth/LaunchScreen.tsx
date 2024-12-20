@@ -1,10 +1,30 @@
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  BackHandler,
+} from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { Image } from "expo-image";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../../context/authContext";
 
 const LaunchScreen = ({ navigation }: { navigation: any }) => {
+  const {
+    biometricConnexion,
+    isBiometricSupported,
+    isBiometricSet,
+    isBioConnexionActive,
+    authState,
+  } = useContext(AuthContext);
+
+  const bioConnexion = async () => {
+    await biometricConnexion!();
+  };
+
   return (
     <View style={authStyles.launchContainer}>
       <View style={authStyles.launchTextWrapper}>
@@ -35,6 +55,15 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
           L'application qui sécurise vos mots de passe. Dormez paisiblement...
         </Text>
       </View>
+
+      {isBiometricSupported &&
+        isBiometricSet &&
+        isBioConnexionActive &&
+        authState?.token != null && (
+          <TouchableWithoutFeedback onPress={() => bioConnexion()}>
+            <FontAwesome5 name="fingerprint" size={45} color={COLORS.gold} />
+          </TouchableWithoutFeedback>
+        )}
 
       <View style={authStyles.buttonWrapper}>
         <ButtonForm
