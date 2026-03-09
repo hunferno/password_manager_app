@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
-import { windowHeight, windowWidth } from "../../../assets/Dimensions";
+import { windowWidth } from "../../../assets/Dimensions";
 import { COLORS } from "../../../assets/COLORS";
 
-export const parameterStyles = StyleSheet.create({
+const parameterStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightBlue,
@@ -20,3 +20,6 @@ export const parameterStyles = StyleSheet.create({
   },
   actionDescription: { fontSize: 14, color: COLORS.light },
 });
+
+export type ParameterStyles = typeof parameterStyles;
+export { parameterStyles };

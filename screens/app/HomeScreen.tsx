@@ -13,36 +13,49 @@ import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
 import { AppContext } from "../../context/appContext";
 import { useIsFocused } from "@react-navigation/native";
+import type { RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { TabParamList, AppStackParamList } from "../../navigators/navigationTypes";
 
-const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+type HomeScreenProps = {
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  route: RouteProp<TabParamList, "Home">;
+};
+
+const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
   const { onGetAllIdentifications } = useContext(AppContext);
 
   const isFocused = useIsFocused();
 
-  const [reload, setReload] = useState(false); // [
-  const [datas, setDatas] = useState<any>([]);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [datas, setDatas] = useState<IdentificationType[]>([]);
+  // Index du BottomSheet : -1 = fermé, >= 0 = ouvert (source de vérité via onChange)
+  const [sheetIndex, setSheetIndex] = useState(-1);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
-    id: "",
+    _id: "",
     name: "",
     category: "",
     url: "",
     username: "",
     password: "",
-  } as any);
+    twoFACode: "",
+  });
 
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ["65%"];
   // callbacks
-  const handleActionModalOpen = () => {
+  const handleActionModalOpen = useCallback(() => {
     bottomSheetRef.current?.expand();
-    setBottomSheetVisible(true);
-  };
+  }, []);
 
-  const handleActionModalClose = () => {
+  const handleActionModalClose = useCallback(() => {
     bottomSheetRef.current?.close();
-  };
+  }, []);
+
+  const handleSheetChange = useCallback((index: number) => {
+    setSheetIndex(index);
+  }, []);
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -65,7 +78,11 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
     if (isFocused) {
       const fetchIdentifications = async () => {
         const result = await onGetAllIdentifications!();
-        setDatas(result);
+        if (Array.isArray(result)) {
+          setDatas(result);
+        } else {
+          setDatas([]);
+        }
       };
       fetchIdentifications();
     }
@@ -87,7 +104,7 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
                 />
               </>
             )}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item._id ?? ""}
             showsVerticalScrollIndicator={false}
             style={{ paddingTop: 10, marginBottom: 10 }}
           />
@@ -97,9 +114,9 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             ref={bottomSheetRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            index={-1}
+            index={0}
             enablePanDownToClose={true}
-            onClose={() => setBottomSheetVisible(false)}
+            onChange={handleSheetChange}
           >
             <BottomSheetView style={{ paddingHorizontal: 30 }}>
               <Actions
@@ -118,10 +135,15 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
           sectionText="tous vos identifiants"
         />
       )}
-      {!bottomSheetVisible && (
+      {sheetIndex < 0 && (
         <TouchableOpacity
           style={appStyles.addBtnContainer}
-          onPress={() => navigation.navigate("AddIdentifications")}
+          onPress={() =>
+              navigation.navigate({
+                name: "AddIdentifications",
+                params: {},
+              })
+            }
         >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>

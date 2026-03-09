@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Formik } from "formik";
+import { Formik, type FormikErrors } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -19,14 +19,26 @@ import toaster from "../../components/toaster";
 import * as Clipboard from "expo-clipboard";
 import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
 import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../navigators/navigationTypes";
+
+type AddIdentificationsScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "AddIdentifications"
+>;
+
+type IdentificationFormValues = {
+  name: string;
+  url: string;
+  username: string;
+  password: string;
+  twoFACode: string;
+};
 
 const AddIdentifications = ({
   navigation,
   route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
+}: AddIdentificationsScreenProps) => {
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
 
@@ -50,9 +62,9 @@ const AddIdentifications = ({
       headerRight: () =>
         !readOnly ? (
           <HeaderRightButton formRef={formRef} />
-        ) : (
+        ) : data ? (
           <HeaderRightButtonEdit data={data} location="AddIdentifications" />
-        ),
+        ) : undefined,
     });
   }, [readOnly, data]);
 
@@ -63,7 +75,7 @@ const AddIdentifications = ({
   };
 
   const handleCopyPassword = async () => {
-    await Clipboard.setStringAsync(data.password);
+    if (data?.password) await Clipboard.setStringAsync(data.password);
   };
 
   return (
@@ -91,15 +103,21 @@ const AddIdentifications = ({
             category: "Identification",
           };
 
-          const result = data
-            ? await onUpdateIdentification!(data._id, object)
+          const id = data?._id;
+          const result = data && id
+            ? await onUpdateIdentification!(id, object)
             : await onCreateIdentification!(object);
 
-          if (result && result.error) {
-            console.log(result.message);
+          const isError =
+            result &&
+            typeof result === "object" &&
+            "error" in result &&
+            (result as { error: boolean }).error;
+          if (isError) {
+            console.log((result as { message?: string }).message);
           } else {
             showToast(data ? "Modification" : "Création");
-            navigation.navigate("Home");
+            navigation.navigate("ScreenStack", { screen: "Home", params: {} });
           }
         }}
       >
@@ -120,7 +138,7 @@ const AddIdentifications = ({
             {touched.name && errors.name && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).name}
+                  {(errors as FormikErrors<IdentificationFormValues>).name}
                 </Text>
               </View>
             )}
@@ -140,7 +158,7 @@ const AddIdentifications = ({
             {touched.url && errors.url && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).url}
+                  {(errors as FormikErrors<IdentificationFormValues>).url}
                 </Text>
               </View>
             )}
@@ -160,7 +178,7 @@ const AddIdentifications = ({
             {touched.username && errors.username && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).username}
+                  {(errors as FormikErrors<IdentificationFormValues>).username}
                 </Text>
               </View>
             )}
@@ -263,7 +281,7 @@ const AddIdentifications = ({
             {touched.password && errors.password && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).password}
+                  {(errors as FormikErrors<IdentificationFormValues>).password}
                 </Text>
               </View>
             )}

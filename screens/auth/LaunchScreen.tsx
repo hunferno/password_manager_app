@@ -1,18 +1,17 @@
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  BackHandler,
-} from "react-native";
+import { View, Text, TouchableWithoutFeedback } from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { Image } from "expo-image";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
 
-const LaunchScreen = ({ navigation }: { navigation: any }) => {
+type LaunchScreenProps = NativeStackScreenProps<AuthStackParamList, "Launch">;
+
+const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
   const {
     biometricConnexion,
     isBiometricSupported,

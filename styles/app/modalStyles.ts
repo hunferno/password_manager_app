@@ -2,8 +2,7 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "../../assets/COLORS";
 import { windowHeight, windowWidth } from "../../assets/Dimensions";
 
-export const modalStyles = StyleSheet.create({
-  // TEXT DESIGN
+const modalStyles = StyleSheet.create({
   modalText: {
     fontSize: 13,
     fontWeight: "bold",
@@ -12,7 +11,7 @@ export const modalStyles = StyleSheet.create({
   },
   modalPasswordText: {
     fontWeight: "bold",
-    color: COLORS.blue
+    color: COLORS.blue,
   },
   modalBtnText: {
     fontSize: 16,
@@ -20,7 +19,6 @@ export const modalStyles = StyleSheet.create({
     color: COLORS.blue,
   },
 
-  // CONTAINER DESIGN
   generatePasswordbackDrop: {
     position: "absolute",
     top: 0,
@@ -50,7 +48,6 @@ export const modalStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    alignItems: "center",
     marginHorizontal: 15,
     paddingVertical: 10,
     borderBottomWidth: 5,
@@ -77,7 +74,6 @@ export const modalStyles = StyleSheet.create({
     justifyContent: "flex-end",
   },
 
-  // LOGOUT MODAL
   logoutModalContainer: {
     position: "absolute",
     top: windowHeight * 0.35,
@@ -91,7 +87,6 @@ export const modalStyles = StyleSheet.create({
     backgroundColor: COLORS.blue,
   },
 
-  // USER MODAL
   updateUserContainer: {
     backgroundColor: COLORS.grey,
     width: windowWidth,
@@ -131,3 +126,6 @@ export const modalStyles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+
+export type ModalStyles = typeof modalStyles;
+export { modalStyles };

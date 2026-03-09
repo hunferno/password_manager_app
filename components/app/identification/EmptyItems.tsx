@@ -3,13 +3,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../../assets/COLORS";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 
-const EmptyItems = ({
-  sectionName,
-  sectionText,
-}: {
+export type EmptyItemsProps = {
   sectionName: string;
   sectionText: string;
-}) => {
+};
+
+const EmptyItems = ({ sectionName, sectionText }: EmptyItemsProps) => {
   return (
     <View style={identificationStyles.emptyItemsContainer}>
       <Ionicons name="folder-open-outline" size={45} color={COLORS.blue} />

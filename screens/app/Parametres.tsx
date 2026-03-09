@@ -1,4 +1,4 @@
-import { Modal, Switch, View } from "react-native";
+import { Switch, View } from "react-native";
 import { useContext, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { version } from "../../package.json";

@@ -6,7 +6,7 @@ import {
   windowWidth,
 } from "../../assets/Dimensions";
 
-export const drawerStyles = StyleSheet.create({
+const drawerStyles = StyleSheet.create({
   headerContainer: {
     backgroundColor: COLORS.blue,
     height: windowHeight * 0.27,
@@ -28,3 +28,6 @@ export const drawerStyles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+export type DrawerStyles = typeof drawerStyles;
+export { drawerStyles };

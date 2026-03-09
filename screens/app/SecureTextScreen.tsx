@@ -12,23 +12,29 @@ import { SecureTextType } from "../../types/secureTextType";
 import { useIsFocused } from "@react-navigation/native";
 import { AppContext } from "../../context/appContext";
 import Actions from "../../components/app/secureText/Actions";
+import type { RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { TabParamList, AppStackParamList } from "../../navigators/navigationTypes";
 
-const SecureTextScreen = ({ navigation }: { navigation: any }) => {
+type SecureTextScreenProps = {
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  route: RouteProp<TabParamList, "SecureText">;
+};
+
+const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
   const { onGetAllSecureText } = useContext(AppContext);
 
   const isFocused = useIsFocused();
 
   const [reload, setReload] = useState(false);
-  const [datas, setDatas] = useState<any>([]);
+  const [datas, setDatas] = useState<SecureTextType[]>([]);
   const [secureBottomSheetVisible, setSecureBottomSheetVisible] =
     useState(false);
   const [selectedItem, setSelectedItem] = useState<SecureTextType>({
-    id: "",
+    _id: "",
     title: "",
     text: "",
-    createdAt: "",
-    updatedAt: "",
-  } as any);
+  });
 
   // ref
   const bottomSheetSecureRef = useRef<BottomSheet>(null);
@@ -58,7 +64,11 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
     if (isFocused) {
       const fetchSecureTexts = async () => {
         const result = await onGetAllSecureText!();
-        setDatas(result);
+        if (Array.isArray(result)) {
+          setDatas(result);
+        } else {
+          setDatas([]);
+        }
       };
       fetchSecureTexts();
     }
@@ -80,7 +90,7 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
                 />
               </>
             )}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item._id ?? ""}
             showsVerticalScrollIndicator={false}
             style={{ paddingTop: 10, marginBottom: 10 }}
           />
@@ -115,7 +125,12 @@ const SecureTextScreen = ({ navigation }: { navigation: any }) => {
       {!secureBottomSheetVisible && (
         <TouchableOpacity
           style={appStyles.addBtnContainer}
-          onPress={() => navigation.navigate("AddSecureText")}
+          onPress={() =>
+              navigation.navigate({
+                name: "AddSecureText",
+                params: {},
+              })
+            }
         >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>

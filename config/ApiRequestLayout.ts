@@ -1,62 +1,91 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+
+const BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ??
+  "http://192.168.1.78:6002/api"; // fallback local dev URL
 
 export const axiosAPI = axios.create({
-  // baseURL: "http://vps-e0edc1a2.vps.ovh.net:6002/api", // URL VPS API
-  // baseURL: "http://10.10.10.71:6002/api", // URL node API (internet redspher)
-  baseURL: "http://192.168.1.10:6002/api", // URL node API (internet maison)
-  // baseURL: "http://172.17.0.1:6002/api", // URL node API (internet marc)
-  
-  headers: {},
+  baseURL: BASE_URL,
 });
 
-export const axiosGetAPI = (url: string, token?: string) => {
-  return new Promise((resolve, reject) => {
-    axiosAPI
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${token ?? ""}`,
-        },
-      })
-      .then((res) => resolve(res.data))
-      .catch((err) => reject(err.message));
-  });
+const buildAuthHeaders = (token?: string): AxiosRequestConfig["headers"] =>
+  token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : undefined;
+
+const normalizeError = (error: unknown): Error => {
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    const message =
+      axiosError.response?.data?.message ??
+      axiosError.response?.statusText ??
+      axiosError.message;
+    return new Error(message);
+  }
+
+  if (error instanceof Error) {
+    return error;
+  }
+
+  return new Error("Une erreur réseau est survenue");
 };
 
-export const axiosPostAPI = (url: string, data: any | null, token?: string) => {
-  return new Promise((resolve, reject) => {
-    axiosAPI
-      .post(url, data, {
-        headers: {
-          Authorization: `Bearer ${token ?? ""}`,
-        },
-      })
-      .then((res) => resolve(res))
-      .catch((err) => reject(err));
-  });
-};
+export async function axiosGetAPI<T = unknown>(
+  url: string,
+  token?: string
+): Promise<T> {
+  try {
+    const response = await axiosAPI.get<T>(url, {
+      headers: buildAuthHeaders(token),
+    });
+    return response.data;
+  } catch (error) {
+    throw normalizeError(error);
+  }
+}
 
-export const axiosPatchAPI = (url: string, data: any, token?: string) => {
-  return new Promise((resolve, reject) => {
-    axiosAPI
-      .patch(url, data, {
-        headers: {
-          Authorization: `Bearer ${token ?? ""}`,
-        },
-      })
-      .then((res) => resolve(res))
-      .catch((err) => reject(err));
-  });
-};
+export async function axiosPostAPI<TResponse = unknown, TBody = unknown>(
+  url: string,
+  data: TBody,
+  token?: string
+): Promise<TResponse> {
+  try {
+    const response = await axiosAPI.post<TResponse>(url, data, {
+      headers: buildAuthHeaders(token),
+    });
+    return response.data;
+  } catch (error) {
+    throw normalizeError(error);
+  }
+}
 
-export const axiosDeleteAPI = (url: string, token?: string) => {
-  return new Promise((resolve, reject) => {
-    axiosAPI
-      .delete(url, {
-        headers: {
-          Authorization: `Bearer ${token ?? ""}`,
-        },
-      })
-      .then((res) => resolve(res))
-      .catch((err) => reject(err));
-  });
-};
+export async function axiosPatchAPI<TResponse = unknown, TBody = unknown>(
+  url: string,
+  data: TBody,
+  token?: string
+): Promise<TResponse> {
+  try {
+    const response = await axiosAPI.patch<TResponse>(url, data, {
+      headers: buildAuthHeaders(token),
+    });
+    return response.data;
+  } catch (error) {
+    throw normalizeError(error);
+  }
+}
+
+export async function axiosDeleteAPI<T = unknown>(
+  url: string,
+  token?: string
+): Promise<T> {
+  try {
+    const response = await axiosAPI.delete<T>(url, {
+      headers: buildAuthHeaders(token),
+    });
+    return response.data;
+  } catch (error) {
+    throw normalizeError(error);
+  }
+}

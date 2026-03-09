@@ -1,12 +1,22 @@
 import { View, Text } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import { authStyles } from "../../styles/auth/authStyles";
 import RegisterForm from "../../components/auth/RegisterForm";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
 
-const RegisterScreen = ({ navigation }: any) => {
+type RegisterScreenProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "Register"
+>;
+
+const RegisterScreen = ({ navigation }: RegisterScreenProps) => {
   const [registerStep, setRegisterStep] = useState(1);
+  const authNavigation =
+    navigation as unknown as NativeStackNavigationProp<AuthStackParamList>;
 
   return (
     <View style={authStyles.container}>
@@ -33,7 +43,7 @@ const RegisterScreen = ({ navigation }: any) => {
         <RegisterForm
           registerStep={registerStep}
           setRegisterStep={setRegisterStep}
-          navigation={navigation}
+          navigation={authNavigation}
         />
       </View>
     </View>

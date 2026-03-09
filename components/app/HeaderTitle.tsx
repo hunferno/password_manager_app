@@ -4,8 +4,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../assets/COLORS";
 import SearchBox from "./SearchBox";
 import { DrawerActions } from "@react-navigation/native";
+import type { NavigationProp, ParamListBase } from "@react-navigation/native";
 
-const HeaderTitle = ({ title, navigation }) => {
+export type HeaderTitleProps = {
+  title: string;
+  navigation: NavigationProp<ParamListBase>;
+};
+
+const HeaderTitle = ({ title, navigation }: HeaderTitleProps) => {
   const handleOpenMenu = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };

@@ -6,8 +6,27 @@ import { COLORS } from "../../assets/COLORS";
 import ButtonForm from "./ButtonForm";
 import { AuthContext } from "../../context/authContext";
 import { forgotPasswordEmailFormStruct } from "../../models/forgotPasswordEmailFormStruct";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
 
-const ForgotPasswordEmailForm = ({ navigation }: { navigation: any }) => {
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+type ForgotPasswordEmailFormProps = {
+  navigation: NativeStackNavigationProp<AuthStackParamList>;
+};
+
+const ForgotPasswordEmailForm = ({
+  navigation,
+}: ForgotPasswordEmailFormProps) => {
   const { onResendVerificationCode } = useContext(AuthContext);
 
   const [forgotPasswordMsgErr, setForgotPasswordMsgErr] = useState("");
@@ -22,7 +41,7 @@ const ForgotPasswordEmailForm = ({ navigation }: { navigation: any }) => {
 
         const result = await onResendVerificationCode!(email);
 
-        if (result && result.error) {
+        if (isApiError(result)) {
           setForgotPasswordMsgErr(result.message);
           return;
         }

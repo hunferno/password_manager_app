@@ -3,10 +3,27 @@ import { authStyles } from "../../styles/auth/authStyles";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import LoginForm from "../../components/auth/LoginForm";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
 
-const LoginScreen = ({ navigation }: any) => {
+type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, "Login">;
+
+const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
   const [loginStep, setLoginStep] = useState(1);
+  const [resetFormKey, setResetFormKey] = useState(0);
+  const hasHandledJustVerified = useRef(false);
+  const authNavigation =
+    navigation as unknown as NativeStackNavigationProp<AuthStackParamList>;
+
+  useEffect(() => {
+    if (route.params?.justVerified && !hasHandledJustVerified.current) {
+      hasHandledJustVerified.current = true;
+      setLoginStep(1);
+      setResetFormKey((k) => k + 1);
+    }
+  }, [route.params?.justVerified]);
 
   return (
     <KeyboardAvoidingView style={authStyles.container}>
@@ -28,7 +45,8 @@ const LoginScreen = ({ navigation }: any) => {
       </View>
       <View style={authStyles.formWrapper}>
         <LoginForm
-          navigation={navigation}
+          key={resetFormKey}
+          navigation={authNavigation}
           loginStep={loginStep}
           setLoginStep={setLoginStep}
         />

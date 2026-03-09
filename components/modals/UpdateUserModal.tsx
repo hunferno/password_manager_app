@@ -15,13 +15,26 @@ import { updateUserFormStruct } from "../../models/updateUserFormStruct";
 import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../assets/COLORS";
 
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+export type UpdateUserModalProps = {
+  changePasswordModalVisible: boolean;
+  setChangePasswordModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 const UpdateUserModal = ({
   changePasswordModalVisible,
   setChangePasswordModalVisible,
-}: {
-  changePasswordModalVisible: any;
-  setChangePasswordModalVisible: any;
-}) => {
+}: UpdateUserModalProps) => {
   const { onUpdateUser } = useContext(AppContext);
 
   const [updateMsgErr, setUpdateMsgErr] = useState("");
@@ -54,7 +67,7 @@ const UpdateUserModal = ({
         onSubmit={async (values) => {
           const result = await onUpdateUser!(values);
 
-          if (result && result.error) {
+          if (isApiError(result)) {
             setUpdateMsgErr(result.message);
             return;
           }

@@ -6,7 +6,7 @@ import {
   windowWidth,
 } from "../../assets/Dimensions";
 
-export const appStyles = StyleSheet.create({
+const appStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
@@ -72,7 +72,7 @@ export const appStyles = StyleSheet.create({
   },
 
   searchInput: {
-    width:"100%",
+    width: "100%",
     padding: 10,
     color: COLORS.blue,
   },
@@ -106,8 +106,6 @@ export const appStyles = StyleSheet.create({
     right: 15,
     backgroundColor: COLORS.blue,
     borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 15,
     paddingVertical: 10,
   },
@@ -117,3 +115,6 @@ export const appStyles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+export type AppStyles = typeof appStyles;
+export { appStyles };

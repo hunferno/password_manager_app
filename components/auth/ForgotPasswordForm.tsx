@@ -7,18 +7,33 @@ import ButtonForm from "./ButtonForm";
 import { AuthContext } from "../../context/authContext";
 import { forgotPasswordFormStruct } from "../../models/forgotPasswordFormStruct";
 import { Entypo } from "@expo/vector-icons";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+type ForgotPasswordFormProps = {
+  navigation: NativeStackNavigationProp<AuthStackParamList>;
+  email: string | undefined;
+  setForgetPswStep: React.Dispatch<React.SetStateAction<number>>;
+  setForgotPasswordMsgSuccess: React.Dispatch<React.SetStateAction<string>>;
+};
 
 const ForgotPasswordForm = ({
   navigation,
   email,
   setForgetPswStep,
   setForgotPasswordMsgSuccess,
-}: {
-  navigation: any;
-  email: string;
-  setForgetPswStep: any;
-  setForgotPasswordMsgSuccess: any;
-}) => {
+}: ForgotPasswordFormProps) => {
   const { onResetPassword } = useContext(AuthContext);
 
   const [forgotPasswordMsgErr, setForgotPasswordMsgErr] = useState("");
@@ -32,15 +47,17 @@ const ForgotPasswordForm = ({
       enableReinitialize
       onSubmit={async (values) => {
         const { password } = values;
+        if (!email) return;
 
         const result = await onResetPassword!(email, password);
 
-        if (result && result.error) {
+        if (isApiError(result)) {
           setForgotPasswordMsgErr(result.message);
           return;
         }
 
-        setForgotPasswordMsgSuccess(result.data.message);
+        const data = result as { data: { message: string } };
+        setForgotPasswordMsgSuccess(data.data.message);
         setForgetPswStep(3);
       }}
     >

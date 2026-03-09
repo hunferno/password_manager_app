@@ -7,8 +7,11 @@ import { appStyles } from "../styles/app/appStyles";
 import { StatusBar } from "expo-status-bar";
 import HeaderTitle from "../components/app/HeaderTitle";
 import SecureTextScreen from "../screens/app/SecureTextScreen";
+import type { TabParamList } from "./navigationTypes";
 
-const Tab = createMaterialTopTabNavigator();
+export type { TabParamList } from "./navigationTypes";
+
+const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 function TabNavigator() {
   const navigation = useNavigation();

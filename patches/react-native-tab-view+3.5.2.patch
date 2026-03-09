@@ -1,0 +1,20 @@
+diff --git a/node_modules/react-native-tab-view/src/TabBar.tsx b/node_modules/react-native-tab-view/src/TabBar.tsx
+index e8d0b4c..1c1e18d 100644
+--- a/node_modules/react-native-tab-view/src/TabBar.tsx
++++ b/node_modules/react-native-tab-view/src/TabBar.tsx
+@@ -442,13 +442,14 @@ export function TabBar<T extends Route>({
+         android_ripple,
+       };
+ 
++      const { key: tabKey, ...tabBarItemProps } = props;
+       return (
+         <>
+           {gap > 0 && index > 0 ? <Separator width={gap} /> : null}
+           {renderTabBarItem ? (
+             renderTabBarItem(props)
+           ) : (
+-            <TabBarItem {...props} />
++            <TabBarItem key={tabKey} {...tabBarItemProps} />
+           )}
+         </>
+       );

@@ -6,7 +6,7 @@ import {
   windowWidth,
 } from "../../assets/Dimensions";
 
-export const authStyles = StyleSheet.create({
+const authStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.light,
@@ -169,3 +169,6 @@ export const authStyles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+export type AuthStyles = typeof authStyles;
+export { authStyles };

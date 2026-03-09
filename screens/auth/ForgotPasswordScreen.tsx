@@ -7,14 +7,18 @@ import ForgotPasswordEmailForm from "../../components/auth/ForgotPasswordEmailFo
 import ForgotPasswordForm from "../../components/auth/ForgotPasswordForm";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+
+type ForgotPasswordScreenProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "ForgotPassword"
+>;
 
 const ForgotPasswordScreen = ({
   navigation,
   route,
-}: {
-  navigation: any;
-  route: any;
-}) => {  
+}: ForgotPasswordScreenProps) => {
   const email = route.params?.email;
 
   const [forgetPswStep, setForgetPswStep] = useState(1);

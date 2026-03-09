@@ -1,22 +1,37 @@
 import { View, Text, TextInput, TouchableOpacity, Switch } from "react-native";
 import React, { useContext, useState } from "react";
-import { Formik, FormikErrors } from "formik";
+import { Formik, type FormikErrors } from "formik";
 import { authStyles } from "../../styles/auth/authStyles";
 import { Entypo } from "@expo/vector-icons";
 import ButtonForm from "./ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { registerFormStruct } from "../../models/registerFormStruct";
 import { AuthContext } from "../../context/authContext";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+type RegisterFormProps = {
+  registerStep: number;
+  setRegisterStep: React.Dispatch<React.SetStateAction<number>>;
+  navigation: NativeStackNavigationProp<AuthStackParamList>;
+};
 
 const RegisterForm = ({
   registerStep,
   setRegisterStep,
   navigation,
-}: {
-  registerStep: number;
-  setRegisterStep: React.Dispatch<React.SetStateAction<number>>;
-  navigation: any;
-}) => {
+}: RegisterFormProps) => {
   const { isEmailExistsInDB, onRegister, activeBioConnexion } =
     useContext(AuthContext);
 
@@ -72,7 +87,7 @@ const RegisterForm = ({
         const { email, password } = values;
 
         const registration = await onRegister!(email, password);
-        if (registration && registration.error) {
+        if (isApiError(registration)) {
           setRegisterMsgErr(registration.message);
           return;
         }

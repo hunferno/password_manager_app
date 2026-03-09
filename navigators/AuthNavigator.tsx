@@ -5,7 +5,18 @@ import LaunchScreen from "../screens/auth/LaunchScreen";
 import VerificationCodeScreen from "../screens/auth/VerificationCodeScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 
-const Auth = createNativeStackNavigator();
+export type AuthStackParamList = {
+  Launch: undefined;
+  Register: undefined;
+  Login: { justVerified?: boolean } | undefined;
+  VerificationCode: {
+    email: string;
+    destination: "login" | "forgotPassword";
+  };
+  ForgotPassword: { email?: string; from?: "verificationCode" };
+};
+
+const Auth = createNativeStackNavigator<AuthStackParamList>();
 
 const AuthNavigator = () => {
   return (

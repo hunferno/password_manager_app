@@ -7,14 +7,29 @@ import { Image } from "expo-image";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { AuthContext } from "../../context/authContext";
 import toaster from "../../components/toaster";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+
+type VerificationCodeScreenProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "VerificationCode"
+>;
+
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
 
 const VerificationCodeScreen = ({
   route,
   navigation,
-}: {
-  route: any;
-  navigation: any;
-}) => {
+}: VerificationCodeScreenProps) => {
   const { email, destination } = route.params;
   const { onResendVerificationCode, onVerificationCode } =
     useContext(AuthContext);
@@ -59,13 +74,13 @@ const VerificationCodeScreen = ({
     // OtpVerification({ otpCode, phone });
     const verificationResponse = await onVerificationCode!(email, otpCode);
 
-    if (verificationResponse && verificationResponse.error) {
+    if (isApiError(verificationResponse)) {
       setOtpErrMessage(verificationResponse.message);
     }
 
     if (destination === "login") {
       toaster("success", "Inscription", "Vous êtes maintenant inscrit");
-      navigation.navigate("Login");
+      navigation.navigate("Login", { justVerified: true });
     } else if (destination === "forgotPassword") {
       navigation.navigate("ForgotPassword", {
         from: "verificationCode",
@@ -77,7 +92,7 @@ const VerificationCodeScreen = ({
   const resendVerificationCode = async () => {
     const resendResponse = await onResendVerificationCode!(email);
 
-    if (resendResponse && resendResponse.error) {
+    if (isApiError(resendResponse)) {
       setOtpErrMessage(resendResponse.message);
     }
 

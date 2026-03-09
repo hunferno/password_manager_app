@@ -3,21 +3,27 @@ import { View, Text, TextInput, ScrollView } from "react-native";
 import HeaderRightButton from "../../components/app/identification/HeaderRightButton";
 import { AppContext } from "../../context/appContext";
 import toaster from "../../components/toaster";
-import { Formik } from "formik";
+import { Formik, type FormikErrors } from "formik";
 import { secureTextForm } from "../../models/secureTextFormStruct";
 import { secureTextStyles } from "../../styles/app/secureTextStyles";
 import { authStyles } from "../../styles/auth/authStyles";
 import moment from "moment";
 import "moment/min/locales";
 import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../navigators/navigationTypes";
 
-const AddSecureText = ({
-  navigation,
-  route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
+type AddSecureTextScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "AddSecureText"
+>;
+
+type SecureTextFormValues = {
+  title: string;
+  text: string;
+};
+
+const AddSecureText = ({ navigation, route }: AddSecureTextScreenProps) => {
   const { onCreateSecureText, onUpdateSecureText } = useContext(AppContext);
 
   const formRef = useRef(null);
@@ -39,9 +45,9 @@ const AddSecureText = ({
       headerRight: () =>
         !readOnly ? (
           <HeaderRightButton formRef={formRef} />
-        ) : (
+        ) : data ? (
           <HeaderRightButtonEdit data={data} location="AddSecureText" />
-        ),
+        ) : undefined,
     });
   }, [readOnly, data]);
 
@@ -68,14 +74,20 @@ const AddSecureText = ({
             text,
             category: "SecureText",
           };
-          const result = data
-            ? await onUpdateSecureText!(data._id, object)
+          const id = data?._id;
+          const result = data && id
+            ? await onUpdateSecureText!(id, object)
             : await onCreateSecureText!(object);
-          if (result && result.error) {
-            console.log(result.message);
+          const isError =
+            result &&
+            typeof result === "object" &&
+            "error" in result &&
+            (result as { error: boolean }).error;
+          if (isError) {
+            console.log((result as { message?: string }).message);
           } else {
             showToast(data ? "Modification" : "Création");
-            navigation.navigate("SecureText");
+            navigation.navigate("ScreenStack", { screen: "SecureText" });
           }
         }}
       >
@@ -94,7 +106,7 @@ const AddSecureText = ({
             {touched.title && errors.title && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).title}
+                  {(errors as FormikErrors<SecureTextFormValues>).title}
                 </Text>
               </View>
             )}

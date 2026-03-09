@@ -1,15 +1,34 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
+import { View, Text, TouchableOpacity } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
-import { IdentificationType } from "../../../types/identificationType";
 import { useContext, useState } from "react";
 import ModalLittleBox from "../../modals/ModalLittleBox";
 import { AppContext } from "../../../context/appContext";
 import toaster from "../../toaster";
 import { secureTextStyles } from "../../../styles/app/secureTextStyles";
 import { SecureTextType } from "../../../types/secureTextType";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../../navigators/navigationTypes";
+
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+export type ActionsProps = {
+  data: SecureTextType;
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  handleActionModalClose: () => void;
+  reload: boolean;
+  setReload: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const Actions = ({
   data,
@@ -17,26 +36,22 @@ const Actions = ({
   handleActionModalClose,
   reload,
   setReload,
-}: {
-  data: SecureTextType;
-  navigation: any;
-  handleActionModalClose: any;
-  reload: any;
-  setReload: any;
-}) => {
+}: ActionsProps) => {
   const { onDeleteSecureText } = useContext(AppContext);
   const [deleteModal, setDeleteModal] = useState(false);
 
   const handleDelete = async () => {
-    const result = await onDeleteSecureText!(data._id as string);
+    const id = data._id;
+    if (!id) return;
+    const result = await onDeleteSecureText!(id);
 
-    if (result && result.error) {
-      console.log(result);
+    if (isApiError(result)) {
+      console.log(result.message);
     } else {
       toaster("success", "Suppression", "Note supprimée");
       setReload(!reload);
       handleActionModalClose();
-      navigation.navigate("SecureText");
+      navigation.navigate("ScreenStack", { screen: "SecureText" });
     }
   };
 
@@ -59,7 +74,7 @@ const Actions = ({
           style={identificationStyles.actionBodyTextContainer}
           onPress={() => {
             handleActionModalClose();
-            navigation.navigate("AddSecureText", { data: data });
+            navigation.navigate("AddSecureText", { data, readOnly: false });
           }}
         >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />

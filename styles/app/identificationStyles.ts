@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "../../assets/COLORS";
 import { windowHeight, windowWidth } from "../../assets/Dimensions";
 
-export const identificationStyles = StyleSheet.create({
+const identificationStyles = StyleSheet.create({
   emptyItemsContainer: {
     flex: 1,
     justifyContent: "center",
@@ -156,3 +156,6 @@ export const identificationStyles = StyleSheet.create({
     color: COLORS.blue,
   },
 });
+
+export type IdentificationStyles = typeof identificationStyles;
+export { identificationStyles };
