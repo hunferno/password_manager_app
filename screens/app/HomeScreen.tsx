@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { appStyles } from "../../styles/app/appStyles";
 import EmptyItems from "../../components/app/identification/EmptyItems";
@@ -24,6 +25,7 @@ type HomeScreenProps = {
 
 const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
   const { onGetAllIdentifications } = useContext(AppContext);
+  const insets = useSafeAreaInsets();
 
   const isFocused = useIsFocused();
 
@@ -137,7 +139,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
       )}
       {sheetIndex < 0 && (
         <TouchableOpacity
-          style={appStyles.addBtnContainer}
+          style={[appStyles.addBtnContainer, { bottom: 20 + insets.bottom }]}
           onPress={() =>
               navigation.navigate({
                 name: "AddIdentifications",

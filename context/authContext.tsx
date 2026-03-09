@@ -282,9 +282,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return result;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 403) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
         const data = error.response?.data as { code?: string; message?: string } | undefined;
-        if (data?.code === "ACCOUNT_NOT_VERIFIED") {
+
+        if (status === 401) {
+          return {
+            error: true,
+            message:
+              data?.message ??
+              "Mot de passe incorrect. Veuillez réessayer.",
+          };
+        }
+        if (status === 403 && data?.code === "ACCOUNT_NOT_VERIFIED") {
           return {
             error: true,
             code: "ACCOUNT_NOT_VERIFIED",

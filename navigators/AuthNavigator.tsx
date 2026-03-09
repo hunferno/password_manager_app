@@ -8,7 +8,7 @@ import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
 export type AuthStackParamList = {
   Launch: undefined;
   Register: undefined;
-  Login: { justVerified?: boolean } | undefined;
+  Login: { justVerified?: boolean; fromPasswordUpdate?: boolean } | undefined;
   VerificationCode: {
     email: string;
     destination: "login" | "forgotPassword";

@@ -4,11 +4,15 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
 } from "react-native";
 import { Formik, type FormikErrors } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "../../styles/auth/authStyles";
 import { COLORS } from "../../assets/COLORS";
 import { identificationStyles } from "../../styles/app/identificationStyles";
@@ -41,6 +45,8 @@ const AddIdentifications = ({
 }: AddIdentificationsScreenProps) => {
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
+  const insets = useSafeAreaInsets();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const data = route.params?.data;
   const readOnly = route.params?.readOnly;
@@ -49,6 +55,19 @@ const AddIdentifications = ({
   const [showPassword, setShowPassword] = useState(false);
   const [readOnlyPassword, setReadOnlyPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardVisible(true)
+    );
+    const hide = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardVisible(false)
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   useEffect(() => {
     let title = "Ajouter un identifiant";
@@ -122,9 +141,22 @@ const AddIdentifications = ({
         }}
       >
         {({ handleChange, setFieldTouched, touched, values, errors }) => (
-          <ScrollView
-            contentContainerStyle={identificationStyles.formContainer}
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
           >
+            <ScrollView
+              contentContainerStyle={[
+                identificationStyles.formContainer,
+                {
+                  flexGrow: 1,
+                  paddingBottom: keyboardVisible ? 40 : insets.bottom + 20,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
             <View style={identificationStyles.formInputContainer}>
               <TextInput
                 editable={!readOnly}
@@ -297,7 +329,8 @@ const AddIdentifications = ({
                 value={values.twoFACode}
               />
             </View>
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
       <AddPasswordGeneratorModal

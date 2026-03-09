@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ??
-  "http://192.168.1.78:6002/api"; // fallback local dev URL
+  "http://10.34.202.14:6002/api"; // fallback local dev URL
 
 export const axiosAPI = axios.create({
   baseURL: BASE_URL,

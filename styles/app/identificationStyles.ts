@@ -124,9 +124,8 @@ const identificationStyles = StyleSheet.create({
     color: COLORS.blue,
   },
   formContainer: {
-    height: windowHeight * 0.7,
     padding: 15,
-    justifyContent: "space-evenly",
+    paddingBottom: 40,
   },
   formInputContainer: {
     paddingVertical: 10,

@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { appStyles } from "../../styles/app/appStyles";
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -23,6 +24,7 @@ type SecureTextScreenProps = {
 
 const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
   const { onGetAllSecureText } = useContext(AppContext);
+  const insets = useSafeAreaInsets();
 
   const isFocused = useIsFocused();
 
@@ -124,7 +126,7 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
 
       {!secureBottomSheetVisible && (
         <TouchableOpacity
-          style={appStyles.addBtnContainer}
+          style={[appStyles.addBtnContainer, { bottom: 20 + insets.bottom }]}
           onPress={() =>
               navigation.navigate({
                 name: "AddSecureText",

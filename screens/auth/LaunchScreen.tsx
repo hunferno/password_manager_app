@@ -8,10 +8,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type LaunchScreenProps = NativeStackScreenProps<AuthStackParamList, "Launch">;
 
 const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
+  const insets = useSafeAreaInsets();
   const {
     biometricConnexion,
     isBiometricSupported,
@@ -25,7 +27,9 @@ const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
   };
 
   return (
-    <View style={authStyles.launchContainer}>
+    <View
+      style={[authStyles.launchContainer, { paddingBottom: insets.bottom }]}
+    >
       <View style={authStyles.launchTextWrapper}>
         <Image
           source={require("../../assets/images/launchImg.png")}

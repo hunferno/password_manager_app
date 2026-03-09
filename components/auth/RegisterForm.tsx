@@ -1,11 +1,16 @@
 import { View, Text, TextInput, TouchableOpacity, Switch } from "react-native";
 import React, { useContext, useState } from "react";
-import { Formik, type FormikErrors } from "formik";
+import { Formik } from "formik";
 import { authStyles } from "../../styles/auth/authStyles";
 import { Entypo } from "@expo/vector-icons";
 import ButtonForm from "./ButtonForm";
 import { COLORS } from "../../assets/COLORS";
-import { registerFormStruct } from "../../models/registerFormStruct";
+import {
+  registerFormStruct,
+  registerStep1Schema,
+  registerStep2Schema,
+  registerStep3Schema,
+} from "../../models/registerFormStruct";
 import { AuthContext } from "../../context/authContext";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../navigators/AuthNavigator";
@@ -40,51 +45,47 @@ const RegisterForm = ({
   const [activeBio, setActiveBio] = useState(true);
   const [registerMsgErr, setRegisterMsgErr] = useState("");
   const [activeBioErrMsg, setActiveBioErrMsg] = useState("");
-  const [registerInfo, setRegisterInfo] = useState<{
-    email: string | null;
-    password: string | null;
-    confirmPassword: string | null;
-  }>({ email: null, password: null, confirmPassword: null });
-
-  const handleChangeStep = async (
-    errors: FormikErrors<{
-      email: string;
-      password: string;
-      confirmPassword: string;
-    }>
-  ) => {
-    if (registerStep == 1 && !errors.email) {
-      const isValidEmail = await isEmailExistsInDB!(registerInfo.email!);
-      if (isValidEmail.data.isExist) {
-        setRegisterMsgErr("Email déja existant");
-      } else {
-        setRegisterMsgErr("");
-        setRegisterStep(2);
-      }
-    } else if (registerStep == 2 && !errors.password) {
-      setRegisterStep(3);
-    } else if (registerStep == 3 && !errors.confirmPassword) {
-      setRegisterStep(4);
-    }
-  };
-
-  const handleDisableContinueButton = () => {
-    if (registerStep == 1 && registerInfo.email == null) {
-      return true;
-    } else if (registerStep == 2 && registerInfo.password == null) {
-      return true;
-    } else if (registerStep == 3 && registerInfo.confirmPassword == null) {
-      return true;
+  const getValidationSchema = () => {
+    switch (registerStep) {
+      case 1:
+        return registerStep1Schema;
+      case 2:
+        return registerStep2Schema;
+      case 3:
+        return registerStep3Schema;
+      default:
+        return registerFormStruct;
     }
   };
 
   return (
     <Formik
       initialValues={{ email: "", password: "", confirmPassword: "" }}
-      validationSchema={registerFormStruct}
+      validationSchema={getValidationSchema()}
       enableReinitialize
       onSubmit={async (values) => {
         const { email, password } = values;
+
+        if (registerStep === 1) {
+          const result = await isEmailExistsInDB!(email);
+          if (result.data.isExist) {
+            setRegisterMsgErr("Email déja existant");
+            return;
+          }
+          setRegisterMsgErr("");
+          setRegisterStep(2);
+          return;
+        }
+        if (registerStep === 2) {
+          setRegisterMsgErr("");
+          setRegisterStep(3);
+          return;
+        }
+        if (registerStep === 3) {
+          setRegisterMsgErr("");
+          setRegisterStep(4);
+          return;
+        }
 
         const registration = await onRegister!(email, password);
         if (isApiError(registration)) {
@@ -108,6 +109,7 @@ const RegisterForm = ({
         touched,
         values,
         errors,
+        submitCount,
       }) => (
         <>
           {/* ERROR MESSAGE */}
@@ -139,15 +141,10 @@ const RegisterForm = ({
                   value={values.email}
                   onBlur={() => setFieldTouched("email")}
                   onChangeText={handleChange("email")}
-                  onChange={(e) =>
-                    setRegisterInfo({
-                      ...registerInfo,
-                      email: e.nativeEvent.text,
-                    })
-                  }
+                  onChange={() => setRegisterMsgErr("")}
                 />
               </View>
-              {touched.email && errors.email && (
+              {(touched.email || submitCount > 0) && errors.email && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.email}</Text>
                 </View>
@@ -168,12 +165,6 @@ const RegisterForm = ({
                   value={values.password}
                   onBlur={() => setFieldTouched("password")}
                   onChangeText={handleChange("password")}
-                  onChange={(e) =>
-                    setRegisterInfo({
-                      ...registerInfo,
-                      password: e.nativeEvent.text,
-                    })
-                  }
                 />
                 <TouchableOpacity
                   onPress={() => setShowPasswordOne(!showPasswordOne)}
@@ -185,7 +176,7 @@ const RegisterForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {touched.password && errors.password && (
+              {(touched.password || submitCount > 0) && errors.password && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.password}</Text>
                 </View>
@@ -206,12 +197,6 @@ const RegisterForm = ({
                   value={values.confirmPassword}
                   onBlur={() => setFieldTouched("confirmPassword")}
                   onChangeText={handleChange("confirmPassword")}
-                  onChange={(e) =>
-                    setRegisterInfo({
-                      ...registerInfo,
-                      confirmPassword: e.nativeEvent.text,
-                    })
-                  }
                 />
                 <TouchableOpacity
                   onPress={() => setShowPasswordTwo(!showPasswordTwo)}
@@ -223,13 +208,14 @@ const RegisterForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {touched.confirmPassword && errors.confirmPassword && (
-                <View style={authStyles.errorMsgContainer}>
-                  <Text style={authStyles.errorMsgText}>
-                    {errors.confirmPassword}
-                  </Text>
-                </View>
-              )}
+              {(touched.confirmPassword || submitCount > 0) &&
+                errors.confirmPassword && (
+                  <View style={authStyles.errorMsgContainer}>
+                    <Text style={authStyles.errorMsgText}>
+                      {errors.confirmPassword}
+                    </Text>
+                  </View>
+                )}
             </>
           )}
 
@@ -266,16 +252,12 @@ const RegisterForm = ({
               bgColor={COLORS.light}
             />
 
-            {!handleDisableContinueButton() && (
-              <ButtonForm
-                title={registerStep === 4 ? "CONNEXION" : "CONTINUER"}
-                action={() =>
-                  registerStep === 4 ? handleSubmit() : handleChangeStep(errors)
-                }
-                color={COLORS.light}
-                bgColor={COLORS.blue}
-              />
-            )}
+            <ButtonForm
+              title={registerStep === 4 ? "CONNEXION" : "CONTINUER"}
+              action={() => handleSubmit()}
+              color={COLORS.light}
+              bgColor={COLORS.blue}
+            />
           </View>
         </>
       )}

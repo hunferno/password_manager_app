@@ -1,6 +1,9 @@
-import { Formik, type FormikErrors } from "formik";
+import { Formik } from "formik";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { loginFormStruct } from "../../models/loginFormStruct";
+import {
+  loginFormStruct,
+  loginStep1Schema,
+} from "../../models/loginFormStruct";
 import { COLORS } from "../../assets/COLORS";
 import { authStyles } from "../../styles/auth/authStyles";
 import { Entypo } from "@expo/vector-icons";
@@ -52,27 +55,6 @@ const LoginForm = ({
   const [showPendingVerification, setShowPendingVerification] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
 
-  const handleChangeStep = async (
-    errors: FormikErrors<{
-      email: string;
-      password: string;
-      confirmPassword: string;
-    }>
-  ) => {
-    if (loginStep == 1 && !errors.email) {
-      const result = await isEmailExistsInDB!(email);
-
-      if (result.data.isExist) {
-        setLoginMsgErr("");
-        setShowPendingVerification(result.data.isVerified === false);
-        setLoginStep(2);
-      } else {
-        setShowPendingVerification(false);
-        setLoginMsgErr("Email non reconnu");
-      }
-    }
-  };
-
   const handleResendCode = async () => {
     if (!email.trim()) return;
     setResendLoading(true);
@@ -90,19 +72,30 @@ const LoginForm = ({
     if (!email.trim()) return;
     navigation.navigate("VerificationCode", {
       email: email.trim(),
-      destination: "login",
+      destination: "forgotPassword",
     });
   };
 
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
-      validationSchema={loginFormStruct}
+      validationSchema={loginStep === 1 ? loginStep1Schema : loginFormStruct}
       enableReinitialize
       onSubmit={async (values) => {
         setShowPendingVerification(false);
+        if (loginStep === 1) {
+          const result = await isEmailExistsInDB!(values.email);
+          if (result.data.isExist) {
+            setLoginMsgErr("");
+            setShowPendingVerification(result.data.isVerified === false);
+            setLoginStep(2);
+          } else {
+            setShowPendingVerification(false);
+            setLoginMsgErr("Email non reconnu");
+          }
+          return;
+        }
         const result = await onLogin!(values.email, values.password);
-
         if (isLoginNotVerifiedError(result)) {
           setShowPendingVerification(true);
           setLoginMsgErr(result.message);
@@ -120,6 +113,7 @@ const LoginForm = ({
         touched,
         values,
         errors,
+        submitCount,
       }) => (
         <>
           {loginMsgErr !== "" && (
@@ -135,6 +129,17 @@ const LoginForm = ({
               <Text style={[authStyles.registerHomeText, { marginBottom: 8 }]}>
                 Compte en attente de vérification
               </Text>
+              {loginStep === 2 && (
+                <Text
+                  style={[
+                    authStyles.registerHomeText,
+                    { fontStyle: "italic", marginBottom: 8, opacity: 0.9 },
+                  ]}
+                >
+                  Vous vous souvenez de votre mot de passe ? Entrez-le ci-dessous et
+                  cliquez sur CONNEXION.
+                </Text>
+              )}
               <TouchableOpacity
                 onPress={handleResendCode}
                 disabled={resendLoading}
@@ -181,7 +186,7 @@ const LoginForm = ({
                   }}
                 />
               </View>
-              {touched.email && errors.email && (
+              {(touched.email || submitCount > 0) && errors.email && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.email}</Text>
                 </View>
@@ -213,7 +218,7 @@ const LoginForm = ({
                   />
                 </TouchableOpacity>
               </View>
-              {touched.password && errors.password && (
+              {(touched.password || submitCount > 0) && errors.password && (
                 <View style={authStyles.errorMsgContainer}>
                   <Text style={authStyles.errorMsgText}>{errors.password}</Text>
                 </View>
@@ -246,9 +251,7 @@ const LoginForm = ({
             />
             <ButtonForm
               title={loginStep < 2 ? "CONTINUER" : "CONNEXION"}
-              action={() =>
-                loginStep < 2 ? handleChangeStep(errors) : handleSubmit()
-              }
+              action={() => handleSubmit()}
               color={COLORS.light}
               bgColor={COLORS.blue}
             />

@@ -56,8 +56,10 @@ const ForgotPasswordForm = ({
           return;
         }
 
-        const data = result as { data: { message: string } };
-        setForgotPasswordMsgSuccess(data.data.message);
+        const successResult = result as { message?: string };
+        setForgotPasswordMsgSuccess(
+          successResult?.message ?? "Mot de passe mis à jour."
+        );
         setForgetPswStep(3);
       }}
     >
