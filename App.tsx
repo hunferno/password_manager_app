@@ -1,7 +1,9 @@
-import { LogBox } from "react-native";
+import { useContext, useEffect } from "react";
+import { LogBox, Platform } from "react-native";
 import "react-native-gesture-handler";
 import { configureReanimatedLogger } from "react-native-reanimated";
-import { AuthProvider } from "./context/authContext";
+import * as NavigationBar from "expo-navigation-bar";
+import { AuthContext, AuthProvider } from "./context/authContext";
 import Navigation from "./Navigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -14,11 +16,25 @@ configureReanimatedLogger({ strict: false });
 // Masque le warning de dépréciation InteractionManager (provenant d'une dépendance).
 LogBox.ignoreLogs(["InteractionManager has been deprecated"]);
 
+/** Réapplique la barre de navigation masquée à chaque changement d'état (connexion, déconnexion, redirection). */
+function KeepNavBarHidden() {
+  const { authState } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setVisibilityAsync("hidden");
+    }
+  }, [authState.authenticated]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <AuthProvider>
+          <KeepNavBarHidden />
           <Navigation />
         </AuthProvider>
       </BottomSheetModalProvider>
