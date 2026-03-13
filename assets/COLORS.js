@@ -1,14 +1,30 @@
+/**
+ * Palette moderne inspirée des apps 1Password, Bitwarden, Linear.
+ * Toutes les couleurs sont opaques pour éviter les problèmes de rendu en build APK.
+ */
 export const COLORS = {
-    light: "#F9F9FA",
-    dark: "#282534",
-    grey: "#C3C3C3",
-    gold: "#D4B071",
-    blue: "#24385B",
-    success: "#4ce453",
-    warning:"#e4c04c",
-    failure:"#e44c4c",
-    lightSuccess: "rgba(76, 228, 83, 0.4)",
-    lightBlue: "rgba(36, 56, 91, 0.8)",
-    lightFailure: "rgba(228, 76, 76, 0.4)",
-    softBlue: "rgba(36, 56, 91, 0.25)",
-}
+  // Surfaces & arrière-plans
+  light: "#F8FAFC",
+  dark: "#0F172A",
+
+  // Texte & états
+  grey: "#64748B",
+  gold: "#0EA5E9",
+  blue: "#0F172A",
+
+  // Statuts (opaques)
+  success: "#22C55E",
+  warning: "#F59E0B",
+  failure: "#EF4444",
+
+  // Variantes (opacité préservée pour overlays uniquement)
+  lightSuccess: "rgba(34, 197, 94, 0.25)",
+  lightFailure: "rgba(239, 68, 68, 0.25)",
+
+  // Placeholders, texte secondaire, surfaces claires (100% opaques)
+  lightBlue: "#64748B",
+  softBlue: "#E2E8F0",
+
+  // Surface sombre (Paramètres, drawer, etc.)
+  surfaceDark: "#1E293B",
+};

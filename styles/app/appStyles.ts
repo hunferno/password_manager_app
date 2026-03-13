@@ -104,7 +104,7 @@ const appStyles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 15,
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.gold,
     borderRadius: 30,
     paddingHorizontal: 15,
     paddingVertical: 10,

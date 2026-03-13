@@ -5,7 +5,7 @@ import { COLORS } from "../../../assets/COLORS";
 const parameterStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.lightBlue,
+    backgroundColor: COLORS.surfaceDark,
     padding: 20,
   },
   actionContainer: {

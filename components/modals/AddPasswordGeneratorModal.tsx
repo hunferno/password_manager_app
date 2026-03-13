@@ -152,8 +152,8 @@ const AddPasswordGeneratorModal = ({
             <Text style={modalStyles.modalText}>Chiffres (ex. 123)</Text>
             <Switch
               disabled={!isLetters}
-              trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
-              thumbColor={isNumbers ? COLORS.grey : COLORS.lightBlue}
+              trackColor={{ false: COLORS.grey, true: COLORS.gold }}
+              thumbColor={isNumbers ? COLORS.grey : COLORS.gold}
               value={isNumbers}
               onValueChange={(value) => setIsNumbers(value)}
             />
@@ -162,8 +162,8 @@ const AddPasswordGeneratorModal = ({
             <Text style={modalStyles.modalText}>Lettres (ex. Aa)</Text>
             <Switch
               disabled={!isNumbers}
-              trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
-              thumbColor={isLetters ? COLORS.grey : COLORS.lightBlue}
+              trackColor={{ false: COLORS.grey, true: COLORS.gold }}
+              thumbColor={isLetters ? COLORS.grey : COLORS.gold}
               value={isLetters}
               onValueChange={(value) => setIsLetters(value)}
             />
@@ -171,8 +171,8 @@ const AddPasswordGeneratorModal = ({
           <View style={modalStyles.generateSwitchContainer}>
             <Text style={modalStyles.modalText}>Symboles (ex. @&$!#?)</Text>
             <Switch
-              trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
-              thumbColor={isSymbols ? COLORS.grey : COLORS.lightBlue}
+              trackColor={{ false: COLORS.grey, true: COLORS.gold }}
+              thumbColor={isSymbols ? COLORS.grey : COLORS.gold}
               value={isSymbols}
               onValueChange={(value) => setIsSymbols(value)}
             />
