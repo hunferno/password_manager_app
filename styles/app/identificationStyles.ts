@@ -121,7 +121,7 @@ const identificationStyles = StyleSheet.create({
   addScreenHeaderText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: COLORS.blue,
+    color: COLORS.light,
   },
   formContainer: {
     padding: 15,
@@ -152,7 +152,7 @@ const identificationStyles = StyleSheet.create({
   formPasswordGenerateText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: COLORS.blue,
+    color: COLORS.gold,
   },
 });
 

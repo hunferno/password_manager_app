@@ -86,7 +86,7 @@ const SearchBox = () => {
 
   return (
     <View style={appStyles.searchContainer}>
-      <MaterialIcons name="search" size={16} color={COLORS.blue} />
+      <MaterialIcons name="search" size={16} color={COLORS.gold} />
       <TextInput
         key={activeTab}
         placeholder="Recherchez un élément..."
