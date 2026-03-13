@@ -28,7 +28,7 @@ const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
 
   return (
     <View
-      style={[authStyles.launchContainer, { paddingBottom: insets.bottom }]}
+      style={[authStyles.launchContainer, { paddingBottom: 20 + insets.bottom }]}
     >
       <View style={authStyles.launchTextWrapper}>
         <Image
