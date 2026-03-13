@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  Modal,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Modal, Pressable, TouchableOpacity } from "react-native";
 import React from "react";
 import { modalStyles } from "../../styles/app/modalStyles";
 import { appStyles } from "../../styles/app/appStyles";
@@ -32,9 +26,9 @@ const ModalLittleBox = ({
           setModalVisible(false);
         }}
       >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+        <Pressable onPress={() => setModalVisible(false)}>
           <View style={modalStyles.generatePasswordbackDrop} />
-        </TouchableWithoutFeedback>
+        </Pressable>
 
         <View style={modalStyles.logoutModalContainer}>
           <Text style={appStyles.modalText}>{modalText}</Text>

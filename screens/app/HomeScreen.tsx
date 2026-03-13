@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { appStyles } from "../../styles/app/appStyles";
@@ -13,10 +13,13 @@ import BottomSheet, {
 import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
 import { AppContext } from "../../context/appContext";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 import type { RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { TabParamList, AppStackParamList } from "../../navigators/navigationTypes";
+import type {
+  TabParamList,
+  AppStackParamList,
+} from "../../navigators/navigationTypes";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<AppStackParamList>;
@@ -31,7 +34,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
   const [reload, setReload] = useState(false);
   const [datas, setDatas] = useState<IdentificationType[]>([]);
-  // Index du BottomSheet : -1 = fermé, >= 0 = ouvert (source de vérité via onChange)
+  // Index du BottomSheet : -1 = fermé, >= 0 = ouvert
   const [sheetIndex, setSheetIndex] = useState(-1);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
     _id: "",
@@ -45,13 +48,14 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
 
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["65%"];
+  const snapPoints = useMemo(() => ["65%"], []);
   // callbacks
   const handleActionModalOpen = useCallback(() => {
-    bottomSheetRef.current?.expand();
+    setSheetIndex(0);
   }, []);
 
   const handleActionModalClose = useCallback(() => {
+    setSheetIndex(-1);
     bottomSheetRef.current?.close();
   }, []);
 
@@ -67,14 +71,16 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         enableTouchThrough={true}
       />
     ),
-    []
+    [],
   );
 
-  useEffect(() => {
-    if (route.params?.datas) {
-      setDatas(route.params.datas);
-    }
-  }, [route.params?.datas]);
+  // Fermer le bottom sheet à chaque fois que l'écran reçoit le focus (ex. retour arrière)
+  useFocusEffect(
+    useCallback(() => {
+      setSheetIndex(-1);
+      bottomSheetRef.current?.close();
+    }, []),
+  );
 
   useEffect(() => {
     if (isFocused) {
@@ -116,11 +122,16 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
             ref={bottomSheetRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            index={0}
+            index={sheetIndex}
             enablePanDownToClose={true}
             onChange={handleSheetChange}
           >
-            <BottomSheetView style={{ paddingHorizontal: 30 }}>
+            <BottomSheetView
+              style={{
+                paddingHorizontal: 30,
+                paddingBottom: 20 + insets.bottom,
+              }}
+            >
               <Actions
                 data={selectedItem}
                 navigation={navigation}
@@ -141,11 +152,11 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
         <TouchableOpacity
           style={[appStyles.addBtnContainer, { bottom: 20 + insets.bottom }]}
           onPress={() =>
-              navigation.navigate({
-                name: "AddIdentifications",
-                params: {},
-              })
-            }
+            navigation.navigate({
+              name: "AddIdentifications",
+              params: {},
+            })
+          }
         >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>

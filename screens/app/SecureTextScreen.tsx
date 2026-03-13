@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { appStyles } from "../../styles/app/appStyles";
@@ -10,7 +10,7 @@ import SecureTextItem from "../../components/app/secureText/SecureTextItem";
 import EmptyItems from "../../components/app/identification/EmptyItems";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SecureTextType } from "../../types/secureTextType";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 import { AppContext } from "../../context/appContext";
 import Actions from "../../components/app/secureText/Actions";
 import type { RouteProp } from "@react-navigation/native";
@@ -30,8 +30,7 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
 
   const [reload, setReload] = useState(false);
   const [datas, setDatas] = useState<SecureTextType[]>([]);
-  const [secureBottomSheetVisible, setSecureBottomSheetVisible] =
-    useState(false);
+  const [sheetIndex, setSheetIndex] = useState(-1);
   const [selectedItem, setSelectedItem] = useState<SecureTextType>({
     _id: "",
     title: "",
@@ -40,16 +39,20 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
 
   // ref
   const bottomSheetSecureRef = useRef<BottomSheet>(null);
-  const snapPoints = ["30%"];
+  const snapPoints = useMemo(() => ["30%"], []);
   // callbacks
-  const handleActionModalOpen = () => {
-    bottomSheetSecureRef.current?.expand();
-    setSecureBottomSheetVisible(true);
-  };
+  const handleActionModalOpen = useCallback(() => {
+    setSheetIndex(0);
+  }, []);
 
-  const handleActionModalClose = () => {
+  const handleActionModalClose = useCallback(() => {
+    setSheetIndex(-1);
     bottomSheetSecureRef.current?.close();
-  };
+  }, []);
+
+  const handleSheetChange = useCallback((index: number) => {
+    setSheetIndex(index);
+  }, []);
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -60,6 +63,14 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
       />
     ),
     []
+  );
+
+  // Fermer le bottom sheet à chaque fois que l'écran reçoit le focus (ex. retour arrière)
+  useFocusEffect(
+    useCallback(() => {
+      setSheetIndex(-1);
+      bottomSheetSecureRef.current?.close();
+    }, []),
   );
 
   useEffect(() => {
@@ -102,11 +113,16 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
             ref={bottomSheetSecureRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            index={-1}
+            index={sheetIndex}
             enablePanDownToClose={true}
-            onClose={() => setSecureBottomSheetVisible(false)}
+            onChange={handleSheetChange}
           >
-            <BottomSheetView style={{ paddingHorizontal: 30 }}>
+            <BottomSheetView
+              style={{
+                paddingHorizontal: 30,
+                paddingBottom: 20 + insets.bottom,
+              }}
+            >
               <Actions
                 data={selectedItem}
                 navigation={navigation}
@@ -124,7 +140,7 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
         />
       )}
 
-      {!secureBottomSheetVisible && (
+      {sheetIndex < 0 && (
         <TouchableOpacity
           style={[appStyles.addBtnContainer, { bottom: 20 + insets.bottom }]}
           onPress={() =>

@@ -1,4 +1,4 @@
-import { Switch, View } from "react-native";
+import { Pressable, Switch, View } from "react-native";
 import { useContext, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { version } from "../../package.json";
@@ -8,7 +8,6 @@ import ModalLittleBox from "../../components/modals/ModalLittleBox";
 import { AuthContext } from "../../context/authContext";
 import { COLORS } from "../../assets/COLORS";
 import UpdateUserModal from "../../components/modals/UpdateUserModal";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Parametres = () => {
   const {
@@ -41,7 +40,7 @@ const Parametres = () => {
       },
       extraComponent: () => {
         return (
-          <TouchableWithoutFeedback onPress={() => setBioModalVisible(true)}>
+          <Pressable onPress={() => setBioModalVisible(true)}>
             <Switch
               trackColor={{ false: COLORS.blue, true: COLORS.blue }}
               thumbColor={
@@ -49,7 +48,7 @@ const Parametres = () => {
               }
               value={isBioConnexionActive}
             />
-          </TouchableWithoutFeedback>
+          </Pressable>
         );
       },
     },

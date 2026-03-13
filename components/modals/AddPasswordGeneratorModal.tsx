@@ -2,8 +2,8 @@ import {
   View,
   Text,
   Modal,
+  Pressable,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Switch,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -94,9 +94,9 @@ const AddPasswordGeneratorModal = ({
         setModalVisible(false);
       }}
     >
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+      <Pressable onPress={() => setModalVisible(false)}>
         <View style={modalStyles.generatePasswordbackDrop} />
-      </TouchableWithoutFeedback>
+      </Pressable>
       <View style={modalStyles.generatePasswordContainer}>
         <View style={modalStyles.generateHeaderContainer}>
           <View

@@ -3,8 +3,8 @@ import {
   Text,
   Modal,
   TextInput,
+  Pressable,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { modalStyles } from "../../styles/app/modalStyles";
@@ -50,11 +50,9 @@ const UpdateUserModal = ({
         setChangePasswordModalVisible(false);
       }}
     >
-      <TouchableWithoutFeedback
-        onPress={() => setChangePasswordModalVisible(false)}
-      >
+      <Pressable onPress={() => setChangePasswordModalVisible(false)}>
         <View style={modalStyles.generatePasswordbackDrop} />
-      </TouchableWithoutFeedback>
+      </Pressable>
 
       <Formik
         initialValues={{

@@ -1,4 +1,4 @@
-import { View, Text, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
@@ -63,9 +63,9 @@ const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
         isBiometricSet &&
         isBioConnexionActive &&
         authState?.token != null && (
-          <TouchableWithoutFeedback onPress={() => bioConnexion()}>
+          <Pressable onPress={() => bioConnexion()}>
             <FontAwesome5 name="fingerprint" size={45} color={COLORS.gold} />
-          </TouchableWithoutFeedback>
+          </Pressable>
         )}
 
       <View style={authStyles.buttonWrapper}>
