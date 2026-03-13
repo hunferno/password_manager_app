@@ -4,7 +4,7 @@ import type { SecureTextType } from "../types/secureTextType";
 
 export type TabParamList = {
   Home: { datas?: IdentificationType[] };
-  SecureText: undefined;
+  SecureText: { datas?: SecureTextType[] };
 };
 
 export type AppStackParamList = {
