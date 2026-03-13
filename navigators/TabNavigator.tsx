@@ -1,4 +1,8 @@
-import { useNavigation } from "@react-navigation/native";
+import {
+  useNavigation,
+  type NavigationProp,
+  type ParamListBase,
+} from "@react-navigation/native";
 import { COLORS } from "../assets/COLORS";
 import HomeScreen from "../screens/app/HomeScreen";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -14,7 +18,7 @@ export type { TabParamList } from "./navigationTypes";
 const Tab = createMaterialTopTabNavigator<TabParamList>();
 
 function TabNavigator() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   useLayoutEffect(() => {
     navigation.setOptions({

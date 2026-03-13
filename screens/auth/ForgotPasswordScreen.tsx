@@ -69,7 +69,7 @@ const ForgotPasswordScreen = ({
         contentContainerStyle={[
           authStyles.scrollContent,
           {
-            paddingBottom: keyboardVisible ? 12 : insets.bottom,
+            paddingBottom: keyboardVisible ? 12 : 20 + insets.bottom,
           },
         ]}
         keyboardShouldPersistTaps="handled"
