@@ -5,15 +5,17 @@ import { identificationStyles } from "../../../styles/app/identificationStyles";
 import { COLORS } from "../../../assets/COLORS";
 import { IdentificationType } from "../../../types/identificationType";
 
+export type IdentificationActionsProps = {
+  data: IdentificationType;
+  handleActionModal: () => void;
+  setSelectedItem: React.Dispatch<React.SetStateAction<IdentificationType>>;
+};
+
 const IdentificationActions = ({
   data,
   handleActionModal,
   setSelectedItem,
-}: {
-  data: IdentificationType;
-  handleActionModal: any;
-  setSelectedItem: any;
-}) => {
+}: IdentificationActionsProps) => {
   const handleCopyPassword = async () => {
     await Clipboard.setStringAsync(data.password);
   };
@@ -25,8 +27,8 @@ const IdentificationActions = ({
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          handleActionModal();
           setSelectedItem(data);
+          handleActionModal();
         }}
       >
         <Entypo name="dots-three-vertical" size={30} color={COLORS.blue} />

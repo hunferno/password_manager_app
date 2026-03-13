@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import {
   axiosDeleteAPI,
@@ -9,217 +9,300 @@ import {
 import { IdentificationType } from "../types/identificationType";
 import { SecureTextType } from "../types/secureTextType";
 
-interface AppProps {
-  userEmail?: string;
-  onCreateIdentification?: (data: IdentificationType) => Promise<any>;
-  onGetAllIdentifications?: () => Promise<any>;
-  onSearchItems?: (search: string) => Promise<any>;
-  onUpdateIdentification?: (
+type ApiErrorResponse = {
+  error: true;
+  message: string;
+};
+
+type ApiResult<T> = T | ApiErrorResponse;
+
+interface AppContextValue {
+  userEmail: string;
+  onCreateIdentification: (
+    data: IdentificationType
+  ) => Promise<ApiResult<unknown>>;
+  onGetAllIdentifications: () => Promise<ApiResult<unknown>>;
+  onSearchItems: (search: string) => Promise<ApiResult<unknown>>;
+  onUpdateIdentification: (
     id: string,
     data: IdentificationType
-  ) => Promise<any>;
-  onDeleteIdentification?: (id: string) => Promise<any>;
-
-  onUpdateUser?: (data: any) => Promise<any>;
-
-  onCreateSecureText?: (data: any) => Promise<any>;
-  onGetAllSecureText?: () => Promise<any>;
-  onSearchSecureText?: (search: string) => Promise<any>;
-  onUpdateSecureText?: (id: string, data: SecureTextType) => Promise<any>;
-  onDeleteSecureText?: (id: string) => Promise<any>;
+  ) => Promise<ApiResult<unknown>>;
+  onDeleteIdentification: (id: string) => Promise<ApiResult<unknown>>;
+  onUpdateUser: (data: {
+    oldPassword: string;
+    newPassword: string;
+  }) => Promise<ApiResult<unknown>>;
+  onCreateSecureText: (data: SecureTextType) => Promise<ApiResult<unknown>>;
+  onGetAllSecureText: () => Promise<ApiResult<unknown>>;
+  onSearchSecureText: (search: string) => Promise<ApiResult<unknown>>;
+  onUpdateSecureText: (
+    id: string,
+    data: SecureTextType
+  ) => Promise<ApiResult<unknown>>;
+  onDeleteSecureText: (id: string) => Promise<ApiResult<unknown>>;
 }
 
-export const AppContext = createContext<AppProps>({});
+const buildAuthMissingError = (): ApiErrorResponse => ({
+  error: true,
+  message: "Clé d'authentification non trouvée.",
+});
 
-export const AppProvider = ({ children }: any) => {
+const buildApiError = (error: unknown): ApiErrorResponse => ({
+  error: true,
+  message:
+    error instanceof Error
+      ? error.message
+      : "Une erreur est survenue lors de l'appel au serveur.",
+});
+
+export const AppContext = createContext<AppContextValue>({
+  userEmail: "",
+  onCreateIdentification: async () => buildAuthMissingError(),
+  onGetAllIdentifications: async () => buildAuthMissingError(),
+  onSearchItems: async () => buildAuthMissingError(),
+  onUpdateIdentification: async () => buildAuthMissingError(),
+  onDeleteIdentification: async () => buildAuthMissingError(),
+  onUpdateUser: async () => buildAuthMissingError(),
+  onCreateSecureText: async () => buildAuthMissingError(),
+  onGetAllSecureText: async () => buildAuthMissingError(),
+  onSearchSecureText: async () => buildAuthMissingError(),
+  onUpdateSecureText: async () => buildAuthMissingError(),
+  onDeleteSecureText: async () => buildAuthMissingError(),
+});
+
+export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [userEmail, setUserEmail] = useState<string>("");
+
   useEffect(() => {
-    // get user email from storage
     const getUserEmail = async () => {
       const email = await SecureStore.getItemAsync("email");
-      setUserEmail(email as string);
+      if (email) {
+        setUserEmail(email);
+      }
     };
-    getUserEmail();
+
+    void getUserEmail();
   }, []);
 
   // --------------
-  //IDENTIFICATIONS PART
+  // IDENTIFICATIONS PART
   // --------------
-  const createIdentification = async (data: IdentificationType) => {
+  const createIdentification = async (
+    data: IdentificationType
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosPostAPI(
-        "/identification/create",
-        data,
-        token as string
+      const result = await axiosPostAPI("/identification/create", data, token);
+      return result;
+    } catch (error) {
+      return buildApiError(error);
+    }
+  };
+
+  const getAllIdentifications = async (): Promise<ApiResult<unknown>> => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return buildAuthMissingError();
+    }
+
+    try {
+      const result = await axiosGetAPI("/identification/get-all", token);
+      return result;
+    } catch (error) {
+      return buildApiError(error);
+    }
+  };
+
+  const searchIdentifications = async (
+    search: string
+  ): Promise<ApiResult<unknown>> => {
+    const token = await SecureStore.getItemAsync("jwt_token");
+
+    if (!token) {
+      return buildAuthMissingError();
+    }
+
+    try {
+      const result = await axiosGetAPI(
+        `/identification/search/${search}`,
+        token
       );
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const getAllIdentifications = async () => {
+
+  const updateIdentification = async (
+    id: string,
+    data: IdentificationType
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosGetAPI("/identification/get-all", token);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
-    }
-  };
-  const searchIdentifications = async (search: string) => {
-    const token = await SecureStore.getItemAsync("jwt_token");
-
-    if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
-    }
-
-    try {
-      return await axiosGetAPI(`/identification/search/${search}`, token);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
-    }
-  };
-  const updateIdentification = async (id: string, data: IdentificationType) => {
-    const token = await SecureStore.getItemAsync("jwt_token");
-
-    if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
-    }
-
-    try {
-      return await axiosPatchAPI(
+      const result = await axiosPatchAPI(
         `/identification/update/${id}`,
         data,
-        token as string
+        token
       );
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const deleteIdentification = async (id: string) => {
+
+  const deleteIdentification = async (
+    id: string
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosDeleteAPI(
+      const result = await axiosDeleteAPI(
         `/identification/delete/${id}`,
-        token as string
+        token
       );
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
 
   // --------------
-  //USER PART
+  // USER PART
   // --------------
-  const updateUser = async (data: any) => {
-    // password for now
+  const updateUser = async (data: {
+    oldPassword: string;
+    newPassword: string;
+  }): Promise<ApiResult<unknown>> => {
     const { oldPassword, newPassword } = data;
     const token = await SecureStore.getItemAsync("jwt_token");
     const userId = await SecureStore.getItemAsync("user_id");
 
-    if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+    if (!token || !userId) {
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosPatchAPI(
+      const result = await axiosPatchAPI(
         `/user/update/${userId}`,
         { oldPassword, newPassword },
-        token as string
+        token
       );
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
 
   // --------------
-  //SECURE TEXT PART
+  // SECURE TEXT PART
   // --------------
-  const createSecureText = async (data: any) => {
+  const createSecureText = async (
+    data: SecureTextType
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosPostAPI("/securetext/create", data, token as string);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      const result = await axiosPostAPI("/securetext/create", data, token);
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const getAllSecureText = async () => {
+
+  const getAllSecureText = async (): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosGetAPI("/securetext/get-all", token);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      const result = await axiosGetAPI("/securetext/get-all", token);
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const searchSecureText = async (search: string) => {
+
+  const searchSecureText = async (
+    search: string
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosGetAPI(`/securetext/search/${search}`, token);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      const result = await axiosGetAPI(`/securetext/search/${search}`, token);
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const updateSecureText = async (id: string, data: any) => {
+
+  const updateSecureText = async (
+    id: string,
+    data: SecureTextType
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosPatchAPI(
+      const result = await axiosPatchAPI(
         `/securetext/update/${id}`,
         data,
-        token as string
+        token
       );
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
-  const deleteSecureText = async (id: string) => {
+
+  const deleteSecureText = async (
+    id: string
+  ): Promise<ApiResult<unknown>> => {
     const token = await SecureStore.getItemAsync("jwt_token");
 
     if (!token) {
-      return { error: true, message: "Clé d'autentification non trouvée." };
+      return buildAuthMissingError();
     }
 
     try {
-      return await axiosDeleteAPI(`/securetext/delete/${id}`, token as string);
-    } catch (e: any) {
-      return { error: true, message: (e as any).response.data.message };
+      const result = await axiosDeleteAPI(
+        `/securetext/delete/${id}`,
+        token
+      );
+      return result;
+    } catch (error) {
+      return buildApiError(error);
     }
   };
 
-  const value = {
+  const value: AppContextValue = {
     userEmail,
     onCreateIdentification: createIdentification,
     onGetAllIdentifications: getAllIdentifications,

@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const identificationFormStruct = Yup.object().shape({
+const identificationFormStructSchema = Yup.object().shape({
   id: Yup.string(),
   twoFACode: Yup.string(),
   name: Yup.string()
@@ -18,3 +18,6 @@ export const identificationFormStruct = Yup.object().shape({
     .min(4, "Au minimum 4 caractères.")
     .required("Veuillez choisir un mot de passe."),
 });
+
+export type IdentificationFormValues = Yup.InferType<typeof identificationFormStructSchema>;
+export const identificationFormStruct = identificationFormStructSchema;

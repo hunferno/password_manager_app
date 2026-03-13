@@ -6,17 +6,20 @@ import {
   windowWidth,
 } from "../../assets/Dimensions";
 
-export const authStyles = StyleSheet.create({
+const authStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.light,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
   },
   launchContainer: {
     flex: 1,
     backgroundColor: COLORS.light,
     justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 20,
+    alignItems: "center"
   },
   logoWrapper: {
     paddingTop: statusBarHeight,
@@ -54,7 +57,6 @@ export const authStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    marginBottom: 20,
   },
 
   inputContainer: {
@@ -124,17 +126,21 @@ export const authStyles = StyleSheet.create({
   },
   verificationTextInputContainer: {
     marginVertical: 30,
-    width: windowWidth * 0.8,
+    width: windowWidth * 0.9,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   verificationTextInput: {
-    marginHorizontal: 5,
+    marginHorizontal: 3,
     textAlign: "center",
-    fontSize: 20,
-    fontWeight: "500",
-    width: windowWidth * 0.1,
-    height: windowWidth * 0.1,
+    fontSize: 22,
+    fontWeight: "600",
+    minWidth: 46,
+    minHeight: 50,
+    width: 46,
+    height: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
     borderRadius: 10,
     borderColor: COLORS.blue,
     borderWidth: 2,
@@ -169,3 +175,6 @@ export const authStyles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+export type AuthStyles = typeof authStyles;
+export { authStyles };

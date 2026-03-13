@@ -4,6 +4,8 @@ import { Image } from "expo-image";
 import { useContext } from "react";
 import { AppContext } from "../../context/appContext";
 
+export type DrawerHeaderProps = Record<string, never>;
+
 const DrawerHeader = () => {
   const { userEmail } = useContext(AppContext);
 

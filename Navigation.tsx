@@ -5,12 +5,13 @@ import AppNavigator from "./navigators/AppNavigator";
 import AuthNavigator from "./navigators/AuthNavigator";
 import { AppProvider } from "./context/appContext";
 import {
+  type DrawerContentComponentProps,
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
 import { COLORS } from "./assets/COLORS";
 import { MaterialIcons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import DrawerHeader from "./components/drawer/DrawerHeader";
 import { windowWidth } from "./assets/Dimensions";
 import Parametres from "./screens/app/Parametres";
@@ -23,29 +24,30 @@ const INACTIVITY_TIME = 1000 * 60 * 15;
 const Navigation = () => {
   const { authState, onLogout } = useContext(AuthContext);
 
-  const handleIncativity = async (logout: any) => {
+  const handleInactivity = async () => {
     toaster("info", "Déconnexion", "Déconnexion pour inactivité");
-    await logout();
+    await onLogout();
   };
+
+  const drawerContent = (props: DrawerContentComponentProps) => (
+    <SafeAreaView style={{ flex: 1 }}>
+      <DrawerHeader />
+      <DrawerItemList {...props} />
+    </SafeAreaView>
+  );
 
   return (
     <NavigationContainer>
-      {authState?.authenticated ? (
+      {authState.authenticated ? (
         <ReactNativeInactivity
           isActive={true}
-          onInactive={() => handleIncativity(onLogout)}
+          onInactive={handleInactivity}
           timeForInactivity={INACTIVITY_TIME}
         >
           <AppProvider>
             <Drawer.Navigator
-              drawerContent={(props) => {
-                return (
-                  <SafeAreaView>
-                    <DrawerHeader />
-                    <DrawerItemList {...props} />
-                  </SafeAreaView>
-                );
-              }}
+              useLegacyImplementation={false}
+              drawerContent={drawerContent}
               screenOptions={{
                 drawerStyle: {
                   backgroundColor: COLORS.grey,

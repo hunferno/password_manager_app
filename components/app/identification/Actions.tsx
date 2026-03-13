@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import IdentificationImage from "./IdentificationImage";
 import * as Clipboard from "expo-clipboard";
@@ -9,6 +9,27 @@ import { useContext, useState } from "react";
 import ModalLittleBox from "../../modals/ModalLittleBox";
 import { AppContext } from "../../../context/appContext";
 import toaster from "../../toaster";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../../navigators/navigationTypes";
+
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+export type ActionsProps = {
+  data: IdentificationType;
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  handleActionModalClose: () => void;
+  reload: boolean;
+  setReload: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const Actions = ({
   data,
@@ -16,13 +37,7 @@ const Actions = ({
   handleActionModalClose,
   reload,
   setReload,
-}: {
-  data: IdentificationType;
-  navigation: any;
-  handleActionModalClose: any;
-  reload: any;
-  setReload: any;
-}) => {
+}: ActionsProps) => {
   const { onDeleteIdentification } = useContext(AppContext);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -33,19 +48,21 @@ const Actions = ({
     await Clipboard.setStringAsync(data.username);
   };
   const handleCopyTwoFactorCode = async () => {
-    await Clipboard.setStringAsync(data.twoFACode);
+    if (data.twoFACode) await Clipboard.setStringAsync(data.twoFACode);
   };
 
   const handleDelete = async () => {
-    const result = await onDeleteIdentification!(data._id as string);
+    const id = data._id;
+    if (!id) return;
+    const result = await onDeleteIdentification!(id);
 
-    if (result && result.error) {
-      console.log(result);
+    if (isApiError(result)) {
+      console.log(result.message);
     } else {
       toaster("success", "Suppression", "Identification supprimée");
       setReload(!reload);
       handleActionModalClose();
-      navigation.navigate("Home");
+      navigation.navigate("ScreenStack", { screen: "Home", params: {} });
     }
   };
 
@@ -89,7 +106,7 @@ const Actions = ({
           style={identificationStyles.actionBodyTextContainer}
           onPress={() => {
             handleActionModalClose();
-            navigation.navigate("AddIdentifications", { data: data });
+            navigation.navigate("AddIdentifications", { data, readOnly: false });
           }}
         >
           <FontAwesome5 name="pen" size={24} color={COLORS.blue} />

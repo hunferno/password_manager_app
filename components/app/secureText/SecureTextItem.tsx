@@ -1,20 +1,24 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { SecureTextType } from "../../../types/secureTextType";
 import { secureTextStyles } from "../../../styles/app/secureTextStyles";
 import SecureActions from "./SecureActions";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../../navigators/navigationTypes";
+
+export type SecureTextItemProps = {
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  data: SecureTextType;
+  handleActionModal: () => void;
+  setSelectedItem: React.Dispatch<React.SetStateAction<SecureTextType>>;
+};
 
 const SecureTextItem = ({
   navigation,
   data,
   handleActionModal,
   setSelectedItem,
-}: {
-  navigation: any;
-  data: SecureTextType;
-  handleActionModal: any;
-  setSelectedItem: any;
-}) => {
+}: SecureTextItemProps) => {
   return (
     <TouchableOpacity
       onPress={() => {

@@ -4,21 +4,23 @@ import { COLORS } from "../../../assets/COLORS";
 import { SecureTextType } from "../../../types/secureTextType";
 import { secureTextStyles } from "../../../styles/app/secureTextStyles";
 
+export type SecureActionsProps = {
+  data: SecureTextType;
+  handleActionModal: () => void;
+  setSelectedItem: React.Dispatch<React.SetStateAction<SecureTextType>>;
+};
+
 const SecureActions = ({
   data,
   handleActionModal,
   setSelectedItem,
-}: {
-  data: SecureTextType;
-  handleActionModal: any;
-  setSelectedItem: any;
-}) => {
+}: SecureActionsProps) => {
   return (
     <View style={secureTextStyles.actionsContainer}>
       <TouchableOpacity
         onPress={() => {
-          handleActionModal();
           setSelectedItem(data);
+          handleActionModal();
         }}
       >
         <Entypo name="dots-three-vertical" size={30} color={COLORS.blue} />

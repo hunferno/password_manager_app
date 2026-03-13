@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "../../assets/COLORS";
-import { windowHeight, windowWidth } from "../../assets/Dimensions";
+import { windowWidth } from "../../assets/Dimensions";
 
-export const secureTextStyles = StyleSheet.create({
+const secureTextStyles = StyleSheet.create({
   formContainer: {
     flex: 1,
     paddingHorizontal: 15,
@@ -73,5 +73,8 @@ export const secureTextStyles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
     color: COLORS.grey,
-  }
+  },
 });
+
+export type SecureTextStyles = typeof secureTextStyles;
+export { secureTextStyles };

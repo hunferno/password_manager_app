@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { appStyles } from "../../styles/app/appStyles";
 import EmptyItems from "../../components/app/identification/EmptyItems";
@@ -12,37 +13,55 @@ import BottomSheet, {
 import Actions from "../../components/app/identification/Actions";
 import { IdentificationType } from "../../types/identificationType";
 import { AppContext } from "../../context/appContext";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import type { RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type {
+  TabParamList,
+  AppStackParamList,
+} from "../../navigators/navigationTypes";
 
-const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+type HomeScreenProps = {
+  navigation: NativeStackNavigationProp<AppStackParamList>;
+  route: RouteProp<TabParamList, "Home">;
+};
+
+const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
   const { onGetAllIdentifications } = useContext(AppContext);
+  const insets = useSafeAreaInsets();
 
   const isFocused = useIsFocused();
 
-  const [reload, setReload] = useState(false); // [
-  const [datas, setDatas] = useState<any>([]);
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [datas, setDatas] = useState<IdentificationType[]>([]);
+  // Index du BottomSheet : -1 = fermé, >= 0 = ouvert
+  const [sheetIndex, setSheetIndex] = useState(-1);
   const [selectedItem, setSelectedItem] = useState<IdentificationType>({
-    id: "",
+    _id: "",
     name: "",
     category: "",
     url: "",
     username: "",
     password: "",
-  } as any);
+    twoFACode: "",
+  });
 
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["65%"];
+  const snapPoints = useMemo(() => ["65%"], []);
   // callbacks
-  const handleActionModalOpen = () => {
-    bottomSheetRef.current?.expand();
-    setBottomSheetVisible(true);
-  };
+  const handleActionModalOpen = useCallback(() => {
+    setSheetIndex(0);
+  }, []);
 
-  const handleActionModalClose = () => {
+  const handleActionModalClose = useCallback(() => {
+    setSheetIndex(-1);
     bottomSheetRef.current?.close();
-  };
+  }, []);
+
+  const handleSheetChange = useCallback((index: number) => {
+    setSheetIndex(index);
+  }, []);
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -52,20 +71,26 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
         enableTouchThrough={true}
       />
     ),
-    []
+    [],
   );
 
-  useEffect(() => {
-    if (route.params?.datas) {
-      setDatas(route.params.datas);
-    }
-  }, [route.params?.datas]);
+  // Fermer le bottom sheet à chaque fois que l'écran reçoit le focus (ex. retour arrière)
+  useFocusEffect(
+    useCallback(() => {
+      setSheetIndex(-1);
+      bottomSheetRef.current?.close();
+    }, []),
+  );
 
   useEffect(() => {
     if (isFocused) {
       const fetchIdentifications = async () => {
         const result = await onGetAllIdentifications!();
-        setDatas(result);
+        if (Array.isArray(result)) {
+          setDatas(result);
+        } else {
+          setDatas([]);
+        }
       };
       fetchIdentifications();
     }
@@ -87,7 +112,7 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
                 />
               </>
             )}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item._id ?? ""}
             showsVerticalScrollIndicator={false}
             style={{ paddingTop: 10, marginBottom: 10 }}
           />
@@ -97,11 +122,16 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
             ref={bottomSheetRef}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            index={-1}
+            index={sheetIndex}
             enablePanDownToClose={true}
-            onClose={() => setBottomSheetVisible(false)}
+            onChange={handleSheetChange}
           >
-            <BottomSheetView style={{ paddingHorizontal: 30 }}>
+            <BottomSheetView
+              style={{
+                paddingHorizontal: 30,
+                paddingBottom: 20 + insets.bottom,
+              }}
+            >
               <Actions
                 data={selectedItem}
                 navigation={navigation}
@@ -118,10 +148,15 @@ const HomeScreen = ({ navigation, route }: { navigation: any; route: any }) => {
           sectionText="tous vos identifiants"
         />
       )}
-      {!bottomSheetVisible && (
+      {sheetIndex < 0 && (
         <TouchableOpacity
-          style={appStyles.addBtnContainer}
-          onPress={() => navigation.navigate("AddIdentifications")}
+          style={[appStyles.addBtnContainer, { bottom: 20 + insets.bottom }]}
+          onPress={() =>
+            navigation.navigate({
+              name: "AddIdentifications",
+              params: {},
+            })
+          }
         >
           <MaterialIcons name="add" size={24} color="white" />
           <Text style={appStyles.addBtnText}>Ajouter</Text>

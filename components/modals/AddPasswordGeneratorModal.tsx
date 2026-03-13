@@ -2,8 +2,8 @@ import {
   View,
   Text,
   Modal,
+  Pressable,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Switch,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -12,16 +12,21 @@ import Slider from "@react-native-community/slider";
 import { modalStyles } from "../../styles/app/modalStyles";
 import { COLORS } from "../../assets/COLORS";
 import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
+import type { FormikProps } from "formik";
+
+type FormWithPassword = { password: string; [key: string]: unknown };
+
+export type AddPasswordGeneratorModalProps = {
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  formRef: React.RefObject<FormikProps<FormWithPassword> | null>;
+};
 
 const AddPasswordGeneratorModal = ({
   modalVisible,
   setModalVisible,
   formRef,
-}: {
-  modalVisible: any;
-  setModalVisible: any;
-  formRef: any;
-}) => {
+}: AddPasswordGeneratorModalProps) => {
   const [password, setPassword] = useState("");
   const [passwordLength, setPasswordLength] = useState(8);
   const [isLetters, setIsLetters] = useState(true);
@@ -74,8 +79,7 @@ const AddPasswordGeneratorModal = ({
     }
   };
   const handleUseGeneratePassword = () => {
-    formRef.current &&
-      (formRef.current as any)?.setFieldValue("password", password);
+    formRef.current?.setFieldValue("password", password);
     setModalVisible(false);
   };
 
@@ -90,9 +94,9 @@ const AddPasswordGeneratorModal = ({
         setModalVisible(false);
       }}
     >
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+      <Pressable onPress={() => setModalVisible(false)}>
         <View style={modalStyles.generatePasswordbackDrop} />
-      </TouchableWithoutFeedback>
+      </Pressable>
       <View style={modalStyles.generatePasswordContainer}>
         <View style={modalStyles.generateHeaderContainer}>
           <View
@@ -147,21 +151,21 @@ const AddPasswordGeneratorModal = ({
           <View style={modalStyles.generateSwitchContainer}>
             <Text style={modalStyles.modalText}>Chiffres (ex. 123)</Text>
             <Switch
-              disabled={!isNumbers}
-              trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
-              thumbColor={isLetters ? COLORS.grey : COLORS.lightBlue}
-              value={isLetters}
-              onValueChange={(value) => setIsLetters(value)}
-            />
-          </View>
-          <View style={modalStyles.generateSwitchContainer}>
-            <Text style={modalStyles.modalText}>Lettres (ex. Aa)</Text>
-            <Switch
               disabled={!isLetters}
               trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
               thumbColor={isNumbers ? COLORS.grey : COLORS.lightBlue}
               value={isNumbers}
               onValueChange={(value) => setIsNumbers(value)}
+            />
+          </View>
+          <View style={modalStyles.generateSwitchContainer}>
+            <Text style={modalStyles.modalText}>Lettres (ex. Aa)</Text>
+            <Switch
+              disabled={!isNumbers}
+              trackColor={{ false: COLORS.grey, true: COLORS.lightBlue }}
+              thumbColor={isLetters ? COLORS.grey : COLORS.lightBlue}
+              value={isLetters}
+              onValueChange={(value) => setIsLetters(value)}
             />
           </View>
           <View style={modalStyles.generateSwitchContainer}>

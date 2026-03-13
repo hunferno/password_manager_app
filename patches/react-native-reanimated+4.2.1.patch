@@ -1,0 +1,63 @@
+diff --git a/node_modules/react-native-reanimated/src/hook/index.ts b/node_modules/react-native-reanimated/src/hook/index.ts
+index 2d44be5..ea6236e 100644
+--- a/node_modules/react-native-reanimated/src/hook/index.ts
++++ b/node_modules/react-native-reanimated/src/hook/index.ts
+@@ -28,3 +28,4 @@ export { useHandler } from './useHandler';
+ export { useReducedMotion } from './useReducedMotion';
+ export { useScrollOffset } from './useScrollOffset';
+ export { useSharedValue } from './useSharedValue';
++export { useWorkletCallback } from './useWorkletCallback';
+diff --git a/node_modules/react-native-reanimated/src/hook/useWorkletCallback.ts b/node_modules/react-native-reanimated/src/hook/useWorkletCallback.ts
+new file mode 100644
+index 0000000..6c84096
+--- /dev/null
++++ b/node_modules/react-native-reanimated/src/hook/useWorkletCallback.ts
+@@ -0,0 +1,36 @@
++'use strict';
++
++import { useCallback, useEffect, useRef } from 'react';
++import type { DependencyList } from './commonTypes';
++import { runOnJS } from '../workletFunctions';
++
++/**
++ * Compatibility shim for Reanimated 4: useWorkletCallback was removed.
++ * Returns a worklet that invokes the latest callback via runOnJS so it runs on the JS thread.
++ * @deprecated Prefer using callbacks that don't require worklet context, or use react-native-worklets directly.
++ */
++export function useWorkletCallback<T extends (...args: any[]) => void>(
++  callback: T,
++  dependencies?: DependencyList
++): T {
++  const ref = useRef(callback);
++  useEffect(() => {
++    ref.current = callback;
++  }, dependencies ?? [callback]);
++
++  const callRef = useCallback((...args: any[]) => {
++    return ref.current(...args);
++  }, []);
++
++  const worklet = useCallback(
++    (...args: any[]) => {
++      'worklet';
++      (runOnJS as (fn: (...a: any[]) => void) => (...a: any[]) => void)(
++        callRef
++      )(...args);
++    },
++    [callRef]
++  ) as T;
++
++  return worklet;
++}
+diff --git a/node_modules/react-native-reanimated/src/index.ts b/node_modules/react-native-reanimated/src/index.ts
+index 842e8ed..44f9395 100644
+--- a/node_modules/react-native-reanimated/src/index.ts
++++ b/node_modules/react-native-reanimated/src/index.ts
+@@ -144,6 +144,7 @@ export {
+   /** @deprecated Please use {@link useScrollOffset} instead. */
+   useScrollOffset as useScrollViewOffset,
+   useSharedValue,
++  useWorkletCallback,
+ } from './hook';
+ export type {
+   InterpolateConfig,
