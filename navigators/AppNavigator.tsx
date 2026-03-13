@@ -4,8 +4,11 @@ import { appStyles } from "../styles/app/appStyles";
 import { COLORS } from "../assets/COLORS";
 import AddIdentifications from "../screens/app/AddIdentifications";
 import AddSecureText from "../screens/app/AddSecureText";
+import type { AppStackParamList } from "./navigationTypes";
 
-const App = createNativeStackNavigator();
+export type { AppStackParamList } from "./navigationTypes";
+
+const App = createNativeStackNavigator<AppStackParamList>();
 
 const AppNavigator = () => {
   return (

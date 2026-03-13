@@ -4,11 +4,15 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
 } from "react-native";
-import { Formik } from "formik";
+import { Formik, type FormikErrors } from "formik";
 import { identificationFormStruct } from "../../models/identificationFormStruct";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { useContext, useEffect, useRef, useState } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { authStyles } from "../../styles/auth/authStyles";
 import { COLORS } from "../../assets/COLORS";
 import { identificationStyles } from "../../styles/app/identificationStyles";
@@ -19,16 +23,30 @@ import toaster from "../../components/toaster";
 import * as Clipboard from "expo-clipboard";
 import { createTextFromLetter } from "../../lib/services/createTextFromLetter";
 import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AppStackParamList } from "../../navigators/navigationTypes";
+
+type AddIdentificationsScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "AddIdentifications"
+>;
+
+type IdentificationFormValues = {
+  name: string;
+  url: string;
+  username: string;
+  password: string;
+  twoFACode: string;
+};
 
 const AddIdentifications = ({
   navigation,
   route,
-}: {
-  navigation: any;
-  route: any;
-}) => {
+}: AddIdentificationsScreenProps) => {
   const { onCreateIdentification, onUpdateIdentification } =
     useContext(AppContext);
+  const insets = useSafeAreaInsets();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const data = route.params?.data;
   const readOnly = route.params?.readOnly;
@@ -37,6 +55,19 @@ const AddIdentifications = ({
   const [showPassword, setShowPassword] = useState(false);
   const [readOnlyPassword, setReadOnlyPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardVisible(true)
+    );
+    const hide = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardVisible(false)
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   useEffect(() => {
     let title = "Ajouter un identifiant";
@@ -50,9 +81,9 @@ const AddIdentifications = ({
       headerRight: () =>
         !readOnly ? (
           <HeaderRightButton formRef={formRef} />
-        ) : (
+        ) : data ? (
           <HeaderRightButtonEdit data={data} location="AddIdentifications" />
-        ),
+        ) : undefined,
     });
   }, [readOnly, data]);
 
@@ -63,7 +94,7 @@ const AddIdentifications = ({
   };
 
   const handleCopyPassword = async () => {
-    await Clipboard.setStringAsync(data.password);
+    if (data?.password) await Clipboard.setStringAsync(data.password);
   };
 
   return (
@@ -91,22 +122,41 @@ const AddIdentifications = ({
             category: "Identification",
           };
 
-          const result = data
-            ? await onUpdateIdentification!(data._id, object)
+          const id = data?._id;
+          const result = data && id
+            ? await onUpdateIdentification!(id, object)
             : await onCreateIdentification!(object);
 
-          if (result && result.error) {
-            console.log(result.message);
+          const isError =
+            result &&
+            typeof result === "object" &&
+            "error" in result &&
+            (result as { error: boolean }).error;
+          if (isError) {
+            console.log((result as { message?: string }).message);
           } else {
             showToast(data ? "Modification" : "Création");
-            navigation.navigate("Home");
+            navigation.navigate("ScreenStack", { screen: "Home", params: {} });
           }
         }}
       >
         {({ handleChange, setFieldTouched, touched, values, errors }) => (
-          <ScrollView
-            contentContainerStyle={identificationStyles.formContainer}
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
           >
+            <ScrollView
+              contentContainerStyle={[
+                identificationStyles.formContainer,
+                {
+                  flexGrow: 1,
+                  paddingBottom: keyboardVisible ? 40 : insets.bottom + 20,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
             <View style={identificationStyles.formInputContainer}>
               <TextInput
                 editable={!readOnly}
@@ -120,7 +170,7 @@ const AddIdentifications = ({
             {touched.name && errors.name && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).name}
+                  {(errors as FormikErrors<IdentificationFormValues>).name}
                 </Text>
               </View>
             )}
@@ -140,7 +190,7 @@ const AddIdentifications = ({
             {touched.url && errors.url && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).url}
+                  {(errors as FormikErrors<IdentificationFormValues>).url}
                 </Text>
               </View>
             )}
@@ -160,7 +210,7 @@ const AddIdentifications = ({
             {touched.username && errors.username && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).username}
+                  {(errors as FormikErrors<IdentificationFormValues>).username}
                 </Text>
               </View>
             )}
@@ -263,7 +313,7 @@ const AddIdentifications = ({
             {touched.password && errors.password && (
               <View style={authStyles.errorMsgContainer}>
                 <Text style={authStyles.errorMsgText}>
-                  {(errors as any).password}
+                  {(errors as FormikErrors<IdentificationFormValues>).password}
                 </Text>
               </View>
             )}
@@ -279,7 +329,8 @@ const AddIdentifications = ({
                 value={values.twoFACode}
               />
             </View>
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
       <AddPasswordGeneratorModal

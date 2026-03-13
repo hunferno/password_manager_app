@@ -3,8 +3,8 @@ import {
   Text,
   Modal,
   TextInput,
+  Pressable,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { modalStyles } from "../../styles/app/modalStyles";
@@ -15,13 +15,26 @@ import { updateUserFormStruct } from "../../models/updateUserFormStruct";
 import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../assets/COLORS";
 
+function isApiError(
+  value: unknown
+): value is { error: true; message: string } {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "error" in value &&
+    (value as { error: unknown }).error === true
+  );
+}
+
+export type UpdateUserModalProps = {
+  changePasswordModalVisible: boolean;
+  setChangePasswordModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 const UpdateUserModal = ({
   changePasswordModalVisible,
   setChangePasswordModalVisible,
-}: {
-  changePasswordModalVisible: any;
-  setChangePasswordModalVisible: any;
-}) => {
+}: UpdateUserModalProps) => {
   const { onUpdateUser } = useContext(AppContext);
 
   const [updateMsgErr, setUpdateMsgErr] = useState("");
@@ -37,11 +50,9 @@ const UpdateUserModal = ({
         setChangePasswordModalVisible(false);
       }}
     >
-      <TouchableWithoutFeedback
-        onPress={() => setChangePasswordModalVisible(false)}
-      >
+      <Pressable onPress={() => setChangePasswordModalVisible(false)}>
         <View style={modalStyles.generatePasswordbackDrop} />
-      </TouchableWithoutFeedback>
+      </Pressable>
 
       <Formik
         initialValues={{
@@ -54,7 +65,7 @@ const UpdateUserModal = ({
         onSubmit={async (values) => {
           const result = await onUpdateUser!(values);
 
-          if (result && result.error) {
+          if (isApiError(result)) {
             setUpdateMsgErr(result.message);
             return;
           }

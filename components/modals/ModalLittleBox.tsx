@@ -1,25 +1,21 @@
-import {
-  View,
-  Text,
-  Modal,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Modal, Pressable, TouchableOpacity } from "react-native";
 import React from "react";
 import { modalStyles } from "../../styles/app/modalStyles";
 import { appStyles } from "../../styles/app/appStyles";
+
+export type ModalLittleBoxProps = {
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalText: string;
+  action: () => void;
+};
 
 const ModalLittleBox = ({
   modalVisible,
   setModalVisible,
   modalText,
   action,
-}: {
-  modalVisible: any;
-  setModalVisible: any;
-  modalText: any;
-  action: any;
-}) => {
+}: ModalLittleBoxProps) => {
   return (
     <View style={{ flex: 1 }}>
       <Modal
@@ -30,9 +26,9 @@ const ModalLittleBox = ({
           setModalVisible(false);
         }}
       >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+        <Pressable onPress={() => setModalVisible(false)}>
           <View style={modalStyles.generatePasswordbackDrop} />
-        </TouchableWithoutFeedback>
+        </Pressable>
 
         <View style={modalStyles.logoutModalContainer}>
           <Text style={appStyles.modalText}>{modalText}</Text>

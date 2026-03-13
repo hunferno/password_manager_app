@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "../../assets/COLORS";
 import { windowHeight, windowWidth } from "../../assets/Dimensions";
 
-export const identificationStyles = StyleSheet.create({
+const identificationStyles = StyleSheet.create({
   emptyItemsContainer: {
     flex: 1,
     justifyContent: "center",
@@ -124,9 +124,8 @@ export const identificationStyles = StyleSheet.create({
     color: COLORS.blue,
   },
   formContainer: {
-    height: windowHeight * 0.7,
     padding: 15,
-    justifyContent: "space-evenly",
+    paddingBottom: 40,
   },
   formInputContainer: {
     paddingVertical: 10,
@@ -156,3 +155,6 @@ export const identificationStyles = StyleSheet.create({
     color: COLORS.blue,
   },
 });
+
+export type IdentificationStyles = typeof identificationStyles;
+export { identificationStyles };

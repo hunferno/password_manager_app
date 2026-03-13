@@ -1,0 +1,17 @@
+diff --git a/node_modules/use-latest-callback/esm.mjs b/node_modules/use-latest-callback/esm.mjs
+index a1eb7d7..6935945 100644
+--- a/node_modules/use-latest-callback/esm.mjs
++++ b/node_modules/use-latest-callback/esm.mjs
+@@ -1,6 +1,11 @@
+ // eslint-disable-next-line import/extensions
+ import exports from './lib/src/index.js';
+ 
+-const useLatestCallback = exports.default;
++const useLatestCallback =
++  exports && typeof exports.default === 'function'
++    ? exports.default
++    : typeof exports === 'function'
++      ? exports
++      : exports;
+ 
+ export default useLatestCallback;

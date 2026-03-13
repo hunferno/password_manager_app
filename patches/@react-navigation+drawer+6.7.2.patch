@@ -1,0 +1,187 @@
+diff --git a/node_modules/@react-navigation/drawer/src/views/modern/Drawer.tsx b/node_modules/@react-navigation/drawer/src/views/modern/Drawer.tsx
+index 57af20c..19acec6 100644
+--- a/node_modules/@react-navigation/drawer/src/views/modern/Drawer.tsx
++++ b/node_modules/@react-navigation/drawer/src/views/modern/Drawer.tsx
+@@ -11,20 +11,16 @@ import {
+ import Animated, {
+   interpolate,
+   runOnJS,
+-  useAnimatedGestureHandler,
+   useAnimatedStyle,
+   useDerivedValue,
+   useSharedValue,
+   withSpring,
+ } from 'react-native-reanimated';
++import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+ 
+ import type { DrawerProps } from '../../types';
+ import DrawerProgressContext from '../../utils/DrawerProgressContext';
+-import {
+-  GestureState,
+-  PanGestureHandler,
+-  PanGestureHandlerGestureEvent,
+-} from '../GestureHandler';
++import { GestureState } from '../GestureHandler';
+ import Overlay from './Overlay';
+ 
+ const SWIPE_DISTANCE_MINIMUM = 5;
+@@ -141,18 +137,12 @@ export default function Drawer({
+     endInteraction();
+   };
+ 
+-  // FIXME: Currently hitSlop is broken when on Android when drawer is on right
+-  // https://github.com/software-mansion/react-native-gesture-handler/issues/569
+-  const hitSlop = isRight
+-    ? // Extend hitSlop to the side of the screen when drawer is closed
+-      // This lets the user drag the drawer from the side of the screen
+-      { right: 0, width: isOpen ? undefined : swipeEdgeWidth }
+-    : { left: 0, width: isOpen ? undefined : swipeEdgeWidth };
+-
+   const touchStartX = useSharedValue(0);
+   const touchX = useSharedValue(0);
+   const translationX = useSharedValue(getDrawerTranslationX(open));
+   const gestureState = useSharedValue<GestureState>(GestureState.UNDETERMINED);
++  const startX = useSharedValue(0);
++  const hasCalledOnStart = useSharedValue(0);
+ 
+   const toggleDrawer = React.useCallback(
+     ({ open, isUserInitiated, velocity }: ToggleOptions) => {
+@@ -192,53 +182,66 @@ export default function Drawer({
+     [open, toggleDrawer]
+   );
+ 
+-  const onGestureEvent = useAnimatedGestureHandler<
+-    PanGestureHandlerGestureEvent,
+-    { startX: number; hasCalledOnStart: boolean }
+-  >({
+-    onStart: (event, ctx) => {
+-      ctx.hasCalledOnStart = false;
+-      ctx.startX = translationX.value;
+-      gestureState.value = event.state;
+-      touchStartX.value = event.x;
+-    },
+-    onActive: (event, ctx) => {
+-      touchX.value = event.x;
+-      translationX.value = ctx.startX + event.translationX;
+-      gestureState.value = event.state;
+-
+-      // onStart will _always_ be called, even when the activation
+-      // criteria isn't met yet. This makes sure onGestureStart is only
+-      // called when the criteria is really met.
+-      if (!ctx.hasCalledOnStart) {
+-        ctx.hasCalledOnStart = true;
+-        runOnJS(onGestureStart)();
+-      }
+-    },
+-    onEnd: (event) => {
+-      gestureState.value = event.state;
+-
+-      const nextOpen =
+-        (Math.abs(event.translationX) > SWIPE_DISTANCE_MINIMUM &&
+-          Math.abs(event.translationX) > swipeVelocityThreshold) ||
+-        Math.abs(event.translationX) > swipeDistanceThreshold
+-          ? drawerPosition === 'left'
+-            ? // If swiped to right, open the drawer, otherwise close it
+-              (event.velocityX === 0 ? event.translationX : event.velocityX) > 0
+-            : // If swiped to left, open the drawer, otherwise close it
+-              (event.velocityX === 0 ? event.translationX : event.velocityX) < 0
+-          : open;
+-
+-      toggleDrawer({
+-        open: nextOpen,
+-        isUserInitiated: true,
+-        velocity: event.velocityX,
++  const panGesture = React.useMemo(() => {
++    const hitSlopWidth = isOpen ? dimensions.width : swipeEdgeWidth;
++    return Gesture.Pan()
++      .activeOffsetX([-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM])
++      .failOffsetY([-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM])
++      .hitSlop(
++        isRight ? { right: 0, width: hitSlopWidth } : { left: 0, width: hitSlopWidth }
++      )
++      .enabled(drawerType !== 'permanent' && swipeEnabled)
++      .onStart((event) => {
++        'worklet';
++        hasCalledOnStart.value = 0;
++        startX.value = translationX.value;
++        gestureState.value = GestureState.BEGAN;
++        touchStartX.value = event.x;
++      })
++      .onUpdate((event) => {
++        'worklet';
++        touchX.value = event.x;
++        translationX.value = startX.value + event.translationX;
++        gestureState.value = GestureState.ACTIVE;
++        if (hasCalledOnStart.value === 0) {
++          hasCalledOnStart.value = 1;
++          runOnJS(onGestureStart)();
++        }
++      })
++      .onEnd((event) => {
++        'worklet';
++        gestureState.value = GestureState.END;
++        const nextOpen =
++          (Math.abs(event.translationX) > SWIPE_DISTANCE_MINIMUM &&
++            Math.abs(event.translationX) > swipeVelocityThreshold) ||
++          Math.abs(event.translationX) > swipeDistanceThreshold
++            ? drawerPosition === 'left'
++              ? (event.velocityX === 0 ? event.translationX : event.velocityX) > 0
++              : (event.velocityX === 0 ? event.translationX : event.velocityX) < 0
++            : open;
++        toggleDrawer({
++          open: nextOpen,
++          isUserInitiated: true,
++          velocity: event.velocityX,
++        });
++        runOnJS(onGestureFinish)();
+       });
+-    },
+-    onFinish: () => {
+-      runOnJS(onGestureFinish)();
+-    },
+-  });
++  }, [
++    dimensions.width,
++    drawerPosition,
++    drawerType,
++    open,
++    isOpen,
++    isRight,
++    swipeEnabled,
++    swipeEdgeWidth,
++    swipeDistanceThreshold,
++    swipeVelocityThreshold,
++    getDrawerTranslationX,
++    onGestureStart,
++    onGestureFinish,
++    toggleDrawer,
++  ]);
+ 
+   const translateX = useDerivedValue(() => {
+     // Comment stolen from react-native-gesture-handler/DrawerLayout
+@@ -344,15 +347,7 @@ export default function Drawer({
+ 
+   return (
+     <DrawerProgressContext.Provider value={progress}>
+-      <PanGestureHandler
+-        activeOffsetX={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
+-        failOffsetY={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
+-        hitSlop={hitSlop}
+-        enabled={drawerType !== 'permanent' && swipeEnabled}
+-        onGestureEvent={onGestureEvent}
+-        {...gestureHandlerProps}
+-      >
+-        {/* Immediate child of gesture handler needs to be an Animated.View */}
++      <GestureDetector gesture={panGesture} {...gestureHandlerProps}>
+         <Animated.View
+           style={[
+             styles.main,
+@@ -400,7 +395,7 @@ export default function Drawer({
+             {renderDrawerContent()}
+           </Animated.View>
+         </Animated.View>
+-      </PanGestureHandler>
++      </GestureDetector>
+     </DrawerProgressContext.Provider>
+   );
+ }

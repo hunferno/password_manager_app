@@ -1,18 +1,19 @@
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  BackHandler,
-} from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { authStyles } from "../../styles/auth/authStyles";
 import ButtonForm from "../../components/auth/ButtonForm";
 import { COLORS } from "../../assets/COLORS";
 import { Image } from "expo-image";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../../navigators/AuthNavigator";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const LaunchScreen = ({ navigation }: { navigation: any }) => {
+type LaunchScreenProps = NativeStackScreenProps<AuthStackParamList, "Launch">;
+
+const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
+  const insets = useSafeAreaInsets();
   const {
     biometricConnexion,
     isBiometricSupported,
@@ -26,7 +27,9 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
   };
 
   return (
-    <View style={authStyles.launchContainer}>
+    <View
+      style={[authStyles.launchContainer, { paddingBottom: insets.bottom }]}
+    >
       <View style={authStyles.launchTextWrapper}>
         <Image
           source={require("../../assets/images/launchImg.png")}
@@ -60,9 +63,9 @@ const LaunchScreen = ({ navigation }: { navigation: any }) => {
         isBiometricSet &&
         isBioConnexionActive &&
         authState?.token != null && (
-          <TouchableWithoutFeedback onPress={() => bioConnexion()}>
+          <Pressable onPress={() => bioConnexion()}>
             <FontAwesome5 name="fingerprint" size={45} color={COLORS.gold} />
-          </TouchableWithoutFeedback>
+          </Pressable>
         )}
 
       <View style={authStyles.buttonWrapper}>
