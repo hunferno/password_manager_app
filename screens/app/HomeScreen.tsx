@@ -83,6 +83,16 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
   );
 
   useEffect(() => {
+    const routeDatas =
+      (route.params as { datas?: IdentificationType[] } | undefined)?.datas;
+
+    // Si la recherche a fourni des données, on les affiche en priorité
+    if (routeDatas && Array.isArray(routeDatas)) {
+      setDatas(routeDatas);
+      return;
+    }
+
+    // Sinon, on récupère toutes les identifications (cas initial / reset)
     if (isFocused) {
       const fetchIdentifications = async () => {
         const result = await onGetAllIdentifications!();
@@ -94,7 +104,7 @@ const HomeScreen = ({ navigation, route }: HomeScreenProps) => {
       };
       fetchIdentifications();
     }
-  }, [isFocused, reload]);
+  }, [isFocused, reload, route.params]);
 
   return (
     <View style={appStyles.container}>

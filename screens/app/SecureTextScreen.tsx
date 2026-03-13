@@ -22,7 +22,7 @@ type SecureTextScreenProps = {
   route: RouteProp<TabParamList, "SecureText">;
 };
 
-const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
+const SecureTextScreen = ({ navigation, route }: SecureTextScreenProps) => {
   const { onGetAllSecureText } = useContext(AppContext);
   const insets = useSafeAreaInsets();
 
@@ -74,6 +74,14 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
   );
 
   useEffect(() => {
+    const routeDatas =
+      (route.params as { datas?: SecureTextType[] } | undefined)?.datas;
+
+    if (routeDatas && Array.isArray(routeDatas)) {
+      setDatas(routeDatas);
+      return;
+    }
+
     if (isFocused) {
       const fetchSecureTexts = async () => {
         const result = await onGetAllSecureText!();
@@ -85,7 +93,7 @@ const SecureTextScreen = ({ navigation }: SecureTextScreenProps) => {
       };
       fetchSecureTexts();
     }
-  }, [isFocused, reload]);
+  }, [isFocused, reload, route.params]);
 
   return (
     <View style={appStyles.container}>
