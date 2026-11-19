@@ -55,7 +55,7 @@ const ForgotPasswordScreen = ({
   }, [route.params?.from]);
 
   const handleConnexion = () => {
-    navigation.navigate("Login", { fromPasswordUpdate: true });
+    navigation.navigate("Login", { fromPasswordUpdate: true }, { pop: true });
   };
 
   return (

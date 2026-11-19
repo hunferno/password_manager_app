@@ -107,7 +107,7 @@ const AddSecureText = ({ navigation, route }: AddSecureTextScreenProps) => {
             console.log((result as { message?: string }).message);
           } else {
             showToast(data ? "Modification" : "Création");
-            navigation.navigate("ScreenStack", { screen: "SecureText" });
+            navigation.popTo("ScreenStack", { screen: "SecureText" });
           }
         }}
       >

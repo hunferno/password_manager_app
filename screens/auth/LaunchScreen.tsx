@@ -71,13 +71,13 @@ const LaunchScreen = ({ navigation }: LaunchScreenProps) => {
       <View style={authStyles.buttonWrapper}>
         <ButtonForm
           title="CONNEXION"
-          action={() => navigation.navigate("Login")}
+          action={() => navigation.navigate("Login", undefined, { pop: true })}
           color={COLORS.blue}
           bgColor={COLORS.light}
         />
         <ButtonForm
           title="CREER UN COMPTE"
-          action={() => navigation.navigate("Register")}
+          action={() => navigation.navigate("Register", undefined, { pop: true })}
           color={COLORS.light}
           bgColor={COLORS.blue}
         />

@@ -246,7 +246,7 @@ const RegisterForm = ({
               action={() => {
                 registerStep > 1
                   ? setRegisterStep(registerStep - 1)
-                  : navigation.navigate("Login");
+                  : navigation.navigate("Login", undefined, { pop: true });
               }}
               color={COLORS.blue}
               bgColor={COLORS.light}

@@ -245,7 +245,7 @@ const LoginForm = ({
           <View style={authStyles.buttonWrapper}>
             <ButtonForm
               title="CREER UN COMPTE"
-              action={() => navigation.navigate("Register")}
+              action={() => navigation.navigate("Register", undefined, { pop: true })}
               color={COLORS.blue}
               bgColor={COLORS.light}
             />

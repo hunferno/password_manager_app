@@ -4,6 +4,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  type TextInputInstance,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -89,12 +90,12 @@ const VerificationCodeScreen = ({
     }
   }, [otpValues]);
 
-  const inputOne = useRef<TextInput>(null);
-  const inputTwo = useRef<TextInput>(null);
-  const inputThree = useRef<TextInput>(null);
-  const inputFour = useRef<TextInput>(null);
-  const inputFive = useRef<TextInput>(null);
-  const inputSix = useRef<TextInput>(null);
+  const inputOne = useRef<TextInputInstance>(null);
+  const inputTwo = useRef<TextInputInstance>(null);
+  const inputThree = useRef<TextInputInstance>(null);
+  const inputFour = useRef<TextInputInstance>(null);
+  const inputFive = useRef<TextInputInstance>(null);
+  const inputSix = useRef<TextInputInstance>(null);
 
   const sendVerification = async () => {
     const valuesTaped = Object.values(otpValues);
@@ -112,7 +113,7 @@ const VerificationCodeScreen = ({
     // Code valide : navigation selon la destination
     if (destination === "login") {
       toaster("success", "Inscription", "Vous êtes maintenant inscrit");
-      navigation.navigate("Login", { justVerified: true });
+      navigation.navigate("Login", { justVerified: true }, { pop: true });
     } else if (destination === "forgotPassword") {
       navigation.replace("ForgotPassword", {
         from: "verificationCode",

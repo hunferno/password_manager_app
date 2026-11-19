@@ -136,7 +136,7 @@ const AddIdentifications = ({
             console.log((result as { message?: string }).message);
           } else {
             showToast(data ? "Modification" : "Création");
-            navigation.navigate("ScreenStack", { screen: "Home", params: {} });
+            navigation.popTo("ScreenStack", { screen: "Home", params: {} });
           }
         }}
       >

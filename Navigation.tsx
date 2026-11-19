@@ -46,7 +46,6 @@ const Navigation = () => {
         >
           <AppProvider>
             <Drawer.Navigator
-              useLegacyImplementation={false}
               drawerContent={drawerContent}
               screenOptions={{
                 drawerStyle: {

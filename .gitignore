@@ -36,3 +36,7 @@ config/.env*
 
 # typescript
 *.tsbuildinfo
+
+# Dossiers natifs générés par expo prebuild (CNG)
+/ios
+/android

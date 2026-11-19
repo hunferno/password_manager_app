@@ -1,7 +1,8 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
-    plugins: ['react-native-reanimated/plugin'],
+    // babel-preset-expo ajoute automatiquement le plugin react-native-worklets
+    // (Reanimated 4), il ne faut plus le déclarer ici.
+    presets: ["babel-preset-expo"],
   };
 };

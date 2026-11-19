@@ -51,7 +51,7 @@ const Actions = ({
       toaster("success", "Suppression", "Note supprimée");
       setReload(!reload);
       handleActionModalClose();
-      navigation.navigate("ScreenStack", { screen: "SecureText" });
+      navigation.navigate("ScreenStack", { screen: "SecureText" }, { pop: true });
     }
   };
 

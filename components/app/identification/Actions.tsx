@@ -62,7 +62,7 @@ const Actions = ({
       toaster("success", "Suppression", "Identification supprimée");
       setReload(!reload);
       handleActionModalClose();
-      navigation.navigate("ScreenStack", { screen: "Home", params: {} });
+      navigation.navigate("ScreenStack", { screen: "Home", params: {} }, { pop: true });
     }
   };
 
