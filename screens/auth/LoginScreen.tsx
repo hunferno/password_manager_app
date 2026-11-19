@@ -10,8 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
 import LoginForm from "../../components/auth/LoginForm";
 import { useEffect, useRef, useState } from "react";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { NativeStackScreenProps , NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../navigators/AuthNavigator";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 

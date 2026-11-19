@@ -1,11 +1,10 @@
 import { useContext, useEffect } from "react";
 import { LogBox, Platform } from "react-native";
-import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { configureReanimatedLogger } from "react-native-reanimated";
 import * as NavigationBar from "expo-navigation-bar";
 import { AuthContext, AuthProvider } from "./context/authContext";
 import Navigation from "./Navigation";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import Toast from "react-native-toast-message";
 

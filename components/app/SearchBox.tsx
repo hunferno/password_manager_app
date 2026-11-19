@@ -2,8 +2,8 @@ import { View, TextInput } from "react-native";
 import { appStyles } from "../../styles/app/appStyles";
 import { COLORS } from "../../assets/COLORS";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
-import debounce from "lodash/debounce";
+import { useCallback, useContext, useEffect, useRef } from "react";
+import { useDebouncedCallback } from "../../hooks/useDebouncedCallback";
 import { AppContext } from "../../context/appContext";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -82,7 +82,7 @@ const SearchBox = () => {
     ]
   );
 
-  const debounceSearch = useMemo(() => debounce(handleSearch, 500), [handleSearch]);
+  const debounceSearch = useDebouncedCallback(handleSearch, 500);
 
   return (
     <View style={appStyles.searchContainer}>
