@@ -1,8 +1,17 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-const BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL ??
-  "http://187.77.174.91:6002/api"; // fallback local dev URL
+/**
+ * URL de l'API, fournie par la variable EXPO_PUBLIC_API_URL
+ * (fichier .env à la racine en local, variables d'environnement EAS en build).
+ * Voir .env.example.
+ */
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+
+if (!BASE_URL) {
+  console.error(
+    "EXPO_PUBLIC_API_URL n'est pas définie : copiez .env.example en .env et renseignez l'URL de l'API."
+  );
+}
 
 export const axiosAPI = axios.create({
   baseURL: BASE_URL,

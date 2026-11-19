@@ -3,8 +3,8 @@ import type { IdentificationType } from "../types/identificationType";
 import type { SecureTextType } from "../types/secureTextType";
 
 export type TabParamList = {
-  Home: { datas?: IdentificationType[] };
-  SecureText: { datas?: SecureTextType[] };
+  Home: { datas?: IdentificationType[] } | undefined;
+  SecureText: { datas?: SecureTextType[] } | undefined;
 };
 
 export type AppStackParamList = {

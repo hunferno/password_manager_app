@@ -16,8 +16,7 @@ import { Formik, type FormikErrors } from "formik";
 import { secureTextForm } from "../../models/secureTextFormStruct";
 import { secureTextStyles } from "../../styles/app/secureTextStyles";
 import { authStyles } from "../../styles/auth/authStyles";
-import moment from "moment";
-import "moment/min/locales";
+import { formatDateTimeFr } from "../../lib/utils/formatDate";
 import HeaderRightButtonEdit from "../../components/app/identification/HeaderRightButtonEdit";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AppStackParamList } from "../../navigators/navigationTypes";
@@ -55,9 +54,6 @@ const AddSecureText = ({ navigation, route }: AddSecureTextScreenProps) => {
   }, []);
 
   useEffect(() => {
-    // Set the locale to French
-    moment.locale("fr");
-
     let title = "Ajouter une note";
     if (data && !readOnly) {
       title = "Modifier la note";
@@ -162,11 +158,11 @@ const AddSecureText = ({ navigation, route }: AddSecureTextScreenProps) => {
                 <View style={{ marginVertical: 15 }}>
                   <Text style={secureTextStyles.date}>
                     Créé le :{" "}
-                    {moment(data.createdAt).format("DD MMMM YYYY [à] HH[h]mm")}{" "}
+                    {formatDateTimeFr(data.createdAt)}{" "}
                   </Text>
                   <Text style={secureTextStyles.date}>
                     Modifié le :{" "}
-                    {moment(data.updatedAt).format("DD MMMM YYYY [à] HH[h]mm")}{" "}
+                    {formatDateTimeFr(data.updatedAt)}{" "}
                   </Text>
                 </View>
               )}
